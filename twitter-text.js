@@ -101,7 +101,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   FlowdockText.regexen.punct = /\!'#%&'\(\)*\+,\\\-\.\/:;<=>\?@\[\]\^_{|}~\$/;
   FlowdockText.regexen.atSigns = /[@＠]/;
   FlowdockText.regexen.extractMentions = regexSupplant(/(^|[^a-zA-Z0-9_!#$%&*@＠])(#{atSigns})([a-zA-Z0-9_]{1,20})/g);
-  FlowdockText.regexen.extractReply = regexSupplant(/^(?:#{spaces})*#{atSigns}([a-zA-Z0-9_]{1,20})/);
   FlowdockText.regexen.listName = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/;
   FlowdockText.regexen.extractMentionsOrLists = regexSupplant(/(^|[^a-zA-Z0-9_!#$%&*@＠])(#{atSigns})([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g);
 
@@ -549,21 +548,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     });
 
     return possibleNames;
-  };
-
-
-  FlowdockText.extractReplies = function(text) {
-    if (!text) {
-      return null;
-    }
-
-    var possibleScreenName = text.match(FlowdockText.regexen.extractReply);
-    if (!possibleScreenName ||
-        RegExp.rightContext.match(FlowdockText.regexen.endScreenNameMatch)) {
-      return null;
-    }
-
-    return possibleScreenName[1];
   };
 
   FlowdockText.extractUrls = function(text) {
