@@ -1,16 +1,16 @@
 if (typeof window === "undefined" || window === null) {
-  window = { twttr: {} };
+  window = { FlowdockText: {} };
 }
-if (window.twttr == null) {
-  window.twttr = {};
+if (window.FlowdockText == null) {
+  window.FlowdockText = {};
 }
-if (typeof twttr === "undefined" || twttr === null) {
-  twttr = {};
+if (typeof FlowdockText === "undefined" || FlowdockText === null) {
+  FlowdockText = {};
 }
 
 (function() {
-  twttr.txt = {};
-  twttr.txt.regexen = {};
+  FlowdockText = {};
+  FlowdockText.regexen = {};
 
   var HTML_ENTITIES = {
     '&': '&amp;',
@@ -21,7 +21,7 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
   // HTML escaping
-  twttr.txt.htmlEscape = function(text) {
+  FlowdockText.htmlEscape = function(text) {
     return text && text.replace(/[&"'><]/g, function(character) {
       return HTML_ENTITIES[character];
     });
@@ -45,7 +45,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     }
 
     return new RegExp(regex.replace(/#\{(\w+)\}/g, function(match, name) {
-      var newRegex = twttr.txt.regexen[name] || "";
+      var newRegex = FlowdockText.regexen[name] || "";
       if (typeof newRegex !== "string") {
         newRegex = newRegex.source;
       }
@@ -95,15 +95,15 @@ if (typeof twttr === "undefined" || twttr === null) {
   ];
   addCharsToCharClass(INVALID_CHARS, 0x202A, 0x202E); // Directional change
 
-  twttr.txt.regexen.spaces_group = regexSupplant(UNICODE_SPACES.join(""));
-  twttr.txt.regexen.spaces = regexSupplant("[" + UNICODE_SPACES.join("") + "]");
-  twttr.txt.regexen.invalid_chars_group = regexSupplant(INVALID_CHARS.join(""));
-  twttr.txt.regexen.punct = /\!'#%&'\(\)*\+,\\\-\.\/:;<=>\?@\[\]\^_{|}~\$/;
-  twttr.txt.regexen.atSigns = /[@＠]/;
-  twttr.txt.regexen.extractMentions = regexSupplant(/(^|[^a-zA-Z0-9_!#$%&*@＠])(#{atSigns})([a-zA-Z0-9_]{1,20})/g);
-  twttr.txt.regexen.extractReply = regexSupplant(/^(?:#{spaces})*#{atSigns}([a-zA-Z0-9_]{1,20})/);
-  twttr.txt.regexen.listName = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/;
-  twttr.txt.regexen.extractMentionsOrLists = regexSupplant(/(^|[^a-zA-Z0-9_!#$%&*@＠])(#{atSigns})([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g);
+  FlowdockText.regexen.spaces_group = regexSupplant(UNICODE_SPACES.join(""));
+  FlowdockText.regexen.spaces = regexSupplant("[" + UNICODE_SPACES.join("") + "]");
+  FlowdockText.regexen.invalid_chars_group = regexSupplant(INVALID_CHARS.join(""));
+  FlowdockText.regexen.punct = /\!'#%&'\(\)*\+,\\\-\.\/:;<=>\?@\[\]\^_{|}~\$/;
+  FlowdockText.regexen.atSigns = /[@＠]/;
+  FlowdockText.regexen.extractMentions = regexSupplant(/(^|[^a-zA-Z0-9_!#$%&*@＠])(#{atSigns})([a-zA-Z0-9_]{1,20})/g);
+  FlowdockText.regexen.extractReply = regexSupplant(/^(?:#{spaces})*#{atSigns}([a-zA-Z0-9_]{1,20})/);
+  FlowdockText.regexen.listName = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/;
+  FlowdockText.regexen.extractMentionsOrLists = regexSupplant(/(^|[^a-zA-Z0-9_!#$%&*@＠])(#{atSigns})([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g);
 
   var nonLatinHashtagChars = [];
   // Cyrillic
@@ -139,47 +139,47 @@ if (typeof twttr === "undefined" || twttr === null) {
   addCharsToCharClass(nonLatinHashtagChars, 0x3005, 0x3005); // Kanji iteration mark
   addCharsToCharClass(nonLatinHashtagChars, 0x303B, 0x303B); // Han iteration mark
 
-  twttr.txt.regexen.nonLatinHashtagChars = regexSupplant(nonLatinHashtagChars.join(""));
+  FlowdockText.regexen.nonLatinHashtagChars = regexSupplant(nonLatinHashtagChars.join(""));
   // Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
-  twttr.txt.regexen.latinAccentChars = regexSupplant("ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏİÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïıðñòóôõöøùúûüýþş\\303\\277");
+  FlowdockText.regexen.latinAccentChars = regexSupplant("ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏİÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïıðñòóôõöøùúûüýþş\\303\\277");
 
-  twttr.txt.regexen.endScreenNameMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
+  FlowdockText.regexen.endScreenNameMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
 
   // A hashtag must contain characters, numbers and underscores, but not all numbers.
-  twttr.txt.regexen.hashtagAlpha = regexSupplant(/[a-z_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
-  twttr.txt.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
-  twttr.txt.regexen.endHashtagMatch = /^(?:[#＃]|:\/\/)/;
-  twttr.txt.regexen.hashtagBoundary = regexSupplant(/(?:^|$|[^&\/a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}])/);
-  twttr.txt.regexen.autoLinkHashtags = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
-  twttr.txt.regexen.autoLinkUsernamesOrLists = /(^|[^a-zA-Z0-9_!#\$%&*@＠]|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g;
-  twttr.txt.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
+  FlowdockText.regexen.hashtagAlpha = regexSupplant(/[a-z_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
+  FlowdockText.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
+  FlowdockText.regexen.endHashtagMatch = /^(?:[#＃]|:\/\/)/;
+  FlowdockText.regexen.hashtagBoundary = regexSupplant(/(?:^|$|[^&\/a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}])/);
+  FlowdockText.regexen.autoLinkHashtags = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
+  FlowdockText.regexen.autoLinkUsernamesOrLists = /(^|[^a-zA-Z0-9_!#\$%&*@＠]|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g;
+  FlowdockText.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
 
   // URL related hash regex collection
-  twttr.txt.regexen.validPrecedingChars = regexSupplant(/(?:[^-\/"'!=A-Za-z0-9_@＠$#＃\.#{invalid_chars_group}]|^)/);
+  FlowdockText.regexen.validPrecedingChars = regexSupplant(/(?:[^-\/"'!=A-Za-z0-9_@＠$#＃\.#{invalid_chars_group}]|^)/);
 
-  twttr.txt.regexen.invalidDomainChars = stringSupplant("#{punct}#{spaces_group}#{invalid_chars_group}", twttr.txt.regexen);
-  twttr.txt.regexen.validDomainChars = regexSupplant(/[^#{invalidDomainChars}]/);
-  twttr.txt.regexen.validSubdomain = regexSupplant(/(?:(?:#{validDomainChars}(?:[_-]|#{validDomainChars})*)?#{validDomainChars}\.)/);
-  twttr.txt.regexen.validDomainName = regexSupplant(/(?:(?:#{validDomainChars}(?:-|#{validDomainChars})*)?#{validDomainChars}\.)/);
-  twttr.txt.regexen.validGTLD = regexSupplant(/(?:(?:aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|xxx)(?=[^a-zA-Z]|$))/);
-  twttr.txt.regexen.validCCTLD = regexSupplant(/(?:(?:ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cs|cu|cv|cx|cy|cz|dd|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|ss|st|su|sv|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|zw)(?=[^a-zA-Z]|$))/);
-  twttr.txt.regexen.validPunycode = regexSupplant(/(?:xn--[0-9a-z]+)/);
-  twttr.txt.regexen.validDomain = regexSupplant(/(?:#{validSubdomain}*#{validDomainName}(?:#{validGTLD}|#{validCCTLD}|#{validPunycode}))/);
-  twttr.txt.regexen.validAsciiDomain = regexSupplant(/(?:(?:[a-z0-9#{latinAccentChars}]+)\.)+(?:#{validGTLD}|#{validCCTLD}|#{validPunycode})/gi);
-  twttr.txt.regexen.invalidShortDomain = regexSupplant(/^#{validDomainName}#{validCCTLD}$/);
+  FlowdockText.regexen.invalidDomainChars = stringSupplant("#{punct}#{spaces_group}#{invalid_chars_group}", FlowdockText.regexen);
+  FlowdockText.regexen.validDomainChars = regexSupplant(/[^#{invalidDomainChars}]/);
+  FlowdockText.regexen.validSubdomain = regexSupplant(/(?:(?:#{validDomainChars}(?:[_-]|#{validDomainChars})*)?#{validDomainChars}\.)/);
+  FlowdockText.regexen.validDomainName = regexSupplant(/(?:(?:#{validDomainChars}(?:-|#{validDomainChars})*)?#{validDomainChars}\.)/);
+  FlowdockText.regexen.validGTLD = regexSupplant(/(?:(?:aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|xxx)(?=[^a-zA-Z]|$))/);
+  FlowdockText.regexen.validCCTLD = regexSupplant(/(?:(?:ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cs|cu|cv|cx|cy|cz|dd|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|ss|st|su|sv|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|zw)(?=[^a-zA-Z]|$))/);
+  FlowdockText.regexen.validPunycode = regexSupplant(/(?:xn--[0-9a-z]+)/);
+  FlowdockText.regexen.validDomain = regexSupplant(/(?:#{validSubdomain}*#{validDomainName}(?:#{validGTLD}|#{validCCTLD}|#{validPunycode}))/);
+  FlowdockText.regexen.validAsciiDomain = regexSupplant(/(?:(?:[a-z0-9#{latinAccentChars}]+)\.)+(?:#{validGTLD}|#{validCCTLD}|#{validPunycode})/gi);
+  FlowdockText.regexen.invalidShortDomain = regexSupplant(/^#{validDomainName}#{validCCTLD}$/);
 
-  twttr.txt.regexen.validPortNumber = regexSupplant(/[0-9]+/);
+  FlowdockText.regexen.validPortNumber = regexSupplant(/[0-9]+/);
 
-  twttr.txt.regexen.validGeneralUrlPathChars = regexSupplant(/[a-z0-9!\*';:=\+,\.\$\/%#\[\]\-_~|&#{latinAccentChars}]/i);
+  FlowdockText.regexen.validGeneralUrlPathChars = regexSupplant(/[a-z0-9!\*';:=\+,\.\$\/%#\[\]\-_~|&#{latinAccentChars}]/i);
   // Allow URL paths to contain balanced parens
   //  1. Used in Wikipedia URLs like /Primer_(film)
   //  2. Used in IIS sessions like /S(dfd346)/
-  twttr.txt.regexen.validUrlBalancedParens = regexSupplant(/\(#{validGeneralUrlPathChars}+\)/i);
+  FlowdockText.regexen.validUrlBalancedParens = regexSupplant(/\(#{validGeneralUrlPathChars}+\)/i);
   // Valid end-of-path chracters (so /foo. does not gobble the period).
   // 1. Allow =&# for empty URL parameters and other URL-join artifacts
-  twttr.txt.regexen.validUrlPathEndingChars = regexSupplant(/[\+\-a-z0-9=_#\/#{latinAccentChars}]|(?:#{validUrlBalancedParens})/i);
+  FlowdockText.regexen.validUrlPathEndingChars = regexSupplant(/[\+\-a-z0-9=_#\/#{latinAccentChars}]|(?:#{validUrlBalancedParens})/i);
   // Allow @ in a url, but only in the middle. Catch things like http://example.com/@user/
-  twttr.txt.regexen.validUrlPath = regexSupplant('(?:' +
+  FlowdockText.regexen.validUrlPath = regexSupplant('(?:' +
     '(?:' +
       '#{validGeneralUrlPathChars}*' +
         '(?:#{validUrlBalancedParens}#{validGeneralUrlPathChars}*)*' +
@@ -187,9 +187,9 @@ if (typeof twttr === "undefined" || twttr === null) {
       ')|(?:@#{validGeneralUrlPathChars}+\/)'+
     ')', 'i');
 
-  twttr.txt.regexen.validUrlQueryChars = /[a-z0-9!?\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i;
-  twttr.txt.regexen.validUrlQueryEndingChars = /[a-z0-9_&=#\/]/i;
-  twttr.txt.regexen.extractUrl = regexSupplant(
+  FlowdockText.regexen.validUrlQueryChars = /[a-z0-9!?\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i;
+  FlowdockText.regexen.validUrlQueryEndingChars = /[a-z0-9_&=#\/]/i;
+  FlowdockText.regexen.extractUrl = regexSupplant(
     '('                                                            + // $1 total match
       '(#{validPrecedingChars})'                                   + // $2 Preceeding chracter
       '('                                                          + // $3 URL
@@ -202,81 +202,81 @@ if (typeof twttr === "undefined" || twttr === null) {
     ')'
   , 'gi');
 
-  twttr.txt.regexen.validTcoUrl = /^https?:\/\/t\.co\/[a-z0-9]+/i;
+  FlowdockText.regexen.validTcoUrl = /^https?:\/\/t\.co\/[a-z0-9]+/i;
 
   // These URL validation pattern strings are based on the ABNF from RFC 3986
-  twttr.txt.regexen.validateUrlUnreserved = /[a-z0-9\-._~]/i;
-  twttr.txt.regexen.validateUrlPctEncoded = /(?:%[0-9a-f]{2})/i;
-  twttr.txt.regexen.validateUrlSubDelims = /[!$&'()*+,;=]/i;
-  twttr.txt.regexen.validateUrlPchar = regexSupplant('(?:' +
+  FlowdockText.regexen.validateUrlUnreserved = /[a-z0-9\-._~]/i;
+  FlowdockText.regexen.validateUrlPctEncoded = /(?:%[0-9a-f]{2})/i;
+  FlowdockText.regexen.validateUrlSubDelims = /[!$&'()*+,;=]/i;
+  FlowdockText.regexen.validateUrlPchar = regexSupplant('(?:' +
     '#{validateUrlUnreserved}|' +
     '#{validateUrlPctEncoded}|' +
     '#{validateUrlSubDelims}|' +
     '[:|@]' +
   ')', 'i');
 
-  twttr.txt.regexen.validateUrlScheme = /(?:[a-z][a-z0-9+\-.]*)/i;
-  twttr.txt.regexen.validateUrlUserinfo = regexSupplant('(?:' +
+  FlowdockText.regexen.validateUrlScheme = /(?:[a-z][a-z0-9+\-.]*)/i;
+  FlowdockText.regexen.validateUrlUserinfo = regexSupplant('(?:' +
     '#{validateUrlUnreserved}|' +
     '#{validateUrlPctEncoded}|' +
     '#{validateUrlSubDelims}|' +
     ':' +
   ')*', 'i');
 
-  twttr.txt.regexen.validateUrlDecOctet = /(?:[0-9]|(?:[1-9][0-9])|(?:1[0-9]{2})|(?:2[0-4][0-9])|(?:25[0-5]))/i;
-  twttr.txt.regexen.validateUrlIpv4 = regexSupplant(/(?:#{validateUrlDecOctet}(?:\.#{validateUrlDecOctet}){3})/i);
+  FlowdockText.regexen.validateUrlDecOctet = /(?:[0-9]|(?:[1-9][0-9])|(?:1[0-9]{2})|(?:2[0-4][0-9])|(?:25[0-5]))/i;
+  FlowdockText.regexen.validateUrlIpv4 = regexSupplant(/(?:#{validateUrlDecOctet}(?:\.#{validateUrlDecOctet}){3})/i);
 
   // Punting on real IPv6 validation for now
-  twttr.txt.regexen.validateUrlIpv6 = /(?:\[[a-f0-9:\.]+\])/i;
+  FlowdockText.regexen.validateUrlIpv6 = /(?:\[[a-f0-9:\.]+\])/i;
 
   // Also punting on IPvFuture for now
-  twttr.txt.regexen.validateUrlIp = regexSupplant('(?:' +
+  FlowdockText.regexen.validateUrlIp = regexSupplant('(?:' +
     '#{validateUrlIpv4}|' +
     '#{validateUrlIpv6}' +
   ')', 'i');
 
   // This is more strict than the rfc specifies
-  twttr.txt.regexen.validateUrlSubDomainSegment = /(?:[a-z0-9](?:[a-z0-9_\-]*[a-z0-9])?)/i;
-  twttr.txt.regexen.validateUrlDomainSegment = /(?:[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?)/i;
-  twttr.txt.regexen.validateUrlDomainTld = /(?:[a-z](?:[a-z0-9\-]*[a-z0-9])?)/i;
-  twttr.txt.regexen.validateUrlDomain = regexSupplant(/(?:(?:#{validateUrlSubDomainSegment]}\.)*(?:#{validateUrlDomainSegment]}\.)#{validateUrlDomainTld})/i);
+  FlowdockText.regexen.validateUrlSubDomainSegment = /(?:[a-z0-9](?:[a-z0-9_\-]*[a-z0-9])?)/i;
+  FlowdockText.regexen.validateUrlDomainSegment = /(?:[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?)/i;
+  FlowdockText.regexen.validateUrlDomainTld = /(?:[a-z](?:[a-z0-9\-]*[a-z0-9])?)/i;
+  FlowdockText.regexen.validateUrlDomain = regexSupplant(/(?:(?:#{validateUrlSubDomainSegment]}\.)*(?:#{validateUrlDomainSegment]}\.)#{validateUrlDomainTld})/i);
 
-  twttr.txt.regexen.validateUrlHost = regexSupplant('(?:' +
+  FlowdockText.regexen.validateUrlHost = regexSupplant('(?:' +
     '#{validateUrlIp}|' +
     '#{validateUrlDomain}' +
   ')', 'i');
 
   // Unencoded internationalized domains - this doesn't check for invalid UTF-8 sequences
-  twttr.txt.regexen.validateUrlUnicodeSubDomainSegment = /(?:(?:[a-z0-9]|[^\u0000-\u007f])(?:(?:[a-z0-9_\-]|[^\u0000-\u007f])*(?:[a-z0-9]|[^\u0000-\u007f]))?)/i;
-  twttr.txt.regexen.validateUrlUnicodeDomainSegment = /(?:(?:[a-z0-9]|[^\u0000-\u007f])(?:(?:[a-z0-9\-]|[^\u0000-\u007f])*(?:[a-z0-9]|[^\u0000-\u007f]))?)/i;
-  twttr.txt.regexen.validateUrlUnicodeDomainTld = /(?:(?:[a-z]|[^\u0000-\u007f])(?:(?:[a-z0-9\-]|[^\u0000-\u007f])*(?:[a-z0-9]|[^\u0000-\u007f]))?)/i;
-  twttr.txt.regexen.validateUrlUnicodeDomain = regexSupplant(/(?:(?:#{validateUrlUnicodeSubDomainSegment}\.)*(?:#{validateUrlUnicodeDomainSegment}\.)#{validateUrlUnicodeDomainTld})/i);
+  FlowdockText.regexen.validateUrlUnicodeSubDomainSegment = /(?:(?:[a-z0-9]|[^\u0000-\u007f])(?:(?:[a-z0-9_\-]|[^\u0000-\u007f])*(?:[a-z0-9]|[^\u0000-\u007f]))?)/i;
+  FlowdockText.regexen.validateUrlUnicodeDomainSegment = /(?:(?:[a-z0-9]|[^\u0000-\u007f])(?:(?:[a-z0-9\-]|[^\u0000-\u007f])*(?:[a-z0-9]|[^\u0000-\u007f]))?)/i;
+  FlowdockText.regexen.validateUrlUnicodeDomainTld = /(?:(?:[a-z]|[^\u0000-\u007f])(?:(?:[a-z0-9\-]|[^\u0000-\u007f])*(?:[a-z0-9]|[^\u0000-\u007f]))?)/i;
+  FlowdockText.regexen.validateUrlUnicodeDomain = regexSupplant(/(?:(?:#{validateUrlUnicodeSubDomainSegment}\.)*(?:#{validateUrlUnicodeDomainSegment}\.)#{validateUrlUnicodeDomainTld})/i);
 
-  twttr.txt.regexen.validateUrlUnicodeHost = regexSupplant('(?:' +
+  FlowdockText.regexen.validateUrlUnicodeHost = regexSupplant('(?:' +
     '#{validateUrlIp}|' +
     '#{validateUrlUnicodeDomain}' +
   ')', 'i');
 
-  twttr.txt.regexen.validateUrlPort = /[0-9]{1,5}/;
+  FlowdockText.regexen.validateUrlPort = /[0-9]{1,5}/;
 
-  twttr.txt.regexen.validateUrlUnicodeAuthority = regexSupplant(
+  FlowdockText.regexen.validateUrlUnicodeAuthority = regexSupplant(
     '(?:(#{validateUrlUserinfo})@)?'  + // $1 userinfo
     '(#{validateUrlUnicodeHost})'     + // $2 host
     '(?::(#{validateUrlPort}))?'        //$3 port
   , "i");
 
-  twttr.txt.regexen.validateUrlAuthority = regexSupplant(
+  FlowdockText.regexen.validateUrlAuthority = regexSupplant(
     '(?:(#{validateUrlUserinfo})@)?' + // $1 userinfo
     '(#{validateUrlHost})'           + // $2 host
     '(?::(#{validateUrlPort}))?'       // $3 port
   , "i");
 
-  twttr.txt.regexen.validateUrlPath = regexSupplant(/(\/#{validateUrlPchar}*)*/i);
-  twttr.txt.regexen.validateUrlQuery = regexSupplant(/(#{validateUrlPchar}|\/|\?)*/i);
-  twttr.txt.regexen.validateUrlFragment = regexSupplant(/(#{validateUrlPchar}|\/|\?)*/i);
+  FlowdockText.regexen.validateUrlPath = regexSupplant(/(\/#{validateUrlPchar}*)*/i);
+  FlowdockText.regexen.validateUrlQuery = regexSupplant(/(#{validateUrlPchar}|\/|\?)*/i);
+  FlowdockText.regexen.validateUrlFragment = regexSupplant(/(#{validateUrlPchar}|\/|\?)*/i);
 
   // Modified version of RFC 3986 Appendix B
-  twttr.txt.regexen.validateUrlUnencoded = regexSupplant(
+  FlowdockText.regexen.validateUrlUnencoded = regexSupplant(
     '^'                               + // Full URL
     '(?:'                             +
       '([^:/?#]+):\\/\\/'             + // $1 Scheme
@@ -315,17 +315,17 @@ if (typeof twttr === "undefined" || twttr === null) {
     return r;
   }
 
-  twttr.txt.autoLink = function(text, options) {
+  FlowdockText.autoLink = function(text, options) {
     options = clone(options || {});
-    return twttr.txt.autoLinkUsernamesOrLists(
-      twttr.txt.autoLinkUrlsCustom(
-        twttr.txt.autoLinkHashtags(text, options),
+    return FlowdockText.autoLinkUsernamesOrLists(
+      FlowdockText.autoLinkUrlsCustom(
+        FlowdockText.autoLinkHashtags(text, options),
       options),
     options);
   };
 
 
-  twttr.txt.autoLinkUsernamesOrLists = function(text, options) {
+  FlowdockText.autoLinkUsernamesOrLists = function(text, options) {
     options = clone(options || {});
 
     options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
@@ -338,7 +338,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     }
 
     var newText = "",
-        splitText = twttr.txt.splitTags(text);
+        splitText = FlowdockText.splitTags(text);
 
     for (var index = 0; index < splitText.length; index++) {
       var chunk = splitText[index];
@@ -350,15 +350,15 @@ if (typeof twttr === "undefined" || twttr === null) {
       if (index % 4 !== 0) {
         newText += chunk;
       } else {
-        newText += chunk.replace(twttr.txt.regexen.autoLinkUsernamesOrLists, function(match, before, at, user, slashListname, offset, chunk) {
+        newText += chunk.replace(FlowdockText.regexen.autoLinkUsernamesOrLists, function(match, before, at, user, slashListname, offset, chunk) {
           var after = chunk.slice(offset + match.length);
 
           var d = {
             before: before,
             at: options.usernameIncludeSymbol ? "" : at,
             at_before_user: options.usernameIncludeSymbol ? at : "",
-            user: twttr.txt.htmlEscape(user),
-            slashListname: twttr.txt.htmlEscape(slashListname),
+            user: FlowdockText.htmlEscape(user),
+            slashListname: FlowdockText.htmlEscape(slashListname),
             extraHtml: extraHtml,
             preChunk: "",
             postChunk: ""
@@ -372,10 +372,10 @@ if (typeof twttr === "undefined" || twttr === null) {
           if (slashListname && !options.suppressLists) {
             // the link is a list
             var list = d.chunk = stringSupplant("#{user}#{slashListname}", d);
-            d.list = twttr.txt.htmlEscape(list.toLowerCase());
+            d.list = FlowdockText.htmlEscape(list.toLowerCase());
             return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
           } else {
-            if (after && after.match(twttr.txt.regexen.endScreenNameMatch)) {
+            if (after && after.match(FlowdockText.regexen.endScreenNameMatch)) {
               // Followed by something that means we don't autolink
               return match;
             } else {
@@ -392,7 +392,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     return newText;
   };
 
-  twttr.txt.autoLinkHashtags = function(text, options) {
+  FlowdockText.autoLinkHashtags = function(text, options) {
     options = clone(options || {});
     options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
     options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
@@ -401,16 +401,16 @@ if (typeof twttr === "undefined" || twttr === null) {
       var extraHtml = HTML_ATTR_NO_FOLLOW;
     }
 
-    return text.replace(twttr.txt.regexen.autoLinkHashtags, function(match, before, hash, text, offset, chunk) {
+    return text.replace(FlowdockText.regexen.autoLinkHashtags, function(match, before, hash, text, offset, chunk) {
       var after = chunk.slice(offset + match.length);
-      if (after.match(twttr.txt.regexen.endHashtagMatch))
+      if (after.match(FlowdockText.regexen.endHashtagMatch))
         return match;
 
       var d = {
         before: before,
-        hash: twttr.txt.htmlEscape(hash),
+        hash: FlowdockText.htmlEscape(hash),
         preText: "",
-        text: twttr.txt.htmlEscape(text),
+        text: FlowdockText.htmlEscape(text),
         postText: "",
         extraHtml: extraHtml
       };
@@ -426,7 +426,7 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
 
-  twttr.txt.autoLinkUrlsCustom = function(text, options) {
+  FlowdockText.autoLinkUrlsCustom = function(text, options) {
     options = clone(options || {});
     if (!options.suppressNoFollow) {
       options.rel = "nofollow";
@@ -452,7 +452,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     delete options.usernameUrlBase;
     delete options.listUrlBase;
 
-    return text.replace(twttr.txt.regexen.extractUrl, function(match, all, before, url, protocol, port, domain, path, queryString) {
+    return text.replace(FlowdockText.regexen.extractUrl, function(match, all, before, url, protocol, port, domain, path, queryString) {
       var tldComponents;
 
       if (protocol) {
@@ -463,7 +463,7 @@ if (typeof twttr === "undefined" || twttr === null) {
         }
 
         // In the case of t.co URLs, don't allow additional path characters.
-        if (url.match(twttr.txt.regexen.validTcoUrl)) {
+        if (url.match(FlowdockText.regexen.validTcoUrl)) {
           url = RegExp.lastMatch;
           after = RegExp.rightContext;
         }
@@ -471,11 +471,11 @@ if (typeof twttr === "undefined" || twttr === null) {
         var d = {
           before: before,
           htmlAttrs: htmlAttrs,
-          url: twttr.txt.htmlEscape(url),
+          url: FlowdockText.htmlEscape(url),
           after: after
         };
         if (urlEntities && urlEntities[url] && urlEntities[url].display_url) {
-          d.displayUrl = twttr.txt.htmlEscape(urlEntities[url].display_url);
+          d.displayUrl = FlowdockText.htmlEscape(urlEntities[url].display_url);
         } else {
           d.displayUrl = d.url;
         }
@@ -487,9 +487,9 @@ if (typeof twttr === "undefined" || twttr === null) {
     });
   };
 
-  twttr.txt.extractMentions = function(text) {
+  FlowdockText.extractMentions = function(text) {
     var screenNamesOnly = [],
-        screenNamesWithIndices = twttr.txt.extractMentionsWithIndices(text);
+        screenNamesWithIndices = FlowdockText.extractMentionsWithIndices(text);
 
     for (var i = 0; i < screenNamesWithIndices.length; i++) {
       var screenName = screenNamesWithIndices[i].screenName;
@@ -499,7 +499,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     return screenNamesOnly;
   };
 
-  twttr.txt.extractMentionsWithIndices = function(text) {
+  FlowdockText.extractMentionsWithIndices = function(text) {
     if (!text) {
       return [];
     }
@@ -507,9 +507,9 @@ if (typeof twttr === "undefined" || twttr === null) {
     var possibleScreenNames = [],
         position = 0;
 
-    text.replace(twttr.txt.regexen.extractMentions, function(match, before, atSign, screenName, offset, chunk) {
+    text.replace(FlowdockText.regexen.extractMentions, function(match, before, atSign, screenName, offset, chunk) {
       var after = chunk.slice(offset + match.length);
-      if (!after.match(twttr.txt.regexen.endScreenNameMatch)) {
+      if (!after.match(FlowdockText.regexen.endScreenNameMatch)) {
         var startPosition = text.indexOf(atSign + screenName, position);
         position = startPosition + screenName.length + 1;
         possibleScreenNames.push({
@@ -526,7 +526,7 @@ if (typeof twttr === "undefined" || twttr === null) {
    * Extract list or user mentions.
    * (Presence of listSlug indicates a list)
    */
-  twttr.txt.extractMentionsOrListsWithIndices = function(text) {
+  FlowdockText.extractMentionsOrListsWithIndices = function(text) {
     if (!text) {
       return [];
     }
@@ -534,9 +534,9 @@ if (typeof twttr === "undefined" || twttr === null) {
     var possibleNames = [],
         position = 0;
 
-    text.replace(twttr.txt.regexen.extractMentionsOrLists, function(match, before, atSign, screenName, slashListname, offset, chunk) {
+    text.replace(FlowdockText.regexen.extractMentionsOrLists, function(match, before, atSign, screenName, slashListname, offset, chunk) {
       var after = chunk.slice(offset + match.length);
-      if (!after.match(twttr.txt.regexen.endScreenNameMatch)) {
+      if (!after.match(FlowdockText.regexen.endScreenNameMatch)) {
         slashListname = slashListname || '';
         var startPosition = text.indexOf(atSign + screenName + slashListname, position);
         position = startPosition + screenName.length + slashListname.length + 1;
@@ -552,23 +552,23 @@ if (typeof twttr === "undefined" || twttr === null) {
   };
 
 
-  twttr.txt.extractReplies = function(text) {
+  FlowdockText.extractReplies = function(text) {
     if (!text) {
       return null;
     }
 
-    var possibleScreenName = text.match(twttr.txt.regexen.extractReply);
+    var possibleScreenName = text.match(FlowdockText.regexen.extractReply);
     if (!possibleScreenName ||
-        RegExp.rightContext.match(twttr.txt.regexen.endScreenNameMatch)) {
+        RegExp.rightContext.match(FlowdockText.regexen.endScreenNameMatch)) {
       return null;
     }
 
     return possibleScreenName[1];
   };
 
-  twttr.txt.extractUrls = function(text) {
+  FlowdockText.extractUrls = function(text) {
     var urlsOnly = [],
-        urlsWithIndices = twttr.txt.extractUrlsWithIndices(text);
+        urlsWithIndices = FlowdockText.extractUrlsWithIndices(text);
 
     for (var i = 0; i < urlsWithIndices.length; i++) {
       urlsOnly.push(urlsWithIndices[i].url);
@@ -577,16 +577,16 @@ if (typeof twttr === "undefined" || twttr === null) {
     return urlsOnly;
   };
 
-  twttr.txt.extractUrlsWithIndices = function(text) {
+  FlowdockText.extractUrlsWithIndices = function(text) {
     if (!text) {
       return [];
     }
 
     var urls = [];
 
-    while (twttr.txt.regexen.extractUrl.exec(text)) {
+    while (FlowdockText.regexen.extractUrl.exec(text)) {
       var before = RegExp.$2, url = RegExp.$3, protocol = RegExp.$4, domain = RegExp.$5, path = RegExp.$7;
-      var endPosition = twttr.txt.regexen.extractUrl.lastIndex,
+      var endPosition = FlowdockText.regexen.extractUrl.lastIndex,
           startPosition = endPosition - url.length;
 
       // if protocol is missing and domain contains non-ASCII characters,
@@ -595,14 +595,14 @@ if (typeof twttr === "undefined" || twttr === null) {
         var lastUrl = null,
             lastUrlInvalidMatch = false,
             asciiEndPosition = 0;
-        domain.replace(twttr.txt.regexen.validAsciiDomain, function(asciiDomain) {
+        domain.replace(FlowdockText.regexen.validAsciiDomain, function(asciiDomain) {
           var asciiStartPosition = domain.indexOf(asciiDomain, asciiEndPosition);
           asciiEndPosition = asciiStartPosition + asciiDomain.length
           lastUrl = {
             url: asciiDomain,
             indices: [startPosition + asciiStartPosition, startPosition + asciiEndPosition]
           }
-          lastUrlInvalidMatch = asciiDomain.match(twttr.txt.regexen.invalidShortDomain);
+          lastUrlInvalidMatch = asciiDomain.match(FlowdockText.regexen.invalidShortDomain);
           if (!lastUrlInvalidMatch) {
             urls.push(lastUrl);
           }
@@ -623,7 +623,7 @@ if (typeof twttr === "undefined" || twttr === null) {
         }
       } else {
         // In the case of t.co URLs, don't allow additional path characters.
-        if (url.match(twttr.txt.regexen.validTcoUrl)) {
+        if (url.match(FlowdockText.regexen.validTcoUrl)) {
           url = RegExp.lastMatch;
           endPosition = startPosition + url.length;
         }
@@ -637,9 +637,9 @@ if (typeof twttr === "undefined" || twttr === null) {
     return urls;
   };
 
-  twttr.txt.extractHashtags = function(text) {
+  FlowdockText.extractHashtags = function(text) {
     var hashtagsOnly = [],
-        hashtagsWithIndices = twttr.txt.extractHashtagsWithIndices(text);
+        hashtagsWithIndices = FlowdockText.extractHashtagsWithIndices(text);
 
     for (var i = 0; i < hashtagsWithIndices.length; i++) {
       hashtagsOnly.push(hashtagsWithIndices[i].hashtag);
@@ -648,7 +648,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     return hashtagsOnly;
   };
 
-  twttr.txt.extractHashtagsWithIndices = function(text) {
+  FlowdockText.extractHashtagsWithIndices = function(text) {
     if (!text) {
       return [];
     }
@@ -656,9 +656,9 @@ if (typeof twttr === "undefined" || twttr === null) {
     var tags = [],
         position = 0;
 
-    text.replace(twttr.txt.regexen.autoLinkHashtags, function(match, before, hash, hashText, offset, chunk) {
+    text.replace(FlowdockText.regexen.autoLinkHashtags, function(match, before, hash, hashText, offset, chunk) {
       var after = chunk.slice(offset + match.length);
-      if (after.match(twttr.txt.regexen.endHashtagMatch))
+      if (after.match(FlowdockText.regexen.endHashtagMatch))
         return;
       var startPosition = text.indexOf(hash + hashText, position);
       position = startPosition + hashText.length + 1;
@@ -671,15 +671,15 @@ if (typeof twttr === "undefined" || twttr === null) {
     return tags;
   };
 
-  twttr.txt.modifyIndicesFromUnicodeToUTF16 = function(text, entities) {
-    twttr.txt.shiftIndices(text, entities, 1);
+  FlowdockText.modifyIndicesFromUnicodeToUTF16 = function(text, entities) {
+    FlowdockText.shiftIndices(text, entities, 1);
   };
 
-  twttr.txt.modifyIndicesFromUTF16ToUnicode = function(text, entities) {
-    twttr.txt.shiftIndices(text, entities, -1);
+  FlowdockText.modifyIndicesFromUTF16ToUnicode = function(text, entities) {
+    FlowdockText.shiftIndices(text, entities, -1);
   };
 
-  twttr.txt.shiftIndices = function(text, entities, diff) {
+  FlowdockText.shiftIndices = function(text, entities, diff) {
     for (var i = 0; i < text.length - 1; i++) {
       var c1 = text.charCodeAt(i);
       var c2 = text.charCodeAt(i + 1);
@@ -700,7 +700,7 @@ if (typeof twttr === "undefined" || twttr === null) {
   // except that won't work in IE, where empty strings are ommitted
   // so "<>".split(/<|>/) => [] in IE, but is ["", "", ""] in all others
   // but "<<".split("<") => ["", "", ""]
-  twttr.txt.splitTags = function(text) {
+  FlowdockText.splitTags = function(text) {
     var firstSplits = text.split("<"),
         secondSplits,
         allSplits = [],
@@ -721,7 +721,7 @@ if (typeof twttr === "undefined" || twttr === null) {
     return allSplits;
   };
 
-  twttr.txt.hitHighlight = function(text, hits, options) {
+  FlowdockText.hitHighlight = function(text, hits, options) {
     var defaultHighlightTag = "em";
 
     hits = hits || [];
@@ -733,7 +733,7 @@ if (typeof twttr === "undefined" || twttr === null) {
 
     var tagName = options.tag || defaultHighlightTag,
         tags = ["<" + tagName + ">", "</" + tagName + ">"],
-        chunks = twttr.txt.splitTags(text),
+        chunks = FlowdockText.splitTags(text),
         split,
         i,
         j,
@@ -836,7 +836,7 @@ if (typeof twttr === "undefined" || twttr === null) {
   //   "too_long": if the text is too long
   //   "empty": if the text is nil or empty
   //   "invalid_characters": if the text contains non-Unicode or any of the disallowed Unicode characters
-  twttr.txt.isInvalidTweet = function(text) {
+  FlowdockText.isInvalidTweet = function(text) {
     if (!text) {
       return "empty";
     }
@@ -854,16 +854,16 @@ if (typeof twttr === "undefined" || twttr === null) {
     return false;
   };
 
-  twttr.txt.isValidTweetText = function(text) {
-    return !twttr.txt.isInvalidTweet(text);
+  FlowdockText.isValidTweetText = function(text) {
+    return !FlowdockText.isInvalidTweet(text);
   };
 
-  twttr.txt.isValidUsername = function(username) {
+  FlowdockText.isValidUsername = function(username) {
     if (!username) {
       return false;
     }
 
-    var extracted = twttr.txt.extractMentions(username);
+    var extracted = FlowdockText.extractMentions(username);
 
     // Should extract the username minus the @ sign, hence the .slice(1)
     return extracted.length === 1 && extracted[0] === username.slice(1);
@@ -871,25 +871,25 @@ if (typeof twttr === "undefined" || twttr === null) {
 
   var VALID_LIST_RE = regexSupplant(/^#{autoLinkUsernamesOrLists}$/);
 
-  twttr.txt.isValidList = function(usernameList) {
+  FlowdockText.isValidList = function(usernameList) {
     var match = usernameList.match(VALID_LIST_RE);
 
     // Must have matched and had nothing before or after
     return !!(match && match[1] == "" && match[4]);
   };
 
-  twttr.txt.isValidHashtag = function(hashtag) {
+  FlowdockText.isValidHashtag = function(hashtag) {
     if (!hashtag) {
       return false;
     }
 
-    var extracted = twttr.txt.extractHashtags(hashtag);
+    var extracted = FlowdockText.extractHashtags(hashtag);
 
     // Should extract the hashtag minus the # sign, hence the .slice(1)
     return extracted.length === 1 && extracted[0] === hashtag.slice(1);
   };
 
-  twttr.txt.isValidUrl = function(url, unicodeDomains, requireProtocol) {
+  FlowdockText.isValidUrl = function(url, unicodeDomains, requireProtocol) {
     if (unicodeDomains == null) {
       unicodeDomains = true;
     }
@@ -902,7 +902,7 @@ if (typeof twttr === "undefined" || twttr === null) {
       return false;
     }
 
-    var urlParts = url.match(twttr.txt.regexen.validateUrlUnencoded);
+    var urlParts = url.match(FlowdockText.regexen.validateUrlUnencoded);
 
     if (!urlParts || urlParts[0] !== url) {
       return false;
@@ -915,16 +915,16 @@ if (typeof twttr === "undefined" || twttr === null) {
         fragment = urlParts[5];
 
     if (!(
-      (!requireProtocol || (isValidMatch(scheme, twttr.txt.regexen.validateUrlScheme) && scheme.match(/^https?$/i))) &&
-      isValidMatch(path, twttr.txt.regexen.validateUrlPath) &&
-      isValidMatch(query, twttr.txt.regexen.validateUrlQuery, true) &&
-      isValidMatch(fragment, twttr.txt.regexen.validateUrlFragment, true)
+      (!requireProtocol || (isValidMatch(scheme, FlowdockText.regexen.validateUrlScheme) && scheme.match(/^https?$/i))) &&
+      isValidMatch(path, FlowdockText.regexen.validateUrlPath) &&
+      isValidMatch(query, FlowdockText.regexen.validateUrlQuery, true) &&
+      isValidMatch(fragment, FlowdockText.regexen.validateUrlFragment, true)
     )) {
       return false;
     }
 
-    return (unicodeDomains && isValidMatch(authority, twttr.txt.regexen.validateUrlUnicodeAuthority)) ||
-           (!unicodeDomains && isValidMatch(authority, twttr.txt.regexen.validateUrlAuthority));
+    return (unicodeDomains && isValidMatch(authority, FlowdockText.regexen.validateUrlUnicodeAuthority)) ||
+           (!unicodeDomains && isValidMatch(authority, FlowdockText.regexen.validateUrlAuthority));
   };
 
   function isValidMatch(string, regex, optional) {
@@ -939,7 +939,7 @@ if (typeof twttr === "undefined" || twttr === null) {
   }
 
   if (typeof module != 'undefined' && module.exports) {
-    module.exports = twttr.txt;
+    module.exports = FlowdockText;
   }
 
 }());
