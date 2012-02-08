@@ -101,8 +101,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   FlowdockText.regexen.punct = /\!'#%&'\(\)*\+,\\\-\.\/:;<=>\?@\[\]\^_{|}~\$/;
   FlowdockText.regexen.atSigns = /[@＠]/;
   FlowdockText.regexen.extractMentions = regexSupplant(/(^|[^a-zA-Z0-9_!#$%&*@＠])(#{atSigns})([a-zA-Z0-9_]{1,20})/g);
-  FlowdockText.regexen.listName = /[a-zA-Z][a-zA-Z0-9_\-\u0080-\u00ff]{0,24}/;
-  FlowdockText.regexen.extractMentionsOrLists = regexSupplant(/(^|[^a-zA-Z0-9_!#$%&*@＠])(#{atSigns})([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g);
 
   var nonLatinHashtagChars = [];
   // Cyrillic
@@ -150,7 +148,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   FlowdockText.regexen.endHashtagMatch = /^(?:[#＃]|:\/\/)/;
   FlowdockText.regexen.hashtagBoundary = regexSupplant(/(?:^|$|[^&\/a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}])/);
   FlowdockText.regexen.autoLinkHashtags = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
-  FlowdockText.regexen.autoLinkUsernamesOrLists = /(^|[^a-zA-Z0-9_!#\$%&*@＠]|RT:?)([@＠]+)([a-zA-Z0-9_]{1,20})(\/[a-zA-Z][a-zA-Z0-9_\-]{0,24})?/g;
   FlowdockText.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
 
   // URL related hash regex collection
@@ -293,8 +290,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
   // Default CSS class for auto-linked URLs
   var DEFAULT_URL_CLASS = "tweet-url";
-  // Default CSS class for auto-linked lists (along with the url class)
-  var DEFAULT_LIST_CLASS = "list-slug";
   // Default CSS class for auto-linked usernames (along with the url class)
   var DEFAULT_USERNAME_CLASS = "username";
   // Default CSS class for auto-linked hashtags (along with the url class)
@@ -321,74 +316,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
         FlowdockText.autoLinkHashtags(text, options),
       options),
     options);
-  };
-
-
-  FlowdockText.autoLinkUsernamesOrLists = function(text, options) {
-    options = clone(options || {});
-
-    options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
-    options.listClass = options.listClass || DEFAULT_LIST_CLASS;
-    options.usernameClass = options.usernameClass || DEFAULT_USERNAME_CLASS;
-    options.usernameUrlBase = options.usernameUrlBase || "https://twitter.com/";
-    options.listUrlBase = options.listUrlBase || "https://twitter.com/";
-    if (!options.suppressNoFollow) {
-      var extraHtml = HTML_ATTR_NO_FOLLOW;
-    }
-
-    var newText = "",
-        splitText = FlowdockText.splitTags(text);
-
-    for (var index = 0; index < splitText.length; index++) {
-      var chunk = splitText[index];
-
-      if (index !== 0) {
-        newText += ((index % 2 === 0) ? ">" : "<");
-      }
-
-      if (index % 4 !== 0) {
-        newText += chunk;
-      } else {
-        newText += chunk.replace(FlowdockText.regexen.autoLinkUsernamesOrLists, function(match, before, at, user, slashListname, offset, chunk) {
-          var after = chunk.slice(offset + match.length);
-
-          var d = {
-            before: before,
-            at: options.usernameIncludeSymbol ? "" : at,
-            at_before_user: options.usernameIncludeSymbol ? at : "",
-            user: FlowdockText.htmlEscape(user),
-            slashListname: FlowdockText.htmlEscape(slashListname),
-            extraHtml: extraHtml,
-            preChunk: "",
-            postChunk: ""
-          };
-          for (var k in options) {
-            if (options.hasOwnProperty(k)) {
-              d[k] = options[k];
-            }
-          }
-
-          if (slashListname && !options.suppressLists) {
-            // the link is a list
-            var list = d.chunk = stringSupplant("#{user}#{slashListname}", d);
-            d.list = FlowdockText.htmlEscape(list.toLowerCase());
-            return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{listClass}\" href=\"#{listUrlBase}#{list}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
-          } else {
-            if (after && after.match(FlowdockText.regexen.endScreenNameMatch)) {
-              // Followed by something that means we don't autolink
-              return match;
-            } else {
-              // this is a screen name
-              d.chunk = d.user;
-              d.dataScreenName = !options.suppressDataScreenName ? stringSupplant("data-screen-name=\"#{chunk}\" ", d) : "";
-              return stringSupplant("#{before}#{at}<a class=\"#{urlClass} #{usernameClass}\" #{dataScreenName}href=\"#{usernameUrlBase}#{chunk}\"#{extraHtml}>#{preChunk}#{at_before_user}#{chunk}#{postChunk}</a>", d);
-            }
-          }
-        });
-      }
-    }
-
-    return newText;
   };
 
   FlowdockText.autoLinkHashtags = function(text, options) {
@@ -446,10 +373,8 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
     delete options.suppressNoFollow;
     delete options.suppressDataScreenName;
-    delete options.listClass;
     delete options.usernameClass;
     delete options.usernameUrlBase;
-    delete options.listUrlBase;
 
     return text.replace(FlowdockText.regexen.extractUrl, function(match, all, before, url, protocol, port, domain, path, queryString) {
       var tldComponents;
@@ -519,35 +444,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     });
 
     return possibleScreenNames;
-  };
-
-  /**
-   * Extract list or user mentions.
-   * (Presence of listSlug indicates a list)
-   */
-  FlowdockText.extractMentionsOrListsWithIndices = function(text) {
-    if (!text) {
-      return [];
-    }
-
-    var possibleNames = [],
-        position = 0;
-
-    text.replace(FlowdockText.regexen.extractMentionsOrLists, function(match, before, atSign, screenName, slashListname, offset, chunk) {
-      var after = chunk.slice(offset + match.length);
-      if (!after.match(FlowdockText.regexen.endScreenNameMatch)) {
-        slashListname = slashListname || '';
-        var startPosition = text.indexOf(atSign + screenName + slashListname, position);
-        position = startPosition + screenName.length + slashListname.length + 1;
-        possibleNames.push({
-          screenName: screenName,
-          listSlug: slashListname,
-          indices: [startPosition, position]
-        });
-      }
-    });
-
-    return possibleNames;
   };
 
   FlowdockText.extractUrls = function(text) {
@@ -851,15 +747,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
     // Should extract the username minus the @ sign, hence the .slice(1)
     return extracted.length === 1 && extracted[0] === username.slice(1);
-  };
-
-  var VALID_LIST_RE = regexSupplant(/^#{autoLinkUsernamesOrLists}$/);
-
-  FlowdockText.isValidList = function(usernameList) {
-    var match = usernameList.match(VALID_LIST_RE);
-
-    // Must have matched and had nothing before or after
-    return !!(match && match[1] == "" && match[4]);
   };
 
   FlowdockText.isValidHashtag = function(hashtag) {
