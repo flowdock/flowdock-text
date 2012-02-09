@@ -18,7 +18,7 @@ namespace :test do
       yml = YAML.load_file(path)
       f.write("cases.#{test_file} = #{yml['tests'].to_json};")
     end
-
+    f.write("if (typeof module != 'undefined' && module.exports){exports.cases = cases;}");
     f.close
   end
 
@@ -26,10 +26,17 @@ namespace :test do
   task :run do
     exec('open test/conformance.html')
   end
+  desc "Run test suite with node"
+  task :run_node do
+    exec('node test/runner.js')
+  end
 end
 
 desc "Run test suite"
 task :test => ['test:prepare', 'test:run']
+
+desc "Run test suite with node"
+task :test_node => ['test:prepare', 'test:run_node']
 
 directory "pkg"
 

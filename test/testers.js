@@ -108,6 +108,6 @@ var testers = {
     }
   }
 };
-if(exports){
+if (typeof module != 'undefined' && module.exports) {
   exports.testers = testers;
 }
