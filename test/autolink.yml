@@ -40,55 +40,6 @@ tests:
       text: "@foo îs in the house"
       expected: "<a title=\"Search @foo\" class=\" app-tag-link\" href=\"#flowser/all/@foo\">@foo</a> îs in the house"
 
-  lists:
-    - description: "Autolink list preceded by a space"
-      text: "text @username/list"
-      expected: "text @<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list\">username/list</a>"
-
-    - description: "DO NOT Autolink list when space follows slash"
-      text: "text @username/ list"
-      expected: "text @<a class=\"tweet-url username\" href=\"https://twitter.com/username\">username</a>/ list"
-
-    - description: "DO NOT Autolink list with empty username"
-      text: "text @/list"
-      expected: "text @/list"
-
-    - description: "Autolink list at the beginning"
-      text: "@username/list"
-      expected: "@<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list\">username/list</a>"
-
-    - description: "DO NOT Autolink list preceded by letter"
-      text: "meet@the/beach"
-      expected: "meet@the/beach"
-
-    - description: "Autolink list preceded by puctuation"
-      text: "great.@username/list"
-      expected: "great.@<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list\">username/list</a>"
-
-    - description: "Autolink list followed by puctuation"
-      text: "@username/list&^$%^"
-      expected: "@<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list\">username/list</a>&^$%^"
-
-    - description: "Autolink list name over 25 characters (truncated to 25)"
-      text: "@username/list567890123456789012345A"
-      expected: "@<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list567890123456789012345\">username/list567890123456789012345</a>A"
-
-    - description: "Autolink list that contains an _"
-      text: "text @username/list_name"
-      expected: "text @<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list_name\">username/list_name</a>"
-
-    - description: "Autolink list that contains a -"
-      text: "text @username/list-name"
-      expected: "text @<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list-name\">username/list-name</a>"
-
-    - description: "Autolink list that contains a number"
-      text: "text @username/list123"
-      expected: "text @<a class=\"tweet-url list-slug\" href=\"https://twitter.com/username/list123\">username/list123</a>"
-
-    - description: "DO NOT Autolink list starting with a number"
-      text: "@username/1list"
-      expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/username\">username</a>/1list"
-
   hashtags:
     - description: "Autolink trailing hashtag"
       text: "text #hashtag"
