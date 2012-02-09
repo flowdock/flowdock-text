@@ -297,8 +297,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   var DEFAULT_USERNAME_CLASS = "username";
   // Default CSS class for auto-linked hashtags (along with the url class)
   var DEFAULT_HASHTAG_CLASS = "hashtag";
-  // HTML attribute for robot nofollow behavior (default)
-  var HTML_ATTR_NO_FOLLOW = " rel=\"nofollow\"";
 
   // Simple object cloning function for simple objects
   function clone(o) {
@@ -326,9 +324,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
     options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
     options.hashtagUrlBase = options.hashtagUrlBase || "#flowser/all/";
-    if (!options.suppressNoFollow) {
-      var extraHtml = HTML_ATTR_NO_FOLLOW;
-    }
 
     return text.replace(FlowdockText.regexen.autoLinkHashtags, function(match, before, hash, text, offset, chunk) {
       var after = chunk.slice(offset + match.length);
@@ -340,8 +335,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
         hash: FlowdockText.htmlEscape(hash),
         preText: "",
         text: FlowdockText.htmlEscape(text),
-        postText: "",
-        extraHtml: extraHtml
+        postText: ""
       };
 
       for (var k in options) {
@@ -350,16 +344,13 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
         }
       }
 
-      return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{urlClass} #{hashtagClass}\"#{extraHtml}>#{hash}#{preText}#{text}#{postText}</a>", d);
+      return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{urlClass} #{hashtagClass}\">#{hash}#{preText}#{text}#{postText}</a>", d);
     });
   };
 
 
   FlowdockText.autoLinkUrlsCustom = function(text, options) {
     options = clone(options || {});
-    if (!options.suppressNoFollow) {
-      options.rel = "nofollow";
-    }
     if (options.urlClass) {
       options["class"] = options.urlClass;
       delete options.urlClass;
@@ -374,8 +365,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       }
     }
 
-    delete options.suppressNoFollow;
-    delete options.suppressDataScreenName;
     delete options.usernameClass;
     delete options.usernameUrlBase;
 

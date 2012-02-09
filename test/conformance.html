@@ -17,23 +17,23 @@
           switch (section) {
             case "urls":
               return function(test) {
-                return FlowdockText.autoLinkUrlsCustom(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+                return FlowdockText.autoLinkUrlsCustom(test.text);
               };
             case "hashtags":
               return function(test) {
-                return FlowdockText.autoLinkHashtags(test.text, {suppressNoFollow: true, suppressDataScreenName: true, hashtagUrlBase: "https://twitter.com/#!/search?q=%23"});
+                return FlowdockText.autoLinkHashtags(test.text);
               };
             case "usernames":
               return function(test) {
-                return FlowdockText.autoLinkMentions(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+                return FlowdockText.autoLinkMentions(test.text);
               };
             case "lists":
               return function(test) {
-                return FlowdockText.autoLinkUsernamesOrLists(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+                return FlowdockText.autoLinkUsernamesOrLists(test.text);
               };
             case "all":
               return function(test) {
-                return FlowdockText.autoLink(test.text, {suppressNoFollow: true, suppressDataScreenName: true});
+                return FlowdockText.autoLink(test.text);
               };
           }
         case "extract":
