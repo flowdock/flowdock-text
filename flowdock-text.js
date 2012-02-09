@@ -324,7 +324,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     options = clone(options || {});
     options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
     options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
-    options.hashtagUrlBase = options.hashtagUrlBase || "https://twitter.com/#!/search?q=%23";
+    options.hashtagUrlBase = options.hashtagUrlBase || "#flowser/all/";
     if (!options.suppressNoFollow) {
       var extraHtml = HTML_ATTR_NO_FOLLOW;
     }
@@ -415,8 +415,8 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
   FlowdockText.autoLinkMentions = function(text, options) {
     options = clone(options || {});
-    options.hashtagClass = options.hashtagClass || "";
-    options.hashtagUrlBase = options.hashtagUrlBase || "";
+    options.hashtagClass = options.hashtagClass || "app-tag-link";
+    options.hashtagUrlBase = options.hashtagUrlBase || "#flowser/all/";
     var userTags = [];
     if(options && options.userTags){
       userTags = options.userTags.map(function(tag){ return tag.toLowerCase() });
@@ -443,7 +443,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       if(userTags.length !== 0 && !inArray(d.hash + d.text.toLowerCase(), userTags)){
         return stringSupplant("#{before}#{hash}#{preText}#{text}#{postText}", d);
       } else {
-        return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{hash}#{text}\" title=\"Search #{hash}#{text}\" class=\"#{urlClass} #{hashtagClass}\">#{hash}#{preText}#{text}#{postText}</a>", d);
+        return stringSupplant("#{before}<a title=\"Search #{hash}#{text}\" class=\"#{urlClass} #{hashtagClass}\" href=\"#{hashtagUrlBase}#{hash}#{text}\">#{hash}#{preText}#{text}#{postText}</a>", d);
       }
     });
   };
