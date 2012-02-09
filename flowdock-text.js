@@ -474,7 +474,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
         var startPosition = text.indexOf(atSign + screenName, position);
         position = startPosition + screenName.length + 1;
         possibleScreenNames.push({
-          screenName: screenName,
+          username: screenName,
           indices: [startPosition, position]
         });
       }
@@ -617,7 +617,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
         mentionsWithIndices = FlowdockText.extractMentionsWithIndices(text);
 
     for (var i = 0; i < mentionsWithIndices.length; i++) {
-      mentionsOnly.push(mentionsWithIndices[i].hashtag);
+      mentionsOnly.push(mentionsWithIndices[i].usertag);
     }
 
     if(userTags){
@@ -641,7 +641,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       var startPosition = text.indexOf(hash + hashText, position);
       position = startPosition + hashText.length + 1;
       tags.push({
-        hashtag: (hash + hashText),
+        usertag: (hash + hashText),
         indices: [startPosition, position]
       });
     });

@@ -40,19 +40,19 @@ tests:
     - description: "Extract a mention at the start"
       text: "@username yo!"
       expected:
-        - screen_name: "username"
+        - usertag: "@username"
           indices: [0, 9]
 
     - description: "Extract a mention that has the same thing mentioned at the start"
       text: "username @username"
       expected:
-        - screen_name: "username"
+        - usertag: "@username"
           indices: [9, 18]
 
     - description: "Extract a mention in the middle of a Japanese tweet"
       text: "の@usernameに到着を待っている"
       expected:
-        - screen_name: "username"
+        - username: "username"
           indices: [1, 10]
 
   mentions_or_lists_with_indices:

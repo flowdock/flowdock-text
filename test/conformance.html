@@ -44,12 +44,7 @@
               };
             case "mentions_with_indices":
               return function(test) {
-                var results = FlowdockText.extractMentionsWithIndices(test.text);
-                return results.map(function(res) {
-                  res['screen_name'] = res.screenName;
-                  delete res.screenName
-                  return res
-                });
+                return FlowdockText.extractMentionsWithIndices(test.text);
               };
             case "mentions_or_lists_with_indices":
               return function(test) {
