@@ -614,7 +614,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   };
   FlowdockText.extractMentions = function(text, userTags){
     var mentionsOnly = [],
-        mentionsWithIndices = FlowdockText.extractMentionsWithIndices(text);
+        mentionsWithIndices = FlowdockText.extractMentionsWithIndices(text, userTags);
 
     for (var i = 0; i < mentionsWithIndices.length; i++) {
       mentionsOnly.push(mentionsWithIndices[i].usertag);
@@ -648,7 +648,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
     if(userTags){
       userTags = downCase(userTags.map(getUserTag));
-      return tags.filter(function(tag){ return inArray(tag.hashtag.toLowerCase(), userTags) });
+      return tags.filter(function(tag){ return inArray(tag.usertag.toLowerCase(), userTags) });
     }
 
     return tags;
@@ -701,6 +701,21 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
     // RegExp["$&"] is the text of the last match
     return (!string || (string.match(regex) && RegExp["$&"] === string));
+  }
+  function getUserTag(user){
+    if(typeof user === "string"){
+      return (user[0] === "@" ? user : "@" + user)
+    } else if(user.nick) {
+      return "@" + user.nick;
+    } else {
+      return "@" + user.first_name;
+    }
+  }
+  function downCase(arr){
+    return arr.map(function(item){ return item.toLowerCase(); });
+  }
+  function inArray(needle, haystack){
+    return haystack.indexOf(needle) !== -1;
   }
 
   if (typeof module != 'undefined' && module.exports) {

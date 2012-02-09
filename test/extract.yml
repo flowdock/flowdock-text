@@ -36,6 +36,11 @@ tests:
       text: "@username\n@mention"
       expected: ["@username", "@mention"]
 
+  mentions_with_predefined_usertags:
+    - description: "Include only predefined users"
+      text: "@username @foo"
+      expected: ["@username"]
+
   mentions_with_indices:
     - description: "Extract a mention at the start"
       text: "@username yo!"
@@ -49,6 +54,12 @@ tests:
         - usertag: "@username"
           indices: [9, 18]
 
+  mentions_with_indices_with_predefined_usertags:
+    - description: "Include only predefined users"
+      text: "@username @foobar yo!"
+      expected:
+        - usertag: "@username"
+          indices: [0, 9]
   urls:
     - description: "Extract a lone URL"
       text: "http://example.com"

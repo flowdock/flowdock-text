@@ -42,9 +42,17 @@
               return function(test) {
                 return FlowdockText.extractMentions(test.text);
               };
+            case "mentions_with_predefined_usertags":
+              return function(test) {
+                return FlowdockText.extractMentions(test.text, ["@username", "@everyone", "@everybody", "@all", "@anyone", "@anybody"]);
+              };
             case "mentions_with_indices":
               return function(test) {
                 return FlowdockText.extractMentionsWithIndices(test.text);
+              };
+            case "mentions_with_indices_with_predefined_usertags":
+              return function(test) {
+                return FlowdockText.extractMentionsWithIndices(test.text, ["@username", "@everyone", "@everybody", "@all", "@anyone", "@anybody"]);
               };
             case "mentions_or_lists_with_indices":
               return function(test) {
