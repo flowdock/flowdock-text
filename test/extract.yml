@@ -16,6 +16,10 @@ tests:
       text: "mention @user_name"
       expected: ["@user_name"]
 
+    - description: "Extract mention of username with a dash"
+      text: "mention @user-name"
+      expected: ["@user-name"]
+
     - description: "Extract mention of all numeric username"
       text: "mention @12345"
       expected: ["@12345"]
@@ -442,6 +446,10 @@ tests:
       text: "#0"
       expected: ["0"]
 
+    - description: "Extract hashtag containing a dash"
+      text: "hello #foo-bar"
+      expected: ["foo-bar"]
+
     - description: "Extract hashtag after bracket"
       text: "(#hashtag1 )#hashtag2 [#hashtag3 ]#hashtag4 ’#hashtag5’#hashtag6"
       expected: ["hashtag1", "hashtag2", "hashtag3", "hashtag4", "hashtag5", "hashtag6"]
@@ -592,6 +600,12 @@ tests:
       expected:
         - hashtag: "hashtag"
           indices: [7, 15]
+
+    - description: "Extract a hastag with a dash"
+      text: "test a #hash-tag in a string"
+      expected:
+        - hashtag: "hash-tag"
+          indices: [7, 16]
 
     - description: "Extract only a valid hashtag"
       text: "#123 a #hashtag in a string"

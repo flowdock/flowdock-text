@@ -144,7 +144,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
   // A hashtag must contain characters, numbers and underscores, but not all numbers.
   FlowdockText.regexen.hashtagAlpha = regexSupplant(/[a-z_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
-  FlowdockText.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
+  FlowdockText.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_\-#{latinAccentChars}#{nonLatinHashtagChars}]/i);
   FlowdockText.regexen.endHashtagMatch = /^(?:[#＃]|:\/\/)/;
   FlowdockText.regexen.hashtagBoundary = regexSupplant(/(?:^|$|[^&\/a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}])/);
   // FlowdockText change: allow all-numeric hashtags
