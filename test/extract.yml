@@ -2,43 +2,31 @@ tests:
   mentions:
     - description: "Extract mention at the begining of a tweet"
       text: "@username reply"
-      expected: ["username"]
+      expected: ["@username"]
 
     - description: "Extract mention at the end of a tweet"
       text: "mention @username"
-      expected: ["username"]
+      expected: ["@username"]
 
     - description: "Extract mention in the middle of a tweet"
       text: "mention @username in the middle"
-      expected: ["username"]
+      expected: ["@username"]
 
     - description: "Extract mention of username with underscore"
       text: "mention @user_name"
-      expected: ["user_name"]
+      expected: ["@user_name"]
 
     - description: "Extract mention of all numeric username"
       text: "mention @12345"
-      expected: ["12345"]
+      expected: ["@12345"]
 
     - description: "Extract mention or multiple usernames"
       text: "mention @username1 @username2"
-      expected: ["username1", "username2"]
+      expected: ["@username1", "@username2"]
 
-    - description: "Extract mention in the middle of a Japanese tweet"
-      text: "の@usernameに到着を待っている"
-      expected: ["username"]
-
-    - description: "DO NOT extract username ending in @"
-      text: "Current Status: @_@ (cc: @username)"
-      expected: ["username"]
-
-    - description: "DO NOT extract username followed by accented latin characters"
+    - description: "Extract username followed by accented latin characters"
       text: "@aliceìnheiro something something"
-      expected: []
-
-    - description: "Extract lone metion but not @user@user (too close to an email)"
-      text: "@username email me @test@example.com"
-      expected: ["username"]
+      expected: ["@aliceìnheiro"]
 
     - description: "DO NOT extract 'http' in '@http://' as username"
       text: "@http://twitter.com"
@@ -46,35 +34,7 @@ tests:
 
     - description: "Extract mentions before newline"
       text: "@username\n@mention"
-      expected: ["username", "mention"]
-
-    - description: "DO NOT extract username preceded by !"
-      text: "f!@kn"
-      expected: []
-
-    - description: "DO NOT extract username preceded by @"
-      text: "f@@kn"
-      expected: []
-
-    - description: "DO NOT extract username preceded by #"
-      text: "f#@kn"
-      expected: []
-
-    - description: "DO NOT extract username preceded by $"
-      text: "f$@kn"
-      expected: []
-
-    - description: "DO NOT extract username preceded by %"
-      text: "f%@kn"
-      expected: []
-
-    - description: "DO NOT extract username preceded by &"
-      text: "f&@kn"
-      expected: []
-
-    - description: "DO NOT extract username preceded by *"
-      text: "f*@kn"
-      expected: []
+      expected: ["@username", "@mention"]
 
   mentions_with_indices:
     - description: "Extract a mention at the start"
