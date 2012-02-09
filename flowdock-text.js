@@ -148,6 +148,8 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   FlowdockText.regexen.endHashtagMatch = /^(?:[#＃]|:\/\/)/;
   FlowdockText.regexen.hashtagBoundary = regexSupplant(/(?:^|$|[^&\/a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}])/);
   FlowdockText.regexen.autoLinkHashtags = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
+  //ATTN FYI! FlowdockText change: Match mentions with same regex as hashtags. (#|＃) replaced with (@)
+  FlowdockText.regexen.autoLinkMentions = regexSupplant(/(#{hashtagBoundary})(@)(#{hashtagAlphaNumeric}*#{hashtagAlpha}#{hashtagAlphaNumeric}*)/gi);
   FlowdockText.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
 
   // URL related hash regex collection
@@ -311,7 +313,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
   FlowdockText.autoLink = function(text, options) {
     options = clone(options || {});
-    return FlowdockText.autoLinkUsernamesOrLists(
+    return FlowdockText.autoLinkMentions(
       FlowdockText.autoLinkUrlsCustom(
         FlowdockText.autoLinkHashtags(text, options),
       options),
@@ -407,6 +409,41 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
         return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>#{after}", d);
       } else {
         return all;
+      }
+    });
+  };
+
+  FlowdockText.autoLinkMentions = function(text, options) {
+    options = clone(options || {});
+    options.hashtagClass = options.hashtagClass || "";
+    options.hashtagUrlBase = options.hashtagUrlBase || "";
+    var userTags = [];
+    if(options && options.userTags){
+      userTags = options.userTags.map(function(tag){ return tag.toLowerCase() });
+    }
+    return text.replace(FlowdockText.regexen.autoLinkMentions, function(match, before, hash, text, offset, chunk) {
+      var after = chunk.slice(offset + match.length);
+      if (after.match(FlowdockText.regexen.endHashtagMatch))
+        return match;
+      var d = {
+        before: before,
+        hash: FlowdockText.htmlEscape(hash),
+        preText: "",
+        text: FlowdockText.htmlEscape(text),
+        postText: "",
+      };
+
+      for (var k in options) {
+        if (options.hasOwnProperty(k)) {
+          d[k] = options[k];
+        }
+      }
+
+
+      if(userTags.length !== 0 && !inArray(d.hash + d.text.toLowerCase(), userTags)){
+        return stringSupplant("#{before}#{hash}#{preText}#{text}#{postText}", d);
+      } else {
+        return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{hash}#{text}\" title=\"Search #{hash}#{text}\" class=\"#{urlClass} #{hashtagClass}\">#{hash}#{preText}#{text}#{postText}</a>", d);
       }
     });
   };
@@ -574,6 +611,47 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
         }
       }
     }
+  };
+  FlowdockText.extractMentions = function(text, userTags){
+    var mentionsOnly = [],
+        mentionsWithIndices = FlowdockText.extractMentionsWithIndices(text);
+
+    for (var i = 0; i < mentionsWithIndices.length; i++) {
+      mentionsOnly.push(mentionsWithIndices[i].hashtag);
+    }
+
+    if(userTags){
+      userTags = downCase(userTags.map(getUserTag));
+      return mentionsOnly.filter(function(tag){ return inArray(tag.toLowerCase(), userTags) });
+    }
+    return mentionsOnly;
+  };
+  FlowdockText.extractMentionsWithIndices = function(text, userTags) {
+    if (!text) {
+      return [];
+    }
+
+    var tags = [],
+        position = 0;
+
+    text.replace(FlowdockText.regexen.autoLinkMentions, function(match, before, hash, hashText, offset, chunk) {
+      var after = chunk.slice(offset + match.length);
+      if (after.match(FlowdockText.regexen.endHashtagMatch))
+        return;
+      var startPosition = text.indexOf(hash + hashText, position);
+      position = startPosition + hashText.length + 1;
+      tags.push({
+        hashtag: (hash + hashText),
+        indices: [startPosition, position]
+      });
+    });
+
+    if(userTags){
+      userTags = downCase(userTags.map(getUserTag));
+      return tags.filter(function(tag){ return inArray(tag.hashtag.toLowerCase(), userTags) });
+    }
+
+    return tags;
   };
 
   FlowdockText.isValidUrl = function(url, unicodeDomains, requireProtocol) {
