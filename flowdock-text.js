@@ -292,11 +292,11 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
 
   // Default CSS class for auto-linked URLs
-  var DEFAULT_URL_CLASS = "tweet-url";
+  var DEFAULT_URL_CLASS = "linkify-link";
   // Default CSS class for auto-linked usernames (along with the url class)
-  var DEFAULT_USERNAME_CLASS = "username";
+  var DEFAULT_USERNAME_CLASS = "app-tag-link";
   // Default CSS class for auto-linked hashtags (along with the url class)
-  var DEFAULT_HASHTAG_CLASS = "hashtag";
+  var DEFAULT_HASHTAG_CLASS = "app-tag-link";
 
   // Simple object cloning function for simple objects
   function clone(o) {
@@ -321,7 +321,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
   FlowdockText.autoLinkHashtags = function(text, options) {
     options = clone(options || {});
-    options.urlClass = options.urlClass || DEFAULT_URL_CLASS;
     options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
     options.hashtagUrlBase = options.hashtagUrlBase || "#flowser/all/";
 
@@ -344,7 +343,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
         }
       }
 
-      return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{urlClass} #{hashtagClass}\">#{hash}#{preText}#{text}#{postText}</a>", d);
+      return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{hashtagClass}\">#{hash}#{preText}#{text}#{postText}</a>", d);
     });
   };
 
@@ -433,7 +432,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       if(userTags.length !== 0 && !inArray(d.hash + d.text.toLowerCase(), userTags)){
         return stringSupplant("#{before}#{hash}#{preText}#{text}#{postText}", d);
       } else {
-        return stringSupplant("#{before}<a title=\"Search #{hash}#{text}\" class=\"#{urlClass} #{hashtagClass}\" href=\"#{hashtagUrlBase}#{hash}#{text}\">#{hash}#{preText}#{text}#{postText}</a>", d);
+        return stringSupplant("#{before}<a title=\"Search #{hash}#{text}\" class=\"#{hashtagClass}\" href=\"#{hashtagUrlBase}#{hash}#{text}\">#{hash}#{preText}#{text}#{postText}</a>", d);
       }
     });
   };
