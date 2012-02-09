@@ -59,7 +59,7 @@ tests:
 
     - description: "DO NOT Autolink all-numeric hashtags"
       text: "text #1234"
-      expected: "text #1234"
+      expected: "text <a href=\"https://twitter.com/#!/search?q=%231234\" title=\"#1234\" class=\"tweet-url hashtag\">#1234</a>"
 
     - description: "DO NOT Autolink hashtag preceded by a letter"
       text: "text#hashtag"

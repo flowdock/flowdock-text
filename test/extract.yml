@@ -434,13 +434,13 @@ tests:
       text: "#1hashtag is this"
       expected: ["1hashtag"]
 
-    - description: "DO NOT Extract an all-numeric hashtag"
+    - description: "Extract an all-numeric hashtag"
       text: "On the #16 bus"
-      expected: []
+      expected: ["16"]
 
-    - description: "DO NOT Extract a single numeric hashtag"
+    - description: "Extract a single numeric hashtag"
       text: "#0"
-      expected: []
+      expected: ["0"]
 
     - description: "Extract hashtag after bracket"
       text: "(#hashtag1 )#hashtag2 [#hashtag3 ]#hashtag4 ’#hashtag5’#hashtag6"
@@ -596,6 +596,8 @@ tests:
     - description: "Extract only a valid hashtag"
       text: "#123 a #hashtag in a string"
       expected:
+        - hashtag: "123"
+          indices: [0, 4]
         - hashtag: "hashtag"
           indices: [7, 15]
 
