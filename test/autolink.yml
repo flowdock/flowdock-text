@@ -573,7 +573,7 @@ tests:
 
     - description: "Correctly handles URL follower directly by @user"
       text: "See: http://example.com/@user"
-      expected: "See: <a href=\"http://example.com/\">http://example.com/</a>@<a class=\"tweet-url username\" href=\"https://twitter.com/user\">user</a>"
+      expected: "See: <a href=\"http://example.com/\">http://example.com/</a><a title=\"Search @user\" class=\" app-tag-link\" href=\"#flowser/all/@user\">@user</a>"
 
     - description: "Correctly handles URL with an @user followed by trailing /"
       text: "See: http://example.com/@user/"
@@ -587,10 +587,3 @@ tests:
       text: "#https://twitter.com @https://twitter.com"
       expected: "#https://twitter.com @https://twitter.com"
 
-    - description: "Autolink hashtag if followed by . and TLD"
-      text: "#twitter.com #twitter.co.jp"
-      expected: "<a href=\"https://twitter.com/#!/search?q=%23twitter\" title=\"#twitter\" class=\"tweet-url hashtag\">#twitter</a>.com <a href=\"https://twitter.com/#!/search?q=%23twitter\" title=\"#twitter\" class=\"tweet-url hashtag\">#twitter</a>.co.jp"
-
-    - description: "Autolink @mention if followed by . and TLD"
-      text: "@twitter.com @twitter.co.jp"
-      expected: "@<a class=\"tweet-url username\" href=\"https://twitter.com/twitter\">twitter</a>.com @<a class=\"tweet-url username\" href=\"https://twitter.com/twitter\">twitter</a>.co.jp"
