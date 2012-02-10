@@ -2,6 +2,7 @@ var jasmine = require("../lib/jasmine");
 var cases = require("./conformance");
 var FlowdockText = require("../flowdock-text");
 var testers = require("./testers");
+var ansi = { green: '\033[32m', red: '\033[31m', yellow: '\033[33m', none: '\033[0m' };
 
 (function(){
   var reporter = new jasmine.jasmine.JsApiReporter();
@@ -34,14 +35,21 @@ var testers = require("./testers");
     for(var i in results){
       if(results[i].result === "passed"){
         passed++;
-        output += ".";
+        output += ansi.green + ".";
       } else if(results[i].result === "failed"){
-        output += results[i].messages.map(function(msg){return msg.message + "\n"}).join("\n")
+        //output += results[i].messages.map(function(msg){return msg.message + "\n"}).join("\n")
+        output += ansi.red + "F";
         failed++;
       }
     }
     expectations_count = passed + failed;
-    console.log(output + "\n" + expectations_count + " specs, " + failed + " failures.");
+    console.log(
+      output +
+      ansi.none + "\n" +
+      (failed > 0 ? ansi.red : ansi.green ) +
+      expectations_count + " specs, " +
+      failed + " failures." +
+      ansi.none);
     process.exit(failed > 0 ? 1 : 0);
   }, 1);
 }());
