@@ -1,12 +1,12 @@
 {
-  "name": "flowdock-text"
-  , "description": "Flowdock text linkification"
-  , "version": "1.4.15"
-  , "main": "./flowdock-text.js"
-  , "author": "Flowdock Oy"
-  , "scripts": {"test": "node ./test/runner.js"}
-  , "repository": {
-    "type": "git"
-    , "url": "https://github.com/flowdock/flowdock-text.git"
+  "name": "flowdock-text",
+  "description": "Flowdock text linkification",
+  "version": "0.1.0",
+  "main": "./flowdock-text.js",
+  "author": "Flowdock Oy",
+  "scripts": {"test": "node ./test/runner.js"},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flowdock/flowdock-text.git"
   }
 }
