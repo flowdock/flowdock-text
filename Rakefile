@@ -7,7 +7,7 @@ require 'digest'
 namespace :test do
   desc "Prepare JS conformance test suite"
   task :prepare do
-    test_files = ['autolink', 'extract', 'validate']
+    test_files = ['autolink', 'extract', 'validate', 'get_tags']
     r = {}
 
     f = File.open(File.join(File.dirname(__FILE__), "test", "conformance.js"), "w")

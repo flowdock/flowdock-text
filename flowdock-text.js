@@ -152,6 +152,10 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   //FlowdockText change: Match mentions with same regex as hashtags. (#|＃) replaced with (@)
   FlowdockText.regexen.autoLinkMentions = regexSupplant(/(#{hashtagBoundary})(@)(#{hashtagAlphaNumeric}+)/gi);
   FlowdockText.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
+  // We want to only match words starting with the nickname and ignore case
+  FlowdockText.regexen.highlightRegex = function(nick) {
+    if (nick && nick.length > 0) { return new RegExp('([\\b\\s]|^)+' + regexEscape(nick) + '([\\b\\s\\!\\?\\,\\:\\;\\.]|$)+', 'i'); }
+  };
 
   // URL related hash regex collection
   FlowdockText.regexen.validPrecedingChars = regexSupplant(/(?:[^-\/"'!=A-Za-z0-9_@＠$#＃\.#{invalid_chars_group}]|^)/);
@@ -643,6 +647,60 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     return tags;
   };
 
+  FlowdockText.getTagsFromMessage = function(message, users, me) {
+    var tags = [];
+    var users = users || [];
+    var me = me || {};
+    var urls = FlowdockText.extractUrls(message);
+    var matchedTags = FlowdockText.extractHashtags(message);
+    var matchedMentions = FlowdockText.extractMentions(message);
+
+    if (matchedTags.length > 0) {
+      //Uniq the matchedTags
+      matchedTags.forEach(function(tag) {
+        if(!inArray(tag.toLowerCase(), tags)) tags.push(tag);
+      });
+    }
+
+    //Add the :url metatag if any urls in the message
+    if (urls.length > 0) tags.push(":url");
+
+    // Find @everyone-tags from messages and tag with :user:everyone
+    if (FlowdockText.mentionsAll(matchedMentions)) tags.push(":user:everyone");
+
+    users.forEach(function(user) {
+      if (!user.nick || user.nick.length == 0 || user.id == 0 || user.disabled) return;
+      // Find nicknames from messages sent by other users and tag with :highlight
+      if (user.id != me.id && message.match(FlowdockText.regexen.highlightRegex(user.nick))) {
+        tags.push(":highlight:" + user.id);
+      }
+      if (FlowdockText.mentionsUser(matchedMentions, user)) tags.push(":user:" + user.id);
+      if([":highlight:" + user.id, ":user:" + user.id, ":user:everyone"].some(function(tag){
+        return tags.indexOf(tag) !== -1;
+      })){
+        tags.push(":unread:" + user.id);
+      }
+    });
+
+    return tags.filter(function(tag){ return tag[0] !== "@"});
+  };
+  FlowdockText.mentionsAll = function(check){
+    if(isArray(check)){
+      return ["@everyone", "@everybody", "@all", "@anyone", "@anybody"].some(function(tag) {
+        return check.indexOf(tag) !== -1;
+      });
+    } else {
+      return FlowdockText.mentionsAll(FlowdockText.extractMentions(check));
+    }
+  };
+  FlowdockText.mentionsUser = function(check, user){
+    if(isArray(check)){
+      return downCase(check).indexOf(getUserTag(user).toLowerCase()) !== -1;
+    } else {
+      return FlowdockText.extractMentions(check, [getUserTag(user)]).length > 0;
+    }
+  };
+
   FlowdockText.isValidUrl = function(url, unicodeDomains, requireProtocol) {
     if (unicodeDomains == null) {
       unicodeDomains = true;
@@ -705,6 +763,13 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   }
   function inArray(needle, haystack){
     return haystack.indexOf(needle) !== -1;
+  }
+  function isArray(thing){
+    return Object.prototype.toString.call(thing) === "[object Array]";
+  }
+  // Escape regex special chars
+  function regexEscape(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
   }
 
   if (typeof module != 'undefined' && module.exports) {
