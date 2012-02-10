@@ -70,5 +70,5 @@ var testers = {
   }
 };
 if (typeof module != 'undefined' && module.exports) {
-  exports.testers = testers;
+  module.exports = testers;
 }

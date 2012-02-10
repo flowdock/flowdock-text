@@ -18,7 +18,7 @@ namespace :test do
       yml = YAML.load_file(path)
       f.write("cases.#{test_file} = #{yml['tests'].to_json};")
     end
-    f.write("if (typeof module != 'undefined' && module.exports){exports.cases = cases;}");
+    f.write("if (typeof module != 'undefined' && module.exports){module.exports = cases;}");
     f.close
   end
 

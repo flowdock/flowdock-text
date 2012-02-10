@@ -1,7 +1,7 @@
 var jasmine = require("../lib/jasmine");
-var cases = require("./conformance").cases;
+var cases = require("./conformance");
 var FlowdockText = require("../flowdock-text");
-var testers = require("./testers").testers;
+var testers = require("./testers");
 
 (function(){
   var reporter = new jasmine.jasmine.JsApiReporter();
