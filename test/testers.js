@@ -77,7 +77,15 @@ var testers = {
         case "get_tags_from_message":
           return function(test){
             return FlowdockText.getTagsFromMessage(test.text, users, me);
-        }
+        };
+        case "get_tags_from_message_without_extra_parameters":
+          return function(test){
+            return FlowdockText.getTagsFromMessage(test.text);
+        };
+        case "get_tags_from_message_without_supplied_me":
+          return function(test){
+            return FlowdockText.getTagsFromMessage(test.text, users);
+        };
       }
     }
   }

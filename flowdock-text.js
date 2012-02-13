@@ -677,7 +677,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       if (FlowdockText.mentionsUser(matchedMentions, user)) tags.push(":user:" + user.id);
       if([":highlight:" + user.id, ":user:" + user.id, ":user:everyone"].some(function(tag){
         return tags.indexOf(tag) !== -1;
-      })){
+      }) && user.id !== me.id){
         tags.push(":unread:" + user.id);
       }
     });
