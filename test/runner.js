@@ -5,8 +5,6 @@ var testers = require("./testers");
 var ansi = { green: '\033[32m', red: '\033[31m', yellow: '\033[33m', none: '\033[0m' };
 
 (function(){
-  var reporter = new jasmine.jasmine.JsApiReporter();
-  jasmine.jasmine.getEnv().addReporter(reporter);
   for (var suite in cases) {
     (function(suite) {
       jasmine.describe(suite, function(){
@@ -23,9 +21,10 @@ var ansi = { green: '\033[32m', red: '\033[31m', yellow: '\033[33m', none: '\033
           }(section));
         }
       });
-
     }(suite));
   }
+  var reporter = new jasmine.jasmine.JsApiReporter();
+  jasmine.jasmine.getEnv().addReporter(reporter);
   jasmine.jasmine.getEnv().execute();
   setTimeout(function(){
     var output = "";
@@ -43,13 +42,13 @@ var ansi = { green: '\033[32m', red: '\033[31m', yellow: '\033[33m', none: '\033
       }
     }
     expectations_count = passed + failed;
-    console.log(
-      output +
+    var result_str = output +
       ansi.none + "\n" +
       (failed > 0 ? ansi.red : ansi.green ) +
       expectations_count + " specs, " +
       failed + " failures." +
-      ansi.none);
+      ansi.none
+    console.log(result_str);
     process.exit(failed > 0 ? 1 : 0);
   }, 1);
 }());

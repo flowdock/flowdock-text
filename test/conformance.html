@@ -6,11 +6,10 @@
   <script src="../lib/jasmine.js"></script>
   <script src="../lib/jasmine-html.js"></script>
   <script src="../flowdock-text.js"></script>
-  <script src="../test/conformance.js"></script>
-  <script src="../test/testers.js"></script>
+  <script src="conformance.js"></script>
+  <script src="testers.js"></script>
 
   <script>
-
     for (var suite in cases) {
       (function(suite) {
         describe(suite, function(){
@@ -27,10 +26,8 @@
             }(section));
           }
         });
-
       }(suite));
     }
-
   </script>
 
 </head>
