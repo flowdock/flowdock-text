@@ -11,7 +11,7 @@ Hashtag extraction
 FlowdockText.extractHashtags("hello #world");
 [ 'world' ]
 FlowdockText.extractHashtagsWithIndices("hello #world");
-[ { hashtag: 'world', indices: [ 6, 12 ] } ]
+[ { tag: 'world', indices: [ 6, 12 ] } ]
 ```
 
 Usertag extraction
@@ -20,7 +20,7 @@ Usertag extraction
 FlowdockText.extractMentions("hello @Username");
 [ '@Username' ]
 FlowdockText.extractMentionsWithIndices("hello @Username");
-[ { usertag: '@Username', indices: [ 6, 15 ] } ]
+[ { tag: '@Username', indices: [ 6, 15 ] } ]
 ```
 
 Url extraction

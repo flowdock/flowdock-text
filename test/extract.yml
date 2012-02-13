@@ -49,20 +49,20 @@ tests:
     - description: "Extract a mention at the start"
       text: "@username yo!"
       expected:
-        - usertag: "@username"
+        - tag: "@username"
           indices: [0, 9]
 
     - description: "Extract a mention that has the same thing mentioned at the start"
       text: "username @username"
       expected:
-        - usertag: "@username"
+        - tag: "@username"
           indices: [9, 18]
 
   mentions_with_indices_with_predefined_usertags:
     - description: "Include only predefined users"
       text: "@username @foobar yo!"
       expected:
-        - usertag: "@username"
+        - tag: "@username"
           indices: [0, 9]
   urls:
     - description: "Extract a lone URL"
@@ -586,64 +586,64 @@ tests:
     - description: "Extract a hastag at the start"
       text: "#hashtag here"
       expected:
-        - hashtag: "hashtag"
+        - tag: "hashtag"
           indices: [0, 8]
 
     - description: "Extract a hastag at the end"
       text: "test a #hashtag"
       expected:
-        - hashtag: "hashtag"
+        - tag: "hashtag"
           indices: [7, 15]
 
     - description: "Extract a hastag in the middle"
       text: "test a #hashtag in a string"
       expected:
-        - hashtag: "hashtag"
+        - tag: "hashtag"
           indices: [7, 15]
 
     - description: "Extract a hastag with a dash"
       text: "test a #hash-tag in a string"
       expected:
-        - hashtag: "hash-tag"
+        - tag: "hash-tag"
           indices: [7, 16]
 
     - description: "Extract only a valid hashtag"
       text: "#123 a #hashtag in a string"
       expected:
-        - hashtag: "123"
+        - tag: "123"
           indices: [0, 4]
-        - hashtag: "hashtag"
+        - tag: "hashtag"
           indices: [7, 15]
 
     - description: "Extract a hashtag in a string of multi-byte characters"
       text: "会議中 #hashtag 会議中"
       expected:
-        - hashtag: "hashtag"
+        - tag: "hashtag"
           indices: [4, 12]
 
     - description: "Extract multiple valid hashtags"
       text: "One #two three #four"
       expected:
-        - hashtag: "two"
+        - tag: "two"
           indices: [4, 8]
-        - hashtag: "four"
+        - tag: "four"
           indices: [15, 20]
 
     - description: "Extract a non-latin hashtag"
       text: "Hashtags in #русский!"
       expected:
-        - hashtag: "русский"
+        - tag: "русский"
           indices: [12, 20]
 
     - description: "Extract multiple non-latin hashtags"
       text: "Hashtags in #中文, #日本語, #한국말, and #русский! Try it out!"
       expected:
-        - hashtag: "中文"
+        - tag: "中文"
           indices: [12, 15]
-        - hashtag: "日本語"
+        - tag: "日本語"
           indices: [17, 21]
-        - hashtag: "한국말"
+        - tag: "한국말"
           indices: [23, 27]
-        - hashtag: "русский"
+        - tag: "русский"
           indices: [33, 41]
 

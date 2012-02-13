@@ -552,7 +552,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
         hashtagsWithIndices = FlowdockText.extractHashtagsWithIndices(text);
 
     for (var i = 0; i < hashtagsWithIndices.length; i++) {
-      hashtagsOnly.push(hashtagsWithIndices[i].hashtag);
+      hashtagsOnly.push(hashtagsWithIndices[i].tag);
     }
 
     return hashtagsOnly;
@@ -573,7 +573,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       var startPosition = text.indexOf(hash + hashText, position);
       position = startPosition + hashText.length + 1;
       tags.push({
-        hashtag: hashText,
+        tag: hashText,
         indices: [startPosition, position]
       });
     });
@@ -610,7 +610,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
         mentionsWithIndices = FlowdockText.extractMentionsWithIndices(text, userTags);
 
     for (var i = 0; i < mentionsWithIndices.length; i++) {
-      mentionsOnly.push(mentionsWithIndices[i].usertag);
+      mentionsOnly.push(mentionsWithIndices[i].tag);
     }
 
     if(userTags){
@@ -634,14 +634,14 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       var startPosition = text.indexOf(hash + hashText, position);
       position = startPosition + hashText.length + 1;
       tags.push({
-        usertag: (hash + hashText),
+        tag: (hash + hashText),
         indices: [startPosition, position]
       });
     });
 
     if(userTags){
       userTags = downCase(userTags.map(getUserTag));
-      return tags.filter(function(tag){ return inArray(tag.usertag.toLowerCase(), userTags) });
+      return tags.filter(function(tag){ return inArray(tag.tag.toLowerCase(), userTags) });
     }
 
     return tags;
