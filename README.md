@@ -1,96 +1,67 @@
-# twitter-text-js
+# flowdock-text
 
-A JavaScript utility that provides text processing routines for Tweets.  This library conforms to a common test suite shared by many other implementations, particularly twitter-text.gem (Ruby).  The library provides autolinking and extraction for URLs, usernames, lists, and hashtags.
+Flowdock-text is a javascript utility for extracting and linkifying tags and urls in Flowdock. It is build upon Twitter's [twitter-text-js](https://github.com/twitter/twitter-text-js). Some twitter-text's functionality has been removed or altered.
 
-## NPM Users
+## Usage
+### Extraction
 
-Install it with: `npm install twitter-text`
+Hashtag extraction
 
-The `twttr.txt` namespace is exported, making it available as such:
+    > FlowdockText.extractHashtags("hello #world");
+    [ 'world' ]
+    > FlowdockText.extractHashtagsWithIndices("hello #world");
+    [ { hashtag: 'world', indices: [ 6, 12 ] } ]
 
-``` js
-var twitter = require('twitter-text')
-twitter.autoLink(twitter.htmlEscape('#hello < @world >'))
-```
+Usertag extraction
 
-## Extraction Examples
+    > FlowdockText.extractMentions("hello @Username");
+    [ '@Username' ]
+    > FlowdockText.extractMentionsWithIndices("hello @Username");
+    [ { usertag: '@Username', indices: [ 6, 15 ] } ]
 
-    // basic extraction
-    var usernames = twttr.txt.extract_mentioned_screen_names("Mentioning @twitter and @jack")
-    // usernames == ["twitter", "jack"]
+Url extraction
 
-## Auto-linking Examples
+    > FlowdockText.extractUrls("hello http://www.example.com");
+    [ 'http://www.example.com' ]
+    > FlowdockText.extractUrlsWithIndices("hello http://www.example.com");
+    [ { url: 'http://www.example.com', indices: [ 6, 28 ] } ]
 
-    twttr.txt.autoLink("link @user, please #request");
+Parse and process tags from a message
 
-## Usernames
+    > FlowdockText.getTagsFromMessage("@anyone seen this: http://www.example.com #cool");
+    [ 'cool', ':url', ':user:everyone' ]
+Parse and process tags from a message with optional array of user-objects
 
-Username extraction and linking matches all valid Twitter usernames but does
-not verify that the username is a valid Twitter account.
+    > FlowdockText.getTagsFromMessage("@anyone seen this: http://www.example.com #cool", [{nick: "Username", id: 1, disabled: false}, {nick: "Other", id: 2, disabled: false}]);
+    ["cool", ":url", ":user:everyone", ":unread:1", ":unread:2"]
+Parse and process tags from a message with optional array of user-objects and me-object (which excludes :unread:my-id tag from the results)
 
-## Lists
+    > FlowdockText.getTagsFromMessage("@anyone seen this: http://www.example.com #cool", [{nick: "Username", id: 1, disabled: false}, {nick: "Other", id: 2, disabled: false}], {nick: "Other", id: 2, disabled: false});
+    [ 'cool', ':url', ':user:everyone', ':unread:1' ]
 
-Auto-link and extract list names when they are written in @user/list-name
-format.
+### Linkification
 
-## Hashtags
+    > FlowdockText.autoLink("hello @Username #greets");
+    'hello <a title="Search @Username" class="app-tag-link" href="#flowser/all/@Username">@Username</a> <a href="#flowser/all/greets" title="#greets" class="app-tag-link">#greets</a>'
 
-Auto-link and extract hashtags, where a hashtag contains any latin letter or
-number but cannot be solely numbers.
+## NPM
 
-## URLs
+Install with: `npm install flowdock-text`
 
-Asian languages like Chinese, Japanese or Korean may not use a delimiter such as
-a space to separate normal text from URLs making it difficult to identify where
-the URL ends and the text starts.
+    > var FlowdockText = require("flowdock-text");
+    > FlowdockText.extractUrlsWithIndices("cool http://www.example.com");
+    [ { url: 'http://www.example.com', indices: [ 6, 28 ] } ]
 
-For this reason twitter-text currently does not support extracting or auto-linking
-of URLs immediately followed by non-Latin characters.
+## Tests
+Tests can be run in browsers or with node.js
 
-Example: "http://twitter.com/は素晴らしい" .
-The normal text is "は素晴らしい" and is not part of the URL even though
-it isn't space separated.
-
-## International
-
-Special care has been taken to be sure that auto-linking and extraction work
-in Tweets of all languages. This means that languages without spaces between
-words should work equally well.
-
-## Hit Highlighting
-
-Use to provide emphasis around the "hits" returned from the Search API, built
-to work against text that has been auto-linked already.
-
-## Testing
-
-### Conformance
-
-The main test suite is twitter-text-conformance.  This is set up as a git submodule that is automatically updated at each run.  Tests are run in your browser, using QUnit.  To run the conformance suite, from the project root, run:
-
-    rake test:conformance
-
-Your default browser will open the test suite.  You should open the test suite in your other browsers as you see fit.
-
-### Other Tests
-
-There are a few tests specific to twitter-text-js that are not part of the conformance suite.  To run these, from the project root, run:
+To run the tests in your default browser:
 
     rake test
 
-Your default browser will open the test suite.
+To run the tests with node.js
 
-## Packaging
-
-Official versions are kept in the `pkg/` directory.  To roll a new version, (ex. v1.1.0), run the following from project root:
-
-    rake package[1.1.0]
-
-This will make a new file at `pkg/twitter-text-1.1.0.js`.
-
-## Reporting Bugs
-
-Please direct bug reports to the [twitter-text-js issue tracker on GitHub](http://github.com/bcherry/twitter-text-js/issues)
+    rake test_node
 
 ## Copyright and License
 
