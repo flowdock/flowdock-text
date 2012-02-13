@@ -24,6 +24,7 @@ FlowdockText.extractMentionsWithIndices("hello @Username");
 ```
 
 Url extraction
+
 ```javascript
 FlowdockText.extractUrls("hello http://www.example.com");
 [ 'http://www.example.com' ]
@@ -32,12 +33,14 @@ FlowdockText.extractUrlsWithIndices("hello http://www.example.com");
 ```
 
 Parse and process tags from a message
+
 ```javascript
 FlowdockText.getTagsFromMessage("@anyone seen this: http://www.example.com #cool");
 [ 'cool', ':url', ':user:everyone' ]
 ```
 
 Parse and process tags from a message with optional array of user-objects
+
 ```javascript
 var users = [
   {nick: "Username", id: 1, disabled: false},
@@ -48,6 +51,7 @@ FlowdockText.getTagsFromMessage("@anyone seen this: http://www.example.com #cool
 ```
 
 Parse and process tags from a message with optional array of user-objects and me-object (which excludes :unread:my-id tag from the results)
+
 ```javascript
 var users = [
   {nick: "Username", id: 1, disabled: false},
@@ -59,6 +63,7 @@ FlowdockText.getTagsFromMessage("@anyone seen this: http://www.example.com #cool
 ```
 
 ### Linkification
+
 ```javascript
 FlowdockText.autoLink("hello @Username #greets");
 'hello <a title="Search @Username" class="app-tag-link" href="#flowser/all/@Username">@Username</a> <a href="#flowser/all/greets" title="#greets" class="app-tag-link">#greets</a>'
@@ -67,6 +72,7 @@ FlowdockText.autoLink("hello @Username #greets");
 ## NPM
 
 Install with: `npm install flowdock-text`
+
 ```javascript
 var FlowdockText = require("flowdock-text");
 FlowdockText.extractUrlsWithIndices("cool http://www.example.com");
