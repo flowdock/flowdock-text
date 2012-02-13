@@ -62,6 +62,18 @@ FlowdockText.getTagsFromMessage("@anyone seen this: http://www.example.com #cool
 [ 'cool', ':url', ':user:everyone', ':unread:1' ]
 ```
 
+Mentioning a single user
+
+```javascript
+var users = [
+  {nick: "Username", id: 1, disabled: false},
+  {nick: "Other", id: 2, disabled: false}
+];
+var me = users[1];
+FlowdockText.getTagsFromMessage("@Username, what do you think?", users, me);
+[ ':user:1', ':unread:1' ]
+```
+
 ### Linkification
 
 ```javascript
