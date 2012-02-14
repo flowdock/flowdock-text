@@ -12,7 +12,7 @@ namespace :test do
     f.write("var cases = {};")
 
     test_files.each do |test_file|
-      path = File.join(File.dirname(__FILE__), "test", test_file + ".yml")
+      path = File.join(File.dirname(__FILE__), "test", "conformance_tests", test_file + ".yml")
       yml = YAML.load_file(path)
       f.write("cases.#{test_file} = #{yml['tests'].to_json};")
     end
