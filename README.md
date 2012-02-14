@@ -32,7 +32,17 @@ FlowdockText.extractUrlsWithIndices("hello http://www.example.com");
 [ { url: 'http://www.example.com', indices: [ 6, 28 ] } ]
 ```
 
-Parse and process tags from a message
+### Linkification
+
+```javascript
+FlowdockText.autoLink("hello @Username #greets");
+'hello <a title="Search @Username" class="app-tag-link" href="#flowser/all/@Username">@Username</a> <a href="#flowser/all/greets" title="#greets" class="app-tag-link">#greets</a>'
+```
+
+### Parsing all tags from new messages
+
+If you need to replicate the functionality that Flowdock uses to parse tags from new messages, you can use ´getTagsFromMessage`.
+
 
 ```javascript
 FlowdockText.getTagsFromMessage("@anyone seen this: http://www.example.com #cool");
@@ -72,13 +82,6 @@ var users = [
 var me = users[1];
 FlowdockText.getTagsFromMessage("@Username, what do you think?", users, me);
 [ ':user:1', ':unread:1' ]
-```
-
-### Linkification
-
-```javascript
-FlowdockText.autoLink("hello @Username #greets");
-'hello <a title="Search @Username" class="app-tag-link" href="#flowser/all/@Username">@Username</a> <a href="#flowser/all/greets" title="#greets" class="app-tag-link">#greets</a>'
 ```
 
 ## NPM
