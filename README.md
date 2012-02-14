@@ -1,6 +1,6 @@
 # flowdock-text
 
-Flowdock-text is a javascript utility for extracting and linkifying tags and urls in Flowdock. It is built upon Twitter's [twitter-text-js](https://github.com/twitter/twitter-text-js). Some twitter-text's functionality has been removed or altered.
+Flowdock-text is a javascript utility for extracting and linkifying hashtags and URLs in Flowdock. It is built upon Twitter's [twitter-text-js](https://github.com/twitter/twitter-text-js). Some twitter-text's functionality has been removed or altered.
 
 ## Usage
 ### Extraction
@@ -23,7 +23,7 @@ FlowdockText.extractMentionsWithIndices("hello @Username");
 [ { tag: '@Username', indices: [ 6, 15 ] } ]
 ```
 
-Url extraction
+URL extraction
 
 ```javascript
 FlowdockText.extractUrls("hello http://www.example.com");
