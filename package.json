@@ -3,7 +3,7 @@
   "description": "Flowdock text linkification",
   "version": "0.1.0",
   "main": "./flowdock-text.js",
-  "author": "Flowdock Oy",
+  "author": "Flowdock Ltd",
   "scripts": {"test": "node ./test/runner.js"},
   "repository": {
     "type": "git",
