@@ -107,6 +107,9 @@ FlowdockText.extractUrlsWithIndices("cool http://www.example.com");
 ```
 
 ## Tests
+
+[![Build Status](https://secure.travis-ci.org/flowdock/flowdock-text.png?branch=master)](http://travis-ci.org/flowdock/flowdock-text)
+
 Tests can be run in browsers or with node.js
 
 To run the tests in your default browser:
