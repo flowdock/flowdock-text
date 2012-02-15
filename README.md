@@ -41,7 +41,7 @@ FlowdockText.autoLink("hello @Username #greets");
 
 ### Parsing all tags from new messages
 
-If you need to replicate the functionality that Flowdock uses to parse tags from new messages, you can use ´parseTags`.
+If you need to replicate the functionality that Flowdock uses to parse tags from new messages, you can use `parseTags`.
 
 
 ```javascript
