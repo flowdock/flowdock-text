@@ -72,7 +72,7 @@ FlowdockText.parseTags("@anyone seen this: http://www.example.com #cool", users,
 [ 'cool', ':url', ':user:everyone', ':unread:1' ]
 ```
 
-Mentioning a single user
+Tagging a single user
 
 ```javascript
 var users = [
@@ -82,6 +82,18 @@ var users = [
 var me = users[1];
 FlowdockText.parseTags("@Username, what do you think?", users, me);
 [ ':user:1', ':unread:1' ]
+```
+
+Mentioning a single user
+
+```javascript
+var users = [
+  {nick: "Username", id: 1, disabled: false},
+  {nick: "Other", id: 2, disabled: false}
+];
+var me = users[1];
+FlowdockText.parseTags("Username, what do you think?", users, me);
+[ ':highlight:1', ':unread:1' ]
 ```
 
 ## NPM
