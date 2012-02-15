@@ -76,15 +76,15 @@ var testers = {
         switch (section){
         case "get_tags_from_message":
           return function(test){
-            return FlowdockText.getTagsFromMessage(test.text, users, me);
+            return FlowdockText.parseTags(test.text, users, me);
         };
         case "get_tags_from_message_without_extra_parameters":
           return function(test){
-            return FlowdockText.getTagsFromMessage(test.text);
+            return FlowdockText.parseTags(test.text);
         };
         case "get_tags_from_message_without_supplied_me":
           return function(test){
-            return FlowdockText.getTagsFromMessage(test.text, users);
+            return FlowdockText.parseTags(test.text, users);
         };
       }
     }

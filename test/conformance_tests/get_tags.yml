@@ -1,5 +1,5 @@
 tests:
-  get_tags_from_message: #FlowodckText.getTagsFromMessage(message, flow_users, me)
+  get_tags_from_message: #FlowodckText.parseTags(message, flow_users, me)
     - description: "Transform tag from @User to :user:id"
       text: "Hello @foo"
       expected: [":user:2", ":unread:2"]
@@ -60,12 +60,12 @@ tests:
       text: "hello Disabled-User"
       expected: []
 
-  get_tags_from_message_without_extra_parameters: #FlowodckText.getTagsFromMessage(message)
+  get_tags_from_message_without_extra_parameters: #FlowodckText.parseTags(message)
     - description: "Don't include user-specific metatags"
       text: "Hello @everyone"
       expected: [":user:everyone"]
 
-  get_tags_from_message_without_supplied_me: #FlowodckText.getTagsFromMessage(message, flow_users)
+  get_tags_from_message_without_supplied_me: #FlowodckText.parseTags(message, flow_users)
     - description: "Get unread tags for each user"
       text: "Hello @everyone"
       expected: [":user:everyone", ":unread:1", ":unread:2", ":unread:3"]

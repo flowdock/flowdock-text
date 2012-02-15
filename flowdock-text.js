@@ -647,7 +647,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     return tags;
   };
 
-  FlowdockText.getTagsFromMessage = function(message, users, me) {
+  FlowdockText.parseTags = function(message, users, me) {
     var tags = [];
     var users = users || [];
     var me = me || {};

@@ -41,11 +41,11 @@ FlowdockText.autoLink("hello @Username #greets");
 
 ### Parsing all tags from new messages
 
-If you need to replicate the functionality that Flowdock uses to parse tags from new messages, you can use ´getTagsFromMessage`.
+If you need to replicate the functionality that Flowdock uses to parse tags from new messages, you can use ´parseTags`.
 
 
 ```javascript
-FlowdockText.getTagsFromMessage("@anyone seen this: http://www.example.com #cool");
+FlowdockText.parseTags("@anyone seen this: http://www.example.com #cool");
 [ 'cool', ':url', ':user:everyone' ]
 ```
 
@@ -56,7 +56,7 @@ var users = [
   {nick: "Username", id: 1, disabled: false},
   {nick: "Other", id: 2, disabled: false}
 ];
-FlowdockText.getTagsFromMessage("@anyone seen this: http://www.example.com #cool", users);
+FlowdockText.parseTags("@anyone seen this: http://www.example.com #cool", users);
 [ 'cool', ':url', ':user:everyone', ':unread:1', ':unread:2' ]
 ```
 
@@ -68,7 +68,7 @@ var users = [
   {nick: "Other", id: 2, disabled: false}
 ];
 var me = users[1];
-FlowdockText.getTagsFromMessage("@anyone seen this: http://www.example.com #cool", users, me);
+FlowdockText.parseTags("@anyone seen this: http://www.example.com #cool", users, me);
 [ 'cool', ':url', ':user:everyone', ':unread:1' ]
 ```
 
@@ -80,7 +80,7 @@ var users = [
   {nick: "Other", id: 2, disabled: false}
 ];
 var me = users[1];
-FlowdockText.getTagsFromMessage("@Username, what do you think?", users, me);
+FlowdockText.parseTags("@Username, what do you think?", users, me);
 [ ':user:1', ':unread:1' ]
 ```
 
