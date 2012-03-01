@@ -44,6 +44,10 @@ tests:
       text: "Hello @anybody"
       expected: [":user:everyone", ":unread:2", ":unread:3"]
 
+    - description: "Doesn't care about case when extracting @all and buddies"
+      text: "MANAGERIAL RAGE FOR @EVERYONE"
+      expected: [":user:everyone", ":unread:2", ":unread:3"]
+
     - description: "Get :url: metatag when message includes an url"
       text: "Hello http://www.example.com"
       expected: [":url"]

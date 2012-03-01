@@ -687,7 +687,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   FlowdockText.mentionsAll = function(check){
     if(isArray(check)){
       return ["@everyone", "@everybody", "@all", "@anyone", "@anybody"].some(function(tag) {
-        return check.indexOf(tag) !== -1;
+        return downCase(check).indexOf(tag) !== -1;
       });
     } else {
       return FlowdockText.mentionsAll(FlowdockText.extractMentions(check));
