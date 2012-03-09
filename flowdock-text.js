@@ -1,3 +1,15 @@
+/*!
+ * flowdock-text 0.1.1
+ *
+ * Copyright 2011 Twitter, Inc.
+ * Copyright 2011 Flowdock Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this work except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ */
 if (typeof window === "undefined" || window === null) {
   window = { FlowdockText: {} };
 }
