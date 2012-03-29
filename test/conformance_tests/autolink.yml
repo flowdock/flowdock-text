@@ -302,9 +302,17 @@ tests:
       text: "text http://example.com"
       expected: "text <a href=\"http://example.com\">http://example.com</a>"
 
+    - description: "Autolink trailing IP"
+      text: "text http://173.194.70.101"
+      expected: "text <a href=\"http://173.194.70.101\">http://173.194.70.101</a>"
+
     - description: "Autolink url in mid-text"
       text: "text http://example.com more text"
       expected: "text <a href=\"http://example.com\">http://example.com</a> more text"
+
+    - description: "Autolink IP in mid-text"
+      text: "text http://10.0.0.126 more text"
+      expected: "text <a href=\"http://10.0.0.126\">http://10.0.0.126</a> more text"
 
     - description: "Autolink url in Japanese text"
       text: "いまなにしてるhttp://example.comいまなにしてる"

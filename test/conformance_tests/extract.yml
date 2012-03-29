@@ -109,6 +109,30 @@ tests:
       text: "text http://somehost.com:3000"
       expected: ["http://somehost.com:3000"]
 
+    - description: "Extract ip with protocol"
+      text: "http://127.0.0.1"
+      expected: ["http://127.0.0.1"]
+
+    - description: "Extract other ip with protocol"
+      text: "http://173.194.70.101"
+      expected: ["http://173.194.70.101"]
+
+    - description: "Extract ip with port"
+      text: "http://127.0.0.1:3000"
+      expected: ["http://127.0.0.1:3000"]
+
+    - description: "Extract ip with protocol and path"
+      text: "http://127.0.0.1/foobar"
+      expected: ["http://127.0.0.1/foobar"]
+
+    - description: "Extract ip with protocol and path ending with a slash"
+      text: "http://127.0.0.1/foobar/"
+      expected: ["http://127.0.0.1/foobar/"]
+
+    - description: "Extract ip with protocol and query params"
+      text: "http://127.0.0.1/?foo=bar"
+      expected: ["http://127.0.0.1/?foo=bar"]
+
     - description: "Extract valid URL: http://xo.com/~matthew+%ff-x"
       text: "text http://xo.com/~matthew+%ff-x"
       expected: ["http://xo.com/~matthew+%ff-x"]
