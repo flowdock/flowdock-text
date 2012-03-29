@@ -156,14 +156,14 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
   // A hashtag must contain characters, numbers and underscores, but not all numbers.
   FlowdockText.regexen.hashtagAlpha = regexSupplant(/[a-z_#{latinAccentChars}#{nonLatinHashtagChars}]/i);
+  FlowdockText.regexen.usernameAlphaNumeric = regexSupplant(/[a-z0-9_\-\.#{latinAccentChars}#{nonLatinHashtagChars}]/i);
+  FlowdockText.regexen.usernameAlphaNumericEnd = regexSupplant(/[a-z0-9_\-#{latinAccentChars}#{nonLatinHashtagChars}]/i);
   FlowdockText.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_\-#{latinAccentChars}#{nonLatinHashtagChars}]/i);
   FlowdockText.regexen.endHashtagMatch = /^(?:[#＃]|:\/\/)/;
   FlowdockText.regexen.hashtagBoundary = regexSupplant(/(?:^|$|[^&\/a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}])/);
   // FlowdockText change: allow all-numeric hashtags
   FlowdockText.regexen.autoLinkHashtags = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}+)/gi);
-  //FlowdockText change: Match mentions with same regex as hashtags. (#|＃) replaced with (@)
-  FlowdockText.regexen.autoLinkMentions = regexSupplant(/(#{hashtagBoundary})(@)(#{hashtagAlphaNumeric}+)/gi);
-  FlowdockText.regexen.autoLinkEmoticon = /(8\-\#|8\-E|\+\-\(|\`\@|\`O|\&lt;\|:~\(|\}:o\{|:\-\[|\&gt;o\&lt;|X\-\/|\[:-\]\-I\-|\/\/\/\/Ö\\\\\\\\|\(\|:\|\/\)|∑:\*\)|\( \| \))/g;
+  FlowdockText.regexen.autoLinkMentions = regexSupplant(/(#{hashtagBoundary})(@)(#{usernameAlphaNumeric}*#{usernameAlphaNumericEnd}+)/gi);
   // We want to only match words starting with the nickname and ignore case
   FlowdockText.regexen.highlightRegex = function(nick) {
     if (nick && nick.length > 0) { return new RegExp('([\\b\\s]|^)+' + regexEscape(nick) + '([\\b\\s\\!\\?\\,\\:\\;\\.]|$)+', 'i'); }

@@ -16,6 +16,14 @@ tests:
       text: "mention @user_name"
       expected: ["@user_name"]
 
+    - description: "Extract mention of username with dot in middle"
+      text: "mention @J.R"
+      expected: ["@J.R"]
+
+    - description: "Do not extract a dot at the end of username"
+      text: "i'm mentioning @username."
+      expected: ["@username"]
+
     - description: "Extract mention of username with a dash"
       text: "mention @user-name"
       expected: ["@user-name"]
@@ -25,8 +33,8 @@ tests:
       expected: ["@12345"]
 
     - description: "Extract mention or multiple usernames"
-      text: "mention @username1 @username2"
-      expected: ["@username1", "@username2"]
+      text: "mention @username1 @username2, @user.name @davy.crokett."
+      expected: ["@username1", "@username2", "@user.name", "@davy.crokett"]
 
     - description: "Extract username followed by accented latin characters"
       text: "@aliceìnheiro something something"

@@ -20,6 +20,14 @@ tests:
       text: "@username&^$%^"
       expected: "<a title=\"Search @username\" class=\"app-tag-link\" href=\"#flowser/all/@username\">@username</a>&^$%^"
 
+    - description: "Autolink username including dots"
+      text: "@user.name"
+      expected: "<a title=\"Search @user.name\" class=\"app-tag-link\" href=\"#flowser/all/@user.name\">@user.name</a>"
+
+    - description: "Autolink username including dots (but excude trailing dot)"
+      text: "@user.name."
+      expected: "<a title=\"Search @user.name\" class=\"app-tag-link\" href=\"#flowser/all/@user.name\">@user.name</a>."
+
     - description: "Autolink username followed by accented latin characters"
       text: "@aliceìnheiro something something"
       expected: "<a title=\"Search @aliceìnheiro\" class=\"app-tag-link\" href=\"#flowser/all/@aliceìnheiro\">@aliceìnheiro</a> something something"
@@ -57,7 +65,7 @@ tests:
       text: "text #hash_tag"
       expected: "text <a href=\"#flowser/all/hash_tag\" title=\"#hash_tag\" class=\"app-tag-link\">#hash_tag</a>"
 
-    - description: "DO NOT Autolink all-numeric hashtags"
+    - description: "Autolink all-numeric hashtags"
       text: "text #1234"
       expected: "text <a href=\"#flowser/all/1234\" title=\"#1234\" class=\"app-tag-link\">#1234</a>"
 
