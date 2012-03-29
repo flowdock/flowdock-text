@@ -1,5 +1,5 @@
 /*!
- * flowdock-text 0.1.1
+ * flowdock-text 0.1.2
  *
  * Copyright 2011 Twitter, Inc.
  * Copyright 2011 Flowdock Ltd
