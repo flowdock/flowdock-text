@@ -133,6 +133,22 @@ tests:
       text: "http://127.0.0.1/?foo=bar"
       expected: ["http://127.0.0.1/?foo=bar"]
 
+    - description: "Extract url with .local domain"
+      text: "http://build.local"
+      expected: ["http://build.local"]
+
+    - description: "Extract url with .dmz domain"
+      text: "http://build.dmz"
+      expected: ["http://build.dmz"]
+
+    - description: "Extract url with .lan domain"
+      text: "http://build.lan"
+      expected: ["http://build.lan"]
+
+    - description: "Extract url with .lan domain and path"
+      text: "http://build.lan/yello"
+      expected: ["http://build.lan/yello"]
+
     - description: "Extract valid URL: http://xo.com/~matthew+%ff-x"
       text: "text http://xo.com/~matthew+%ff-x"
       expected: ["http://xo.com/~matthew+%ff-x"]

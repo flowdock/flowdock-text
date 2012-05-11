@@ -446,6 +446,18 @@ tests:
       text: "http://foo.com/?#foo"
       expected: "<a href=\"http://foo.com/?#foo\">http://foo.com/?#foo</a>"
 
+    - description: "Autolink url containing .local ptld"
+      text: "http://build.local"
+      expected: "<a href=\"http://build.local\">http://build.local</a>"
+
+    - description: "Autolink url containing .dmz ptld"
+      text: "http://jorma.dmz"
+      expected: "<a href=\"http://jorma.dmz\">http://jorma.dmz</a>"
+
+    - description: "Autolink url containing .lan ptld"
+      text: "http://build.lan"
+      expected: "<a href=\"http://build.lan\">http://build.lan</a>"
+
     - description: "DO NOT Autolink url without protocol (with www)"
       text: "www.example.biz"
       expected: "www.example.biz"
