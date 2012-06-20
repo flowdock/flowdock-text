@@ -1,5 +1,5 @@
 /*!
- * flowdock-text 0.1.3
+ * flowdock-text 0.1.4
  *
  * Copyright 2011 Twitter, Inc.
  * Copyright 2011 Flowdock Ltd
@@ -194,13 +194,13 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   // Valid end-of-path chracters (so /foo. does not gobble the period).
   // 1. Allow =&# for empty URL parameters and other URL-join artifacts
   FlowdockText.regexen.validUrlPathEndingChars = regexSupplant(/[\+\-a-z0-9=_#\/#{latinAccentChars}]|(?:#{validUrlBalancedParens})/i);
-  // Allow @ in a url, but only in the middle. Catch things like http://example.com/@user/
+  // Allow @ in a url, but only in the middle. Catch things like http://example.com/@user/ and Plone urls like http://example.org/my-document/@@as-message
   FlowdockText.regexen.validUrlPath = regexSupplant('(?:' +
     '(?:' +
       '#{validGeneralUrlPathChars}*' +
         '(?:#{validUrlBalancedParens}#{validGeneralUrlPathChars}*)*' +
         '#{validUrlPathEndingChars}'+
-      ')|(?:@#{validGeneralUrlPathChars}+\/)'+
+      ')|(?:(@|@@)#{validGeneralUrlPathChars}+\/?)'+
     ')', 'i');
 
   FlowdockText.regexen.validUrlQueryChars = /[a-z0-9!?\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i;

@@ -601,7 +601,7 @@ tests:
 
     - description: "Correctly handles URL follower directly by @user"
       text: "See: http://example.com/@user"
-      expected: "See: <a href=\"http://example.com/\">http://example.com/</a><a title=\"Search @user\" class=\"app-tag-link\" href=\"#flowser/all/@user\">@user</a>"
+      expected: "See: <a href=\"http://example.com/@user\">http://example.com/@user</a>"
 
     - description: "Correctly handles URL with an @user followed by trailing /"
       text: "See: http://example.com/@user/"

@@ -394,6 +394,11 @@ tests:
       text: "$http://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
       expected: []
 
+    - description: "Extract Plone view urls"
+      text: "baar http://example.org/my-document/@@as-message foo"
+      expected: ["http://example.org/my-document/@@as-message"]
+
+
   urls_with_indices:
     - description: "Extract a URL"
       text: "text http://google.com"
