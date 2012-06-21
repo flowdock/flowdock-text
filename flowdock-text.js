@@ -181,8 +181,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   FlowdockText.regexen.validPunycode = regexSupplant(/(?:xn--[0-9a-z]+)/);
   FlowdockText.regexen.validDomain = regexSupplant(/(?:#{validSubdomain}*#{validDomainName}(?:#{validGTLD}|#{validCCTLD}|#{validPunycode}))/);
   FlowdockText.regexen.pseudoValidIP = regexSupplant(/(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
-  FlowdockText.regexen.validAsciiDomain = regexSupplant(/(?:(?:[a-z0-9#{latinAccentChars}]+)\.)+(?:#{validGTLD}|#{validCCTLD}|#{validPunycode})/gi);
-  FlowdockText.regexen.invalidShortDomain = regexSupplant(/^#{validDomainName}#{validCCTLD}$/);
+  FlowdockText.regexen.validAsciiDomain = regexSupplant(/(?:(?:[a-z0-9#{latinAccentChars}\-]+)\.)+(?:#{validGTLD}|#{validCCTLD}|#{validPunycode})/gi);
 
   FlowdockText.regexen.validPortNumber = regexSupplant(/[0-9]+/);
 
@@ -387,35 +386,34 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     return text.replace(FlowdockText.regexen.extractUrl, function(match, all, before, url, protocol, port, domain, path, queryString) {
       var tldComponents;
 
-      if (protocol) {
-        var htmlAttrs = "";
-        var after = "";
-        for (var k in options) {
-          htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
-        }
-
-        // In the case of t.co URLs, don't allow additional path characters.
-        if (url.match(FlowdockText.regexen.validTcoUrl)) {
-          url = RegExp.lastMatch;
-          after = RegExp.rightContext;
-        }
-
-        var d = {
-          before: before,
-          htmlAttrs: htmlAttrs,
-          url: FlowdockText.htmlEscape(url),
-          after: after
-        };
-        if (urlEntities && urlEntities[url] && urlEntities[url].display_url) {
-          d.displayUrl = FlowdockText.htmlEscape(urlEntities[url].display_url);
-        } else {
-          d.displayUrl = d.url;
-        }
-
-        return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>#{after}", d);
-      } else {
-        return all;
+      var htmlAttrs = "";
+      var after = "";
+      for (var k in options) {
+        htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
       }
+
+      // In the case of t.co URLs, don't allow additional path characters.
+      if (url.match(FlowdockText.regexen.validTcoUrl)) {
+        url = RegExp.lastMatch;
+        after = RegExp.rightContext;
+      }
+
+      var d = {
+        before: before,
+        htmlAttrs: htmlAttrs,
+        url: FlowdockText.htmlEscape(url),
+        after: after
+      };
+      if (urlEntities && urlEntities[url] && urlEntities[url].display_url) {
+        d.displayUrl = FlowdockText.htmlEscape(urlEntities[url].display_url);
+      } else {
+        d.displayUrl = d.url;
+      }
+
+      if (!protocol) {
+        d.url = 'http://' + d.url;
+      }
+      return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>#{after}", d);
     });
   };
 
@@ -525,10 +523,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
             url: asciiDomain,
             indices: [startPosition + asciiStartPosition, startPosition + asciiEndPosition]
           }
-          lastUrlInvalidMatch = asciiDomain.match(FlowdockText.regexen.invalidShortDomain);
-          if (!lastUrlInvalidMatch) {
-            urls.push(lastUrl);
-          }
+          urls.push(lastUrl);
         });
 
         // no ASCII-only domain found. Skip the entire URL.

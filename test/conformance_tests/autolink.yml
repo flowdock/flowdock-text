@@ -374,6 +374,22 @@ tests:
       text: "text http://example.com,"
       expected: "text <a href=\"http://example.com\">http://example.com</a>,"
 
+    - description: "Autolink url without the protocol and with a dash in subdomain"
+      text: "text ex-ample.com,"
+      expected: "text <a href=\"http://ex-ample.com\">ex-ample.com</a>,"
+
+    - description: "Autolink url without the protocol and with subdomain and with a dash in subdomain"
+      text: "text ex-ample.example.com,"
+      expected: "text <a href=\"http://ex-ample.example.com\">ex-ample.example.com</a>,"
+
+    - description: "Autolink url without the protocol and with a CCTLD and with a dash in subdomain"
+      text: "text ex-ample.fi,"
+      expected: "text <a href=\"http://ex-ample.fi\">ex-ample.fi</a>,"
+
+    - description: "Autolink url without the protocol and with a CCTLD, subdomain and a dash in subdomain"
+      text: "text ex-ample.example.fi,"
+      expected: "text <a href=\"http://ex-ample.example.fi\">ex-ample.example.fi</a>,"
+
     - description: "Autolink url with path followed by a comma (wihout the comma)"
       text: "In http://example.com/test, Douglas explains 42."
       expected: "In <a href=\"http://example.com/test\">http://example.com/test</a>, Douglas explains 42."
@@ -458,45 +474,37 @@ tests:
       text: "http://build.lan"
       expected: "<a href=\"http://build.lan\">http://build.lan</a>"
 
-    - description: "DO NOT Autolink url without protocol (with www)"
+    - description: "Autolink url without protocol (with www)"
       text: "www.example.biz"
-      expected: "www.example.biz"
+      expected: "<a href=\"http://www.example.biz\">www.example.biz</a>"
 
-    - description: "DO NOT Autolink url without protocol (with WWW)"
+    - description: "Autolink url without protocol (with WWW)"
       text: "WWW.EXAMPLE.BIZ"
-      expected: "WWW.EXAMPLE.BIZ"
+      expected: "<a href=\"http://WWW.EXAMPLE.BIZ\">WWW.EXAMPLE.BIZ</a>"
 
-    - description: "DO NOT Autolink URL without protocol and without www (ending in .com)"
+    - description: "Autolink URL without protocol and without www (ending in .com)"
       text: "foo.com"
-      expected: "foo.com"
+      expected: "<a href=\"http://foo.com\">foo.com</a>"
 
-    - description: "DO NOT Autolink URL without protocol and without www (ending in .org)"
+    - description: "Autolink URL without protocol and without www (ending in .org)"
       text: "foo.org"
-      expected: "foo.org"
+      expected: "<a href=\"http://foo.org\">foo.org</a>"
 
-    - description: "DO NOT Autolink URL without protocol and without www (ending in .net)"
+    - description: "Autolink URL without protocol and without www (ending in .net)"
       text: "foo.net"
-      expected: "foo.net"
+      expected: "<a href=\"http://foo.net\">foo.net</a>"
 
-    - description: "DO NOT Autolink URL without protocol and without www (ending in .gov)"
+    - description: "Autolink URL without protocol and without www (ending in .gov)"
       text: "foo.gov"
-      expected: "foo.gov"
+      expected: "<a href=\"http://foo.gov\">foo.gov</a>"
 
-    - description: "DO NOT Autolink URL without protocol and without www (ending in .edu)"
+    - description: "Autolink URL without protocol and without www (ending in .edu)"
       text: "foo.edu"
-      expected: "foo.edu"
+      expected: "<a href=\"http://foo.edu\">foo.edu</a>"
 
-    - description: "Autolink URL without protocol and without www not ending in /.(edu|com|gov|org|net)/"
-      text: "foo.it twitter.co.jp foo.commerce foo.nettastic foo.us foo.co.uk"
-      expected: "foo.it twitter.co.jp foo.commerce foo.nettastic foo.us foo.co.uk"
-
-    - description: "Multiple URLs with different protocols but not without a protocol"
+    - description: "Multiple URLs with different protocols"
       text:  "http://foo.com AND https://bar.com AND www.foobar.com"
-      expected: "<a href=\"http://foo.com\">http://foo.com</a> AND <a href=\"https://bar.com\">https://bar.com</a> AND www.foobar.com"
-
-    - description: "Autolink raw domain followed by domain only links the first"
-      text: "See http://example.com example.com"
-      expected: "See <a href=\"http://example.com\">http://example.com</a> example.com"
+      expected: "<a href=\"http://foo.com\">http://foo.com</a> AND <a href=\"https://bar.com\">https://bar.com</a> AND <a href=\"http://www.foobar.com\">www.foobar.com</a>"
 
     - description: "Autolink url that includes @-sign and numeric dir under it"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406"
@@ -534,10 +542,6 @@ tests:
       text: "Is www.-foo.com a valid URL?"
       expected: "Is www.-foo.com a valid URL?"
 
-    - description: "Autolink URL should NOT autolink a domain with a valid dash but no protocol"
-      text: "Is www.foo-bar.com a valid URL?"
-      expected: "Is www.foo-bar.com a valid URL?"
-
     - description: "Autolink URL should autolink a domain with a valid dash and a protocol"
       text: "Is http://www.foo-bar.com a valid URL?"
       expected: "Is <a href=\"http://www.foo-bar.com\">http://www.foo-bar.com</a> a valid URL?"
@@ -566,21 +570,13 @@ tests:
       text: "Go to http://example.com/view/slug-url-?foo=bar"
       expected: "Go to <a href=\"http://example.com/view/slug-url-?foo=bar\">http://example.com/view/slug-url-?foo=bar</a>"
 
-    - description: "Autolink URL should NOT link URLs with domains beginning in a space"
-      text: "@user Try http:// example.com/path"
-      expected: "@user Try http:// example.com/path"
-
-    - description: "Autolink URL should NOT link URLs with domains beginning in a non-breaking space (U+00A0)"
-      text: "@user Try http:// example.com/path"
-      expected: "@user Try http:// example.com/path"
-
     - description: "Autolink URL should link paths containing accented characters"
       text: "See: http://example.com/café"
       expected: "See: <a href=\"http://example.com/café\">http://example.com/café</a>"
 
-    - description: "Autolink URL should not link URL without protocol"
+    - description: "Autolink URL should link URL without protocol"
       text: "See: www.twitter.com or twitter.com/twitter"
-      expected: "See: www.twitter.com or twitter.com/twitter"
+      expected: "See: <a href=\"http://www.twitter.com\">www.twitter.com</a> or <a href=\"http://twitter.com/twitter\">twitter.com/twitter</a>"
 
     - description: "Autolink t.co URL followed by punctuation"
       text: "See: http://t.co/abcde's page"

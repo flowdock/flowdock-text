@@ -218,8 +218,32 @@ tests:
       expected: ["foo.com", "foo.net", "foo.org", "foo.edu", "foo.gov"]
 
     - description: "Extract URLs without protocol not on (com|org|edu|gov|net) domains"
-      text: "foo.bar foo.co.jp www.foo.bar www.foo.co.uk wwwww.foo foo.comm foo.somecom foo.govedu foo.jp"
-      expected: ["foo.co.jp", "www.foo.co.uk"]
+      text: "foo.bar foo.co.jp www.foo.bar www.foo.co.uk wwwww.foo foo.comm foo.somecom foo.govedu foo.jp foo.something.fi"
+      expected: ["foo.co.jp", "www.foo.co.uk", "foo.jp", "foo.something.fi"]
+
+    - description: "Extract URLs without the protocol with a dash in the subdomain"
+      text: "test twitter-dash.com"
+      expected: ["twitter-dash.com"]
+
+    - description: "Extract URLs without the protocol and with CCTLD and a dash in the subdomain"
+      text: "test twitter-dash.fi"
+      expected: ["twitter-dash.fi"]
+
+    - description: "DO NOT Extract URLs without the protocol starting with a dash"
+      text: "test -dash.com"
+      expected: []
+
+    - description: "DO NOT Extract URLs without the protocol with a subdomain ending to a dash"
+      text: "test dash-.domain.com"
+      expected: []
+
+    - description: "DO NOT Extract URLs without the protocol ending with a dash and without the protocol"
+      text: "test dash-.com"
+      expected: []
+
+    - description: "DO NOT Extract URLs without the protocol having only a dash in domain"
+      text: "test -.com"
+      expected: []
 
     - description: "Extract URLs without protocol on ccTLD with slash"
       text: "t.co/abcde bit.ly/abcde"
@@ -253,9 +277,9 @@ tests:
       text: "http://twitter.com/これは日本語です。example.com中国語http://t.co/abcde한국twitter.comテストexample2.comテストhttp://twitter.com/abcde"
       expected: ["http://twitter.com/", "example.com", "http://t.co/abcde", "twitter.com", "example2.com", "http://twitter.com/abcde"]
 
-    - description: "DO NOT extract short URLs without protocol on ccTLD domains without path"
+    - description: "Extract short URLs without protocol on ccTLD domains without path"
       text: "twitter.jp日本語t.co中国語foo.jp t.co foo.jp"
-      expected: []
+      expected: ["twitter.jp", "t.co", "foo.jp", "t.co", "foo.jp"]
 
     - description: "Extract URLs beginning with a non-breaking space (U+00A0)"
       text: "@user Try http:// example.com/path"
@@ -388,7 +412,7 @@ tests:
 
     - description: "Extract URL before newline"
       text: "http://twitter.com\nhttp://example.com\nhttp://example.com/path\nexample.com/path\nt.co\nt.co/abcde"
-      expected: ["http://twitter.com", "http://example.com", "http://example.com/path", "example.com/path", "t.co/abcde"]
+      expected: ["http://twitter.com", "http://example.com", "http://example.com/path", "example.com/path", "t.co", "t.co/abcde"]
 
     - description: "DO NOT extract URL if preceded by $"
       text: "$http://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
