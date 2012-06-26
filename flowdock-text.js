@@ -760,10 +760,8 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   function getUserTag(user){
     if(typeof user === "string"){
       return (user[0] === "@" ? user : "@" + user)
-    } else if(user.nick) {
-      return "@" + user.nick;
     } else {
-      return "@" + user.first_name;
+      return "@" + user.nick;
     }
   }
   function downCase(arr){
