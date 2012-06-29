@@ -208,11 +208,18 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     '('                                                            + // $1 total match
       '(#{validPrecedingChars})'                                   + // $2 Preceeding chracter
       '('                                                          + // $3 URL
-        '(https?:\\/\\/)?'                                         + // $4 Protocol (optional)
-        '(#{validDomain}|#{pseudoValidIP})'                        + // $5 Domain(s)
-        '(?::(#{validPortNumber}))?'                               + // $6 Port number (optional)
-        '(\\/#{validUrlPath}*)?'                                   + // $7 URL Path
-        '(\\?#{validUrlQueryChars}*#{validUrlQueryEndingChars})?'  + // $8 Query String
+        '(?:'                                                      +
+          '(?:'                                                    +
+            '(https?:\\/\\/)?'                                     + // $4 Protocol (optional)
+            '(#{validDomain}|#{pseudoValidIP})'                    + // $5 Domain(s)
+          ')|(?:'                                                  + // OR
+            '(https?:\\/\\/)'                                      + // $6 Protocol
+            '((?:#{validDomainChars}|-)+)(?=:|\/|#{spaces}|\$)'    + // $7 Domain with a following port, path, whitespace or an end of string
+          ')'                                                      +
+        ')'                                                        +
+        '(?::(#{validPortNumber}))?'                               + // $8 Port number (optional)
+        '(\\/#{validUrlPath}*)?'                                   + // $9 URL Path
+        '(\\?#{validUrlQueryChars}*#{validUrlQueryEndingChars})?'  + // $10 Query String
       ')'                                                          +
     ')'
   , 'gi');
@@ -383,11 +390,13 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     delete options.usernameClass;
     delete options.usernameUrlBase;
 
-    return text.replace(FlowdockText.regexen.extractUrl, function(match, all, before, url, protocol, port, domain, path, queryString) {
-      var tldComponents;
+    return text.replace(FlowdockText.regexen.extractUrl, function() {
+      var before = arguments[2],
+          url = arguments[3],
+          protocol = (arguments[4] || arguments[6]),
+          htmlAttrs = "",
+          after = "";
 
-      var htmlAttrs = "";
-      var after = "";
       for (var k in options) {
         htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
       }
@@ -505,9 +514,13 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
     var urls = [];
 
-    while (FlowdockText.regexen.extractUrl.exec(text)) {
-      var before = RegExp.$2, url = RegExp.$3, protocol = RegExp.$4, domain = RegExp.$5, path = RegExp.$7;
-      var endPosition = FlowdockText.regexen.extractUrl.lastIndex,
+    while (match = FlowdockText.regexen.extractUrl.exec(text)) {
+      var before = match[2],
+          url = match[3],
+          protocol = (match[4] || match[6]),
+          domain = (match[5] || match[7]),
+          path = match[9],
+          endPosition = FlowdockText.regexen.extractUrl.lastIndex,
           startPosition = endPosition - url.length;
 
       // if protocol is missing and domain contains non-ASCII characters,

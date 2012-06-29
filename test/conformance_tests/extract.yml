@@ -193,9 +193,21 @@ tests:
       text: "text http://-dash_2314352345_dfasd.foo-cow_4352.com"
       expected: []
 
-    - description: "DO NOT extract invalid URL: http://no-tld"
+    - description: "Extract a dashed URL without TLD with protocol"
       text: "text http://no-tld"
-      expected: []
+      expected: ["http://no-tld"]
+
+    - description: "Extract a dashed URL without TLD with protocol and port"
+      text: "text http://no-tld:1337"
+      expected: ["http://no-tld:1337"]
+
+    - description: "Extract URL without TLD with protocol"
+      text: "text http://domain"
+      expected: ["http://domain"]
+
+    - description: "Extract URL without TLD with protocol and path"
+      text: "text http://domain/foo?bar"
+      expected: ["http://domain/foo?bar"]
 
     - description: "DO NOT extract invalid URL: http://tld-too-short.x"
       text: "text http://tld-too-short.x"
@@ -237,7 +249,7 @@ tests:
       text: "test dash-.domain.com"
       expected: []
 
-    - description: "DO NOT Extract URLs without the protocol ending with a dash and without the protocol"
+    - description: "DO NOT Extract URLs without the protocol ending with a dash"
       text: "test dash-.com"
       expected: []
 
