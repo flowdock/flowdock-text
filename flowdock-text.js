@@ -161,6 +161,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   FlowdockText.regexen.hashtagAlphaNumeric = regexSupplant(/[a-z0-9_\-#{latinAccentChars}#{nonLatinHashtagChars}]/i);
   FlowdockText.regexen.endHashtagMatch = /^(?:[#＃]|:\/\/)/;
   FlowdockText.regexen.hashtagBoundary = regexSupplant(/(?:^|$|[^&\/a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}])/);
+  FlowdockText.regexen.singleValidHashTag = regexSupplant(/^#{hashtagAlphaNumeric}+$/i);
   // FlowdockText change: allow all-numeric hashtags
   FlowdockText.regexen.autoLinkHashtags = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}+)/gi);
   FlowdockText.regexen.autoLinkMentions = regexSupplant(/(#{hashtagBoundary})(@)(#{usernameAlphaNumeric}*#{usernameAlphaNumericEnd}+)/gi);
