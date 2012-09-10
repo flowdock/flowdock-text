@@ -334,13 +334,14 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     return r;
   }
 
-  FlowdockText.autoLink = function(text, options) {
+  FlowdockText.autoLink = function(text, options, urlLinkOptions) {
     options = clone(options || {});
-    return FlowdockText.autoLinkMentions(
-      FlowdockText.autoLinkUrlsCustom(
+    urlLinkOptions = clone(urlLinkOptions || {})
+    return FlowdockText.autoLinkUrlsCustom(
+      FlowdockText.autoLinkMentions(
         FlowdockText.autoLinkHashtags(text, options),
       options),
-    options);
+    urlLinkOptions);
   };
 
   FlowdockText.autoLinkHashtags = function(text, options) {
