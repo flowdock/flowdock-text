@@ -442,6 +442,14 @@ tests:
       text: "text http://tn.com.ar/show/00056158/la-estrella-del-certamen-el-turno-de-pamela-anderson?fb_xd_fragment#?=&cb=fe17523f223b7&relation=parent.parent&transport=fragment&type=resize&height=20&ackdata text"
       expected: ["http://tn.com.ar/show/00056158/la-estrella-del-certamen-el-turno-de-pamela-anderson?fb_xd_fragment#?=&cb=fe17523f223b7&relation=parent.parent&transport=fragment&type=resize&height=20&ackdata"]
 
+    - description: "A plain url with basic auth parameters"
+      text: "https://username:password@example.com/cool-new-stuff"
+      expected: ["https://username:password@example.com/cool-new-stuff"]
+
+    - description: "A url with basic auth parameters and other stuff"
+      text: "text https://username:password@example.com/cool-new-stuff more stuff. Check this out!!!"
+      expected: ["https://username:password@example.com/cool-new-stuff"]
+
    # A common cause of runaway regex engines.
     - description: "Extract a URL with a ton of trailing periods"
       text: "Test a ton of periods http://example.com/path.........................................."
