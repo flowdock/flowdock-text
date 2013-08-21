@@ -12,6 +12,14 @@ tests:
       text: "test.user@example.com bla bla. other-user@example.com"
       expected: "<a href='mailto:test.user@example.com' class='email-link'>test.user@example.com</a> bla bla. <a href='mailto:other-user@example.com' class='email-link'>other-user@example.com</a>"
 
+    - description: "Autolink two emails following each other"
+      text: "test.user@example.com other-user@example.com"
+      expected: "<a href='mailto:test.user@example.com' class='email-link'>test.user@example.com</a> <a href='mailto:other-user@example.com' class='email-link'>other-user@example.com</a>"
+
+    - description: "Autolink three emails following each other"
+      text: "first.user@example.com second.user@example.com third.user@example.com"
+      expected: "<a href='mailto:first.user@example.com' class='email-link'>first.user@example.com</a> <a href='mailto:second.user@example.com' class='email-link'>second.user@example.com</a> <a href='mailto:third.user@example.com' class='email-link'>third.user@example.com</a>"
+
   usernames:
     - description: "Autolink trailing username"
       text: "text @username"
