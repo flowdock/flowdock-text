@@ -1,4 +1,17 @@
 tests:
+  emails:
+    - description: "Autolink regular email"
+      text: "test@example.com"
+      expected: "<a href='mailto:test@example.com' class='email-link'>test@example.com</a>"
+
+    - description: "Autolink email with other stuff"
+      text: "This is a test. test@example.com"
+      expected: "This is a test. <a href='mailto:test@example.com' class='email-link'>test@example.com</a>"
+
+    - description: "Autolink several emails"
+      text: "test.user@example.com bla bla. other-user@example.com"
+      expected: "<a href='mailto:test.user@example.com' class='email-link'>test.user@example.com</a> bla bla. <a href='mailto:other-user@example.com' class='email-link'>other-user@example.com</a>"
+
   usernames:
     - description: "Autolink trailing username"
       text: "text @username"

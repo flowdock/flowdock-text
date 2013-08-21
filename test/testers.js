@@ -3,6 +3,10 @@ var testers = {
     switch (suite) {
       case "autolink":
         switch (section) {
+        case "emails":
+          return function(test) {
+            return FlowdockText.autoLinkEmails(test.text, { emailClass: 'email-link' });
+          }
         case "urls":
           return function(test) {
           return FlowdockText.autoLinkUrlsCustom(test.text);

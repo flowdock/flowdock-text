@@ -314,6 +314,15 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     ')?$'
   , "i");
 
+  FlowdockText.regexen.validEmailLocalPart = regexSupplant("[A-z|0-9|.|_|%|+|-]+");
+
+  FlowdockText.regexen.email = regexSupplant(
+    /#{validEmailLocalPart}@#{validDomain}/
+  );
+  FlowdockText.regexen.extractEmails = regexSupplant(
+    /(?:\s|^)+#{email}(?:\s|$|\.)+/
+  , 'gi');
+
 
   // Default CSS class for auto-linked URLs
   var DEFAULT_URL_CLASS = "linkify-link";
@@ -337,11 +346,13 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   FlowdockText.autoLink = function(text, options, urlLinkOptions) {
     options = clone(options || {});
     urlLinkOptions = clone(urlLinkOptions || {})
-    return FlowdockText.autoLinkUrlsCustom(
-      FlowdockText.autoLinkMentions(
-        FlowdockText.autoLinkHashtags(text, options),
-      options),
-    urlLinkOptions);
+    return FlowdockText.autoLinkEmails(
+      FlowdockText.autoLinkUrlsCustom(
+        FlowdockText.autoLinkMentions(
+          FlowdockText.autoLinkHashtags(text, options),
+        options),
+      urlLinkOptions)
+    );
   };
 
   FlowdockText.autoLinkHashtags = function(text, options) {
@@ -372,6 +383,22 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     });
   };
 
+  FlowdockText.autoLinkEmails = function(text, options) {
+    if (!options) {
+      options = {};
+    }
+    var className = options.emailClass;
+    return text.replace(FlowdockText.regexen.extractEmails, function(match) {
+      return match.replace(FlowdockText.regexen.email, function(subMatch) {
+        var replacement = "<a href='mailto:" + subMatch + "'";
+        if (!!className) {
+          replacement += " class='" + className + "'";
+        }
+        replacement += ">" + subMatch + "</a>"
+        return replacement;
+      })
+    });
+  }
 
   FlowdockText.autoLinkUrlsCustom = function(text, options) {
     options = clone(options || {});
