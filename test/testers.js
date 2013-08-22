@@ -26,6 +26,10 @@ var testers = {
       }
       case "extract":
         switch (section) {
+        case "emails":
+          return function(test) {
+            return FlowdockText.extractEmails(test.text);
+          };
         case "mentions":
           return function(test) {
           return FlowdockText.extractMentions(test.text);

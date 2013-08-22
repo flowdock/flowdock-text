@@ -318,9 +318,9 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
   FlowdockText.regexen.email = regexSupplant(
     /#{validEmailLocalPart}@#{validDomain}/
-  );
+  , 'gi');
   FlowdockText.regexen.extractEmails = regexSupplant(
-    /(?:\s|^)+#{email}(?:\s|$|\.)+/
+    /(?:\s|^|,|"|'){0,1}#{email}(?:\s|$|\.|,|"|'){0,1}/
   , 'gi');
 
 
@@ -382,6 +382,13 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{hashtagClass}\">#{hash}#{preText}#{text}#{postText}</a>", d);
     });
   };
+
+  FlowdockText.extractEmails = function(text) {
+    matches = text.match(FlowdockText.regexen.extractEmails);
+    return matches.map(function(match) {
+      return match.match(FlowdockText.regexen.email)[0];
+    });
+  }
 
   FlowdockText.autoLinkEmails = function(text, options) {
     if (!options) {

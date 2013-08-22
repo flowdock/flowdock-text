@@ -1,4 +1,17 @@
 tests:
+  emails:
+    - description: "Extract emails from end of sentence"
+      text: "This is a sentence. And this is another testing+wife@example.org."
+      expected: ["testing+wife@example.org"]
+
+    - description: "email, comma separated"
+      text: "one@example.com, two@example.co.uk, three@example.co"
+      expected: ["one@example.com", "two@example.co.uk", "three@example.co"]
+
+    - description: "only email"
+      text: "email_lodash@test.com"
+      expected: ["email_lodash@test.com"]
+
   mentions:
     - description: "Extract mention at the begining of a tweet"
       text: "@username reply"
