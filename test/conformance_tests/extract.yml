@@ -504,6 +504,25 @@ tests:
       text: "baar http://example.org/my-document/@@as-message foo"
       expected: ["http://example.org/my-document/@@as-message"]
 
+    - description: "Weird passwords"
+      text: "Laa di daa di daa http://asdfoo123:w3ird~//24@@asf@domain.com"
+      expected: ["http://asdfoo123:w3ird~//24@@asf@domain.com"]
+
+    - description: "Weird username"
+      text: "afijoij ogiwjoijwe http://asd//cool@cool:NVCc@Sn@8Uar@foobar.com/path"
+      expected: ["http://asd//cool@cool:NVCc@Sn@8Uar@foobar.com/path"]
+
+    - description: "weird username and password"
+      text: "http://~~~uashdiuh#{%&/():#{/~~~}@cooldomain.com/with/path/123/and/stuff/"
+      expected: ["http://~~~uashdiuh#{%&/():#{/~~~}@cooldomain.com/with/path/123/and/stuff/"]
+
+    - description: "allow ba with no pw"
+      text: "https://mightywhiteoctocat:@example.com/w3irdApes?status=nu7SaNdBanana5"
+      expected: ["https://mightywhiteoctocat:@example.com/w3irdApes?status=nu7SaNdBanana5"]
+
+    - description: "do not catch link with spaces"
+      text: "Laa didaahttp://coolio:! #**SUY FSHiodfuhw@example.co.uk/UYsfioaijw?id=122"
+      expected: []
 
   urls_with_indices:
     - description: "Extract a URL"

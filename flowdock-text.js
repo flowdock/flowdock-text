@@ -183,7 +183,9 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   FlowdockText.regexen.validDomain = regexSupplant(/(?:#{validSubdomain}*#{validDomainName}(?:#{validGTLD}|#{validCCTLD}|#{validPunycode}))/);
   FlowdockText.regexen.pseudoValidIP = regexSupplant(/(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
   FlowdockText.regexen.validAsciiDomain = regexSupplant(/(?:(?:[a-z0-9#{latinAccentChars}\-]+)\.)+(?:#{validGTLD}|#{validCCTLD}|#{validPunycode})/gi);
-  FlowdockText.regexen.validBasicAuthCredentials = regexSupplant(/(?:[0-9|A-z]*:[0-9|A-z]*)@/)
+
+  // Allow "most" ascii characters (excluding whitespace and control characters)
+  FlowdockText.regexen.validBasicAuthCredentials = regexSupplant(/(?:[!-~]*:[!-~]*)@/)
 
   FlowdockText.regexen.validPortNumber = regexSupplant(/[0-9]+/);
 
