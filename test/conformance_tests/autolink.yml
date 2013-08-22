@@ -1,4 +1,41 @@
 tests:
+  emails:
+    - description: "Autolink regular email"
+      text: "test@example.com"
+      expected: "<a href='mailto:test@example.com' class='email-link'>test@example.com</a>"
+
+    - description: "Autolink email in beginning of sentence"
+      text: "foo@example.com was the email"
+      expected: "<a href='mailto:foo@example.com' class='email-link'>foo@example.com</a> was the email"
+
+    - description: "Autolink email in end of sentence"
+      text: "This is a test test@example.com"
+      expected: "This is a test <a href='mailto:test@example.com' class='email-link'>test@example.com</a>"
+
+    - description: "Autolink email in mid-sentence"
+      text: "This is a test test@example.com thank you"
+      expected: "This is a test <a href='mailto:test@example.com' class='email-link'>test@example.com</a> thank you"
+
+    - description: "Autolink several emails"
+      text: "test.user@example.com bla bla. other-user@example.com"
+      expected: "<a href='mailto:test.user@example.com' class='email-link'>test.user@example.com</a> bla bla. <a href='mailto:other-user@example.com' class='email-link'>other-user@example.com</a>"
+
+    - description: "Autolink two emails following each other"
+      text: "test.user@example.com other-user@example.com"
+      expected: "<a href='mailto:test.user@example.com' class='email-link'>test.user@example.com</a> <a href='mailto:other-user@example.com' class='email-link'>other-user@example.com</a>"
+
+    - description: "Autolink three emails following each other"
+      text: "first.user@example.com second.user@example.com third.user@example.com"
+      expected: "<a href='mailto:first.user@example.com' class='email-link'>first.user@example.com</a> <a href='mailto:second.user@example.com' class='email-link'>second.user@example.com</a> <a href='mailto:third.user@example.com' class='email-link'>third.user@example.com</a>"
+
+    - description: "Autolink two emails with quotes"
+      text: "'one@example.com'. Cool. Cool, cool, cool. \"two@example.com\""
+      expected: "'<a href='mailto:one@example.com' class='email-link'>one@example.com</a>'. Cool. Cool, cool, cool. \"<a href='mailto:two@example.com' class='email-link'>two@example.com</a>\""
+
+    - description: "Autolink email in parentheses"
+      text: "Postman Pat (pat@royalmail.com)"
+      expected: "Postman Pat (<a href='mailto:pat@royalmail.com' class='email-link'>pat@royalmail.com</a>)"
+
   usernames:
     - description: "Autolink trailing username"
       text: "text @username"
