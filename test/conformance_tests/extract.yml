@@ -446,9 +446,22 @@ tests:
       text: "https://username:password@example.com/cool-new-stuff"
       expected: ["https://username:password@example.com/cool-new-stuff"]
 
-    - description: "A url with basic auth parameters and other stuff"
+    - description: "A url with basic auth parameters and a path"
       text: "text https://username:password@example.com/cool-new-stuff more stuff. Check this out!!!"
       expected: ["https://username:password@example.com/cool-new-stuff"]
+
+    - description: "A url with basic auth parameters and query params"
+      text: "https://username:password@example.com/?foo=bar&quu=1"
+      expected: ["https://username:password@example.com/?foo=bar&quu=1"]
+
+    - description: "A url with basic auth parameters and a path followed by query params"
+      text: "https://username:password@example.com/cool-stuff?foo=bar&quu=1"
+      expected: ["https://username:password@example.com/cool-stuff?foo=bar&quu=1"]
+
+    - description: "A url with basic auth parameters and a path with an anchor"
+      text: "text https://username:password@example.com/cool-new-stuff#menu1 more stuff. Check this out!!!"
+      expected: ["https://username:password@example.com/cool-new-stuff#menu1"]
+
 
    # A common cause of runaway regex engines.
     - description: "Extract a URL with a ton of trailing periods"
@@ -570,6 +583,18 @@ tests:
           indices: [0, 11]
         - url: "http://t.co"
           indices: [12, 23]
+
+    - description: "Extract a basic auth http URL with indices"
+      text: "text http://foo:bar@example.com"
+      expected:
+        - url: "http://foo:bar@example.com"
+          indices: [5, 31]
+
+    - description: "Extract a basic auth https URL with indices"
+      text: "text https://foo:bar@example.com"
+      expected:
+        - url: "https://foo:bar@example.com"
+          indices: [5, 32]
 
   hashtags:
     - description: "Extract an all-alpha hashtag"
