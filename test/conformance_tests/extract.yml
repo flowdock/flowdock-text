@@ -1,16 +1,52 @@
 tests:
   emails:
-    - description: "Extract emails from end of sentence"
-      text: "This is a sentence. And this is another testing+wife@example.org."
+    - description: "Extract emails from beginning of sentence"
+      text: "testing+wife@example.org was her address"
       expected: ["testing+wife@example.org"]
+
+    - description: "Extract emails from end of sentence"
+      text: "This is a sentence. And this is another testing+wife@example.org"
+      expected: ["testing+wife@example.org"]
+
+    - description: "Extract emails from mid-sentence"
+      text: "Please mr postman pat@royalmail.com look and see"
+      expected: ["pat@royalmail.com"]
+
+    - description: "Extract emails separated by newlines"
+      text: "\none@example.com\ntwo@example.com\n"
+      expected: ["one@example.com", "two@example.com"]
 
     - description: "email, comma separated"
       text: "one@example.com, two@example.co.uk, three@example.co"
       expected: ["one@example.com", "two@example.co.uk", "three@example.co"]
 
-    - description: "only email"
+    - description: "email, comma separated with no trailing space after comma"
+      text: "one@example.com,two@example.co.uk,three@example.co"
+      expected: ["one@example.com", "two@example.co.uk", "three@example.co"]
+
+    - description: "email, in parentheses"
+      text: "(one@example.com)"
+      expected: ["one@example.com"]
+
+    - description: "email, followed by a dot"
+      text: "one@example.com."
+      expected: ["one@example.com"]
+
+    - description: "email with underscore"
       text: "email_lodash@test.com"
       expected: ["email_lodash@test.com"]
+
+    - description: "email with just numbers"
+      text: "13@hotmail.com"
+      expected: ["13@hotmail.com"]
+
+    - description: "email with a dash"
+      text: "email-justdash@test.com"
+      expected: ["email-justdash@test.com"]
+
+    - description: "email with a plus"
+      text: "email+plus@test.com"
+      expected: ["email+plus@test.com"]
 
   mentions:
     - description: "Extract mention at the begining of a tweet"

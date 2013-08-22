@@ -4,9 +4,17 @@ tests:
       text: "test@example.com"
       expected: "<a href='mailto:test@example.com' class='email-link'>test@example.com</a>"
 
-    - description: "Autolink email with other stuff"
-      text: "This is a test. test@example.com"
-      expected: "This is a test. <a href='mailto:test@example.com' class='email-link'>test@example.com</a>"
+    - description: "Autolink email in beginning of sentence"
+      text: "foo@example.com was the email"
+      expected: "<a href='mailto:foo@example.com' class='email-link'>foo@example.com</a> was the email"
+
+    - description: "Autolink email in end of sentence"
+      text: "This is a test test@example.com"
+      expected: "This is a test <a href='mailto:test@example.com' class='email-link'>test@example.com</a>"
+
+    - description: "Autolink email in mid-sentence"
+      text: "This is a test test@example.com thank you"
+      expected: "This is a test <a href='mailto:test@example.com' class='email-link'>test@example.com</a> thank you"
 
     - description: "Autolink several emails"
       text: "test.user@example.com bla bla. other-user@example.com"
@@ -23,6 +31,10 @@ tests:
     - description: "Autolink two emails with quotes"
       text: "'one@example.com'. Cool. Cool, cool, cool. \"two@example.com\""
       expected: "'<a href='mailto:one@example.com' class='email-link'>one@example.com</a>'. Cool. Cool, cool, cool. \"<a href='mailto:two@example.com' class='email-link'>two@example.com</a>\""
+
+    - description: "Autolink email in parentheses"
+      text: "Postman Pat (pat@royalmail.com)"
+      expected: "Postman Pat (<a href='mailto:pat@royalmail.com' class='email-link'>pat@royalmail.com</a>)"
 
   usernames:
     - description: "Autolink trailing username"
