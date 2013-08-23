@@ -512,6 +512,18 @@ tests:
       text: "afijoij ogiwjoijwe http://asd//cool@cool:NVCc@Sn@8Uar@foobar.com/path"
       expected: ["http://asd//cool@cool:NVCc@Sn@8Uar@foobar.com/path"]
 
+    - description: "Weird"
+      text: "Chris Burgersson https://https://cool@cool:https://http://@foobar.com/path"
+      expected: ["https://https://cool@cool:https://http://@foobar.com/path"]
+
+    - description: "Weird 2"
+      text: "Chris Burgersson https://.....:..........@foo.bar.com"
+      expected: ["https://.....:..........@foo.bar.com"]
+
+    - description: "Weird 2 false positive"
+      text: "Chris Burgersson https://.....:..........foo.bar.com"
+      expected: []
+
     - description: "weird username and password"
       text: "http://~~~uashdiuh#{%&/():#{/~~~}@cooldomain.com/with/path/123/and/stuff/"
       expected: ["http://~~~uashdiuh#{%&/():#{/~~~}@cooldomain.com/with/path/123/and/stuff/"]
