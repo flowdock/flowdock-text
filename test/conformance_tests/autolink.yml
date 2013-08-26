@@ -648,3 +648,7 @@ tests:
       text: "#https://twitter.com @https://twitter.com"
       expected: "#https://twitter.com @https://twitter.com"
 
+    - description: "url with basic auth and path"
+      text: "http://user:password@example.org/test"
+      expected: "<a href=\"http://user:password@example.org/test\">http://user:password@example.org/test</a>"
+
