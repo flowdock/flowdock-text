@@ -319,13 +319,13 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     ')?$'
   , "i");
 
-  FlowdockText.regexen.validEmailLocalPart = regexSupplant("[A-z|0-9|.|_|%|+|-]+");
+  FlowdockText.regexen.validEmailLocalPart = regexSupplant(/[A-z0-9\._%+-]+/);
 
   FlowdockText.regexen.email = regexSupplant(
     /#{validEmailLocalPart}@#{validDomain}/
   , 'gi');
   FlowdockText.regexen.extractEmails = regexSupplant(
-    /(?:^|[\(|\s|,|"|']{1}){0,1}#{email}(?:(?:$)|[\s|\.|,|"|'|\)]{1})/
+    /(?:^|[\(\s,"'])#{email}(?:(?=$|[\s\.,"'\)]))/
   , 'gi');
 
 
@@ -390,9 +390,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
   FlowdockText.extractEmails = function(text) {
     matches = text.match(FlowdockText.regexen.extractEmails);
-    return matches.map(function(match) {
-      return match.match(FlowdockText.regexen.email)[0];
-    });
+    return matches ? matches.map(function(match) { return match.match(FlowdockText.regexen.email)[0] }) : [];
   }
 
   FlowdockText.autoLinkEmails = function(text, options) {
