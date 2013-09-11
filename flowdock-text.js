@@ -320,7 +320,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     /#{validEmailLocalPart}@#{validDomain}/
   , 'gi');
   FlowdockText.regexen.extractEmails = regexSupplant(
-    /(?:^|[\(|\s|,|"|']{1}){0,1}#{email}(?:(?:$)|[\s|\.|,|"|'|\)]{1})/
+    /(?:\s|^|,|"|'){0,1}#{email}(?:\s|$|\.|,|"|'){0,1}/
   , 'gi');
 
 
