@@ -171,7 +171,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   };
 
   // URL related hash regex collection
-  FlowdockText.regexen.validPrecedingChars = regexSupplant(/(?:[^-\/"'!=A-Za-z0-9_@＠$#＃\.#{invalid_chars_group}]|^)/);
+  FlowdockText.regexen.validPrecedingChars = regexSupplant(/(?:[^-\/"':!=A-Za-z0-9_@＠@$#＃\.#{invalid_chars_group}]|^)/);
 
   FlowdockText.regexen.invalidDomainChars = stringSupplant("#{punct}#{spaces_group}#{invalid_chars_group}", FlowdockText.regexen);
   FlowdockText.regexen.validDomainChars = regexSupplant(/[^#{invalidDomainChars}]/);
@@ -184,8 +184,8 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   FlowdockText.regexen.pseudoValidIP = regexSupplant(/(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
   FlowdockText.regexen.validAsciiDomain = regexSupplant(/(?:(?:[a-z0-9#{latinAccentChars}\-]+)\.)+(?:#{validGTLD}|#{validCCTLD}|#{validPunycode})/gi);
 
-  // Allow "most" ascii characters (excluding whitespace and control characters)
-  FlowdockText.regexen.validBasicAuthCredentials = regexSupplant(/(?:[!-~]*:[!-~]*)@/)
+  // Allow "most" ascii characters (excluding whitespace and control characters), allow only one colon
+  FlowdockText.regexen.validBasicAuthCredentials = regexSupplant(/(?:(?!:)[!-~])+:(?:(?!:)[!-~])*@/)
 
   FlowdockText.regexen.validPortNumber = regexSupplant(/[0-9]+/);
 

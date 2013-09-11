@@ -395,9 +395,9 @@ tests:
       text: "badly formatted http://foo_bar.com"
       expected: "badly formatted http://foo_bar.com"
 
-    - description: "Autolink url preceded by :"
-      text: "text:http://example.com"
-      expected: "text:<a href=\"http://example.com\">http://example.com</a>"
+    - description: "Autolink url preceded by ': '"
+      text: "text: http://example.com"
+      expected: "text: <a href=\"http://example.com\">http://example.com</a>"
 
     - description: "Autolink url followed by ? (without it)"
       text: "text http://example.com?"
