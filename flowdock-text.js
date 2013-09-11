@@ -184,9 +184,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   FlowdockText.regexen.pseudoValidIP = regexSupplant(/(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
   FlowdockText.regexen.validAsciiDomain = regexSupplant(/(?:(?:[a-z0-9#{latinAccentChars}\-]+)\.)+(?:#{validGTLD}|#{validCCTLD}|#{validPunycode})/gi);
 
-  // Allow "most" ascii characters (excluding whitespace and control characters)
-  FlowdockText.regexen.validBasicAuthCredentials = regexSupplant(/(?:[!-~]*:[!-~]*)@/)
-
   FlowdockText.regexen.validPortNumber = regexSupplant(/[0-9]+/);
 
   FlowdockText.regexen.validGeneralUrlPathChars = regexSupplant(/[a-z0-9!\*';:=\+,\.\$\/%#\[\]\-_~|&#{latinAccentChars}]/i);
@@ -215,11 +212,9 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
         '(?:'                                                      +
           '(?:'                                                    +
             '(https?:\\/\\/)?'                                     + // $4 Protocol (optional)
-            '(?:#{validBasicAuthCredentials})?'                    + // basic auth
             '(#{validDomain}|#{pseudoValidIP})'                    + // $5 Domain(s)
           ')|(?:'                                                  + // OR
             '(https?:\\/\\/)'                                      + // $6 Protocol
-            '(?:#{validBasicAuthCredentials})?'                    +
             '((?:#{validDomainChars}|-)+)(?=:|\/|#{spaces}|\$)'    + // $7 Domain with a following port, path, whitespace or an end of string
           ')'                                                      +
         ')'                                                        +
@@ -319,13 +314,13 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     ')?$'
   , "i");
 
-  FlowdockText.regexen.validEmailLocalPart = regexSupplant(/[A-z0-9\._%+-]+/);
+  FlowdockText.regexen.validEmailLocalPart = regexSupplant("[A-z|0-9|.|_|%|+|-]+");
 
   FlowdockText.regexen.email = regexSupplant(
     /#{validEmailLocalPart}@#{validDomain}/
   , 'gi');
   FlowdockText.regexen.extractEmails = regexSupplant(
-    /(?:^|[\(\s,"'])#{email}(?:(?=$|[\s\.,"'\)]))/
+    /(?:\s|^|,|"|'){0,1}#{email}(?:\s|$|\.|,|"|'){0,1}/
   , 'gi');
 
 
@@ -390,7 +385,9 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
   FlowdockText.extractEmails = function(text) {
     matches = text.match(FlowdockText.regexen.extractEmails);
-    return matches ? matches.map(function(match) { return match.match(FlowdockText.regexen.email)[0] }) : [];
+    return matches.map(function(match) {
+      return match.match(FlowdockText.regexen.email)[0];
+    });
   }
 
   FlowdockText.autoLinkEmails = function(text, options) {
