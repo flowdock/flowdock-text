@@ -48,10 +48,6 @@ tests:
       text: "email+plus@test.com"
       expected: ["email+plus@test.com"]
 
-    - description: "long redis keys"
-      text: "i:Account:username:aeriaeu@applifier.com"
-      expected: []
-
   mentions:
     - description: "Extract mention at the begining of a tweet"
       text: "@username reply"
