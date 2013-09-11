@@ -184,9 +184,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   FlowdockText.regexen.pseudoValidIP = regexSupplant(/(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
   FlowdockText.regexen.validAsciiDomain = regexSupplant(/(?:(?:[a-z0-9#{latinAccentChars}\-]+)\.)+(?:#{validGTLD}|#{validCCTLD}|#{validPunycode})/gi);
 
-  // Allow "most" ascii characters (excluding whitespace and control characters)
-  FlowdockText.regexen.validBasicAuthCredentials = regexSupplant(/(?:[!-~]*:[!-~]*)@/)
-
   FlowdockText.regexen.validPortNumber = regexSupplant(/[0-9]+/);
 
   FlowdockText.regexen.validGeneralUrlPathChars = regexSupplant(/[a-z0-9!\*';:=\+,\.\$\/%#\[\]\-_~|&#{latinAccentChars}]/i);
@@ -215,11 +212,9 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
         '(?:'                                                      +
           '(?:'                                                    +
             '(https?:\\/\\/)?'                                     + // $4 Protocol (optional)
-            '(?:#{validBasicAuthCredentials})?'                    + // basic auth
             '(#{validDomain}|#{pseudoValidIP})'                    + // $5 Domain(s)
           ')|(?:'                                                  + // OR
             '(https?:\\/\\/)'                                      + // $6 Protocol
-            '(?:#{validBasicAuthCredentials})?'                    +
             '((?:#{validDomainChars}|-)+)(?=:|\/|#{spaces}|\$)'    + // $7 Domain with a following port, path, whitespace or an end of string
           ')'                                                      +
         ')'                                                        +
