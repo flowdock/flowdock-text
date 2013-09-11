@@ -517,8 +517,8 @@ tests:
       expected: ["http://asd//cool@cool:NVCc@Sn@8Uar@foobar.com/path"]
 
     - description: "Weird"
-      text: "Chris Burgersson https://https://cool@cool:https://http://@foobar.com/path"
-      expected: ["https://https://cool@cool:https://http://@foobar.com/path"]
+      text: "Chris Burgersson https://https//cool@cool:https//http//@foobar.com/path"
+      expected: ["https://https//cool@cool:https//http//@foobar.com/path"]
 
     - description: "Weird 2"
       text: "Chris Burgersson https://.....:..........@foo.bar.com"
@@ -543,6 +543,10 @@ tests:
     - description: "Extract basic auth url with path"
       text: "http://asd//cool@cool:NVCc@Sn@8Uar@foobar.com/path"
       expected: ["http://asd//cool@cool:NVCc@Sn@8Uar@foobar.com/path"]
+
+    - description: "weird redis key"
+      text: "i:Account:username:aeriaeu@applifier.com"
+      expected: []
 
   urls_with_indices:
     - description: "Extract a URL"
