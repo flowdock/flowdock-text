@@ -30,6 +30,10 @@ var testers = {
           return function(test) {
             return FlowdockText.extractEmails(test.text);
           };
+        case "emails_with_indices":
+          return function(test) {
+            return FlowdockText.extractEmailsWithIndices(test.text);
+          };
         case "mentions":
           return function(test) {
           return FlowdockText.extractMentions(test.text);

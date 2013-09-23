@@ -48,6 +48,87 @@ tests:
       text: "email+plus@test.com"
       expected: ["email+plus@test.com"]
 
+  emails_with_indices:
+    - description: "Extract lone email with indices"
+      text: "hi@hi.com"
+      expected:
+        - email: "hi@hi.com"
+          indices: [0, 9]
+
+    - description: "Extract email with indices inside quotes"
+      text: "\"hi@hi.com\""
+      expected:
+        - email: "hi@hi.com"
+          indices: [1, 10]
+
+    - description: "Extract email with indices inside parentheses"
+      text: "Hello (hi@hi.com)"
+      expected:
+        - email: "hi@hi.com"
+          indices: [7, 16]
+
+    - description: "Extract email with indices inside single quotes"
+      text: "'hi@hi.com'"
+      expected:
+        - email: "hi@hi.com"
+          indices: [1, 10]
+
+    - description: "Extract lone email followed by a comma"
+      text: "hi@hi.com,"
+      expected:
+        - email: "hi@hi.com"
+          indices: [0, 9]
+
+    - description: "Extract email with indices from beginning of sentence"
+      text: "hi@hi.com hi2u!"
+      expected:
+        - email: "hi@hi.com"
+          indices: [0, 9]
+
+    - description: "Extract email with indices from end of sentence"
+      text: "hi2u hi@hi.com"
+      expected:
+        - email: "hi@hi.com"
+          indices: [5, 14]
+
+    - description: "Extract emails with indices from middle of sentence"
+      text: "hi2u hi@hi.com dude"
+      expected:
+        - email: "hi@hi.com"
+          indices: [5, 14]
+
+    - description: "Extract multiple emails with indices"
+      text: "hi@hi.com ho@hi.com"
+      expected:
+        - email: "hi@hi.com"
+          indices: [0, 9]
+        - email: "ho@hi.com"
+          indices: [10, 19]
+
+    - description: "Extract multiple same emails with indices"
+      text: "hi@hi.com hi@hi.com"
+      expected:
+        - email: "hi@hi.com"
+          indices: [0, 9]
+        - email: "hi@hi.com"
+          indices: [10, 19]
+
+    - description: "Extract multiple emails with indices separated by commas and space"
+      text: "hi@hi.com, ho@hi.com"
+      expected:
+        - email: "hi@hi.com"
+          indices: [0, 9]
+        - email: "ho@hi.com"
+          indices: [11, 20]
+
+    - description: "Extract multiple emails with indices separated by just commas"
+      text: "hi@hi.com,ho@hi.com"
+      expected:
+        - email: "hi@hi.com"
+          indices: [0, 9]
+        - email: "ho@hi.com"
+          indices: [10, 19]
+
   mentions:
     - description: "Extract mention at the begining of a tweet"
       text: "@username reply"
