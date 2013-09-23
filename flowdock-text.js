@@ -319,8 +319,9 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   FlowdockText.regexen.email = regexSupplant(
     /#{validEmailLocalPart}@#{validDomain}/
   , 'gi');
+
   FlowdockText.regexen.extractEmails = regexSupplant(
-    /(?:\s|^|,|"|'){0,1}#{email}(?:\s|$|\.|,|"|'){0,1}/
+    /(?:^|\s|,|"|')?(#{email})/
   , 'gi');
 
 
@@ -383,27 +384,24 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     });
   };
 
-  FlowdockText.extractEmails = function(text) {
-    matches = text.match(FlowdockText.regexen.extractEmails);
-    return matches.map(function(match) {
-      return match.match(FlowdockText.regexen.email)[0];
-    });
-  }
 
   FlowdockText.autoLinkEmails = function(text, options) {
     if (!options) {
       options = {};
     }
-    var className = options.emailClass;
+    options.emailClass = options.emailClass || "email-link";
     return text.replace(FlowdockText.regexen.extractEmails, function(match) {
       return match.replace(FlowdockText.regexen.email, function(subMatch) {
-        var replacement = "<a href='mailto:" + subMatch + "'";
-        if (!!className) {
-          replacement += " class='" + className + "'";
+        d = {
+          subMatch: FlowdockText.htmlEscape(subMatch)
+        };
+        for (var k in options) {
+          if (options.hasOwnProperty(k)) {
+            d[k] = options[k];
+          }
         }
-        replacement += ">" + subMatch + "</a>"
-        return replacement;
-      })
+        return stringSupplant("<a href='mailto:#{subMatch}' class='#{emailClass}'>#{subMatch}</a>", d);
+      });
     });
   }
 
@@ -542,6 +540,32 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
     return urlsOnly;
   };
+
+  FlowdockText.extractEmails = function(text) {
+    var emailsOnly = [],
+        emailsWithIndices = FlowdockText.extractEmailsWithIndices(text);
+
+    for (var i = 0; i < emailsWithIndices.length; i++){
+      emailsOnly.push(emailsWithIndices[i].email)
+    }
+    return emailsOnly;
+  }
+
+
+  FlowdockText.extractEmailsWithIndices = function(text){
+    if (!text) {
+      return [];
+    }
+    emails = [];
+    while (match = FlowdockText.regexen.extractEmails.exec(text)) {
+      var email = match[1],
+          endPosition = FlowdockText.regexen.extractEmails.lastIndex,
+          startPosition = endPosition - email.length
+
+      emails.push({email: email, indices: [startPosition, endPosition]})
+    }
+    return emails;
+  }
 
   FlowdockText.extractUrlsWithIndices = function(text) {
     if (!text) {
