@@ -507,6 +507,10 @@ tests:
       text: "http://jorma.dmz"
       expected: "<a href=\"http://jorma.dmz\">http://jorma.dmz</a>"
 
+    - description: "Autolink url containing .corp ptld"
+      text: "http://enterprise.corp"
+      expected: "<a href=\"http://enterprise.corp\">http://enterprise.corp</a>"
+
     - description: "Autolink url containing .lan ptld"
       text: "http://build.lan"
       expected: "<a href=\"http://build.lan\">http://build.lan</a>"
