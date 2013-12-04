@@ -69,6 +69,10 @@ tests:
       text: "Hello @everyone"
       expected: [":user:everyone"]
 
+    - description: "Should not get terminator models tag"
+      text: "Terminator models: http://en.wikipedia.org/wiki/Terminator_(character_concept)#Models"
+      expected: [":url"]
+
   get_tags_from_message_without_supplied_me: #FlowodckText.parseTags(message, flow_users)
     - description: "Get unread tags for each user"
       text: "Hello @everyone"

@@ -652,3 +652,6 @@ tests:
       text: "#https://twitter.com @https://twitter.com"
       expected: "#https://twitter.com @https://twitter.com"
 
+    - description: "DO NOT autolink terminator"
+      text: "Terminator models: http://en.wikipedia.org/wiki/Terminator_(character_concept)#Models"
+      expected: "Terminator models: <a href=\"http://en.wikipedia.org/wiki/Terminator_(character_concept)#Models\">http://en.wikipedia.org/wiki/Terminator_(character_concept)#Models</a>"
