@@ -164,6 +164,10 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   FlowdockText.regexen.singleValidHashTag = regexSupplant(/^#{hashtagAlphaNumeric}+$/i);
   // FlowdockText change: allow all-numeric hashtags
   FlowdockText.regexen.autoLinkHashtags = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}+)/gi);
+
+  FlowdockText.regexen.almostHashTag = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}+)/i);
+  FlowdockText.regexen.almostMention = regexSupplant(/(#{hashtagBoundary})(@)(#{usernameAlphaNumeric}*#{usernameAlphaNumericEnd}+)/i);
+
   FlowdockText.regexen.autoLinkMentions = regexSupplant(/(#{hashtagBoundary})(@)(#{usernameAlphaNumeric}*#{usernameAlphaNumericEnd}+)/gi);
   // We want to only match words starting with the nickname and ignore case
   FlowdockText.regexen.highlightRegex = function(nick) {
@@ -224,6 +228,24 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       ')'                                                          +
     ')'
   , 'gi');
+
+  FlowdockText.regexen.almostUrl = regexSupplant(
+    '(#{validPrecedingChars})'                                   + // before
+    '('                                                          + // $1 URL
+      '(?:'                                                      +
+        '(?:'                                                    +
+          '(https?:\\/\\/)?'                                     + // $2 Protocol (optional)
+          '(#{validDomain}|#{pseudoValidIP})'                    + // $3 Domain(s)
+        ')|(?:'                                                  + // OR
+          '(https?:\\/\\/)'                                      + // $4 Protocol
+          '((?:#{validDomainChars}|-)+)(?=:|\/|#{spaces}|\$)'    + // $5 Domain with a following port, path, whitespace or an end of string
+        ')'                                                      +
+      ')'                                                        +
+      '(?::(#{validPortNumber}))?'                               + // $6 Port number (optional)
+      '(\\/#{validUrlPath}*)?'                                   + // $7 URL Path
+      '(\\?#{validUrlQueryChars}*#{validUrlQueryEndingChars})?'  + // $8 Query String
+    ')'
+  , 'i');
 
   FlowdockText.regexen.validTcoUrl = /^https?:\/\/t\.co\/[a-z0-9]+/i;
 
@@ -324,6 +346,8 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     /(?:^|\s|,|"|')?(#{email})/
   , 'gi');
 
+  FlowdockText.regexen.almostEmail = regexSupplant(/(?:^|\s|,|"|')?(#{email})/, 'i');
+
 
   // Default CSS class for auto-linked URLs
   var DEFAULT_URL_CLASS = "linkify-link";
@@ -344,75 +368,62 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     return r;
   }
 
-  FlowdockText.autoLink = function(text, options, urlLinkOptions) {
-    options = clone(options || {});
-    urlLinkOptions = clone(urlLinkOptions || {})
-    return FlowdockText.autoLinkEmails(
-      FlowdockText.autoLinkUrlsCustom(
-        FlowdockText.autoLinkMentions(
-          FlowdockText.autoLinkHashtags(text, options),
-        options),
-      urlLinkOptions)
-    );
-  };
+  var TOKEN_SPECS = [
+    ["url", FlowdockText.regexen.almostUrl],
+    ["hash", FlowdockText.regexen.almostHashTag],
+    ["user", FlowdockText.regexen.almostMention],
+    ["email", FlowdockText.regexen.almostEmail],
+  ];
 
-  FlowdockText.autoLinkHashtags = function(text, options) {
-    options = clone(options || {});
-    options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
-    options.hashtagUrlBase = options.hashtagUrlBase || "#flowser/all/";
+  function tokenizeHelper(text, spec) {
+    var m = text.match(spec[1]);
+    // console.log("match", m);
+    if (m) {
+      m.type = spec[0];
+    }
+    return m;
+  }
 
-    return text.replace(FlowdockText.regexen.autoLinkHashtags, function(match, before, hash, text, offset, chunk) {
-      var after = chunk.slice(offset + match.length);
-      if (after.match(FlowdockText.regexen.endHashtagMatch))
-        return match;
+  function tokenize(text) {
+    var tokens = [];
 
-      var d = {
-        before: before,
-        hash: FlowdockText.htmlEscape(hash),
-        preText: "",
-        text: FlowdockText.htmlEscape(text),
-        postText: ""
-      };
-
-      for (var k in options) {
-        if (options.hasOwnProperty(k)) {
-          d[k] = options[k];
+    while (true) {
+      var matches = TOKEN_SPECS.map(tokenizeHelper.bind(null, text));
+      var min = undefined;
+      for (var i = 0; i < matches.length; i++) {
+        var m = matches[i];
+        if (!min || (m && m.index < min.index)) {
+          min = m;
         }
       }
 
-      return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{hashtagClass}\">#{hash}#{preText}#{text}#{postText}</a>", d);
-    });
-  };
-
-
-  FlowdockText.autoLinkEmails = function(text, options) {
-    if (!options) {
-      options = {};
-    }
-    options.emailClass = options.emailClass || "email-link";
-    return text.replace(FlowdockText.regexen.extractEmails, function(match) {
-      return match.replace(FlowdockText.regexen.email, function(subMatch) {
-        d = {
-          subMatch: FlowdockText.htmlEscape(subMatch)
-        };
-        for (var k in options) {
-          if (options.hasOwnProperty(k)) {
-            d[k] = options[k];
-          }
+      if (min) {
+        if (min.index > 0) {
+          tokens.push({
+            type: "text",
+            value: text.substr(0, min.index),
+          });
         }
-        return stringSupplant("<a href='mailto:#{subMatch}' class='#{emailClass}'>#{subMatch}</a>", d);
-      });
-    });
+
+        tokens.push({
+          type: min.type,
+          value: min[0],
+          match: min,
+        })
+
+        text = text.substr(min.index + min[0].length);
+      } else {
+        tokens.push({
+          type: "text",
+          value: text,
+        });
+
+        return tokens;
+      }
+    }
   }
 
-  FlowdockText.autoLinkUrlsCustom = function(text, options) {
-    options = clone(options || {});
-    if (options.urlClass) {
-      options["class"] = options.urlClass;
-      delete options.urlClass;
-    }
-
-    // remap url entities to hash
+  function transformUrl(options, urlToken) {
     var urlEntities, i, len;
     if(options.urlEntities) {
       urlEntities = {};
@@ -421,78 +432,201 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       }
     }
 
-    delete options.usernameClass;
-    delete options.usernameUrlBase;
+    var url = urlToken.match[2],
+        protocol = (urlToken.match[3] || urlToken.match[5]),
+        htmlAttrs = "";
 
-    return text.replace(FlowdockText.regexen.extractUrl, function() {
-      var before = arguments[2],
-          url = arguments[3],
-          protocol = (arguments[4] || arguments[6]),
-          htmlAttrs = "",
-          after = "";
+    var before = urlToken.match[1];
+    var after = "";
 
-      for (var k in options) {
-        htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
-      }
-
-      // In the case of t.co URLs, don't allow additional path characters.
-      if (url.match(FlowdockText.regexen.validTcoUrl)) {
-        url = RegExp.lastMatch;
-        after = RegExp.rightContext;
-      }
-
-      var d = {
-        before: before,
-        htmlAttrs: htmlAttrs,
-        url: FlowdockText.htmlEscape(url),
-        after: after
-      };
-      if (urlEntities && urlEntities[url] && urlEntities[url].display_url) {
-        d.displayUrl = FlowdockText.htmlEscape(urlEntities[url].display_url);
-      } else {
-        d.displayUrl = d.url;
-      }
-
-      if (!protocol) {
-        d.url = 'http://' + d.url;
-      }
-      return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>#{after}", d);
-    });
-  };
-
-  FlowdockText.autoLinkMentions = function(text, options) {
-    options = clone(options || {});
-    options.hashtagClass = options.hashtagClass || "app-tag-link";
-    options.hashtagUrlBase = options.hashtagUrlBase || "#flowser/all/";
-    var userTags = [];
-    if(options && options.userTags){
-      userTags = options.userTags.map(function(tag){ return tag.toLowerCase() });
+    for (var k in options) {
+      htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
     }
-    return text.replace(FlowdockText.regexen.autoLinkMentions, function(match, before, hash, text, offset, chunk) {
-      var after = chunk.slice(offset + match.length);
-      if (after.match(FlowdockText.regexen.endHashtagMatch))
-        return match;
-      var d = {
-        before: before,
-        hash: FlowdockText.htmlEscape(hash),
-        preText: "",
-        text: FlowdockText.htmlEscape(text),
-        postText: "",
-      };
 
+    if (url.match(FlowdockText.regexen.validTcoUrl)) {
+      url = RegExp.lastMatch;
+      after = RegExp.rightContext;
+    }
+
+    var d = {
+      htmlAttrs: htmlAttrs,
+      url: FlowdockText.htmlEscape(url),
+      after: after,
+      before: before,
+    };
+
+    if (urlEntities && urlEntities[url] && urlEntities[url].display_url) {
+      d.displayUrl = FlowdockText.htmlEscape(urlEntities[url].display_url);
+    } else {
+      d.displayUrl = d.url;
+    }
+
+    if (!protocol) {
+      d.url = 'http://' + d.url;
+    }
+    return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>#{after}", d);
+  }
+
+  function transformEmail(options, emailToken) {
+    return emailToken.match[0].replace(FlowdockText.regexen.email, function(subMatch) {
+      d = {
+        subMatch: FlowdockText.htmlEscape(subMatch)
+      };
       for (var k in options) {
         if (options.hasOwnProperty(k)) {
           d[k] = options[k];
         }
       }
-
-
-      if(userTags.length !== 0 && !inArray(d.hash + d.text.toLowerCase(), userTags)){
-        return stringSupplant("#{before}#{hash}#{preText}#{text}#{postText}", d);
-      } else {
-        return stringSupplant("#{before}<a title=\"Search #{hash}#{text}\" class=\"#{hashtagClass}\" href=\"#{hashtagUrlBase}#{hash}#{text}\">#{hash}#{preText}#{text}#{postText}</a>", d);
-      }
+      return stringSupplant("<a href='mailto:#{subMatch}' class='#{emailClass}'>#{subMatch}</a>", d);
     });
+  }
+
+  function transformHashTag(options, hashtagToken) {
+    var match = hashtagToken.match;
+
+    var before = match[1]
+    var hash = match[2];
+    var text = match[3];
+
+    var after = match.input.slice(match.index + match[0].length);
+    if (after.match(FlowdockText.regexen.endHashtagMatch)) {
+      return match[0];
+    }
+
+    var d = {
+      hash: FlowdockText.htmlEscape(hash),
+      preText: "",
+      text: FlowdockText.htmlEscape(text),
+      postText: "",
+      before: before,
+    };
+
+    for (var k in options) {
+      if (options.hasOwnProperty(k)) {
+        d[k] = options[k];
+      }
+    }
+
+    return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{hashtagClass}\">#{hash}#{preText}#{text}#{postText}</a>", d);
+  }
+
+  function transformUser(options, userToken) {
+    var userTags = [];
+    if(options && options.userTags){
+      userTags = options.userTags.map(function(tag){ return tag.toLowerCase() });
+    }
+
+    var match = userToken.match;
+
+    var before = match[1];
+    var hash = match[2];
+    var text = match[3];
+
+    var after = match.input.slice(match.index + match[0].length);
+    if (after.match(FlowdockText.regexen.endHashtagMatch))
+      return match[0];
+
+    var d = {
+      before: before,
+      hash: FlowdockText.htmlEscape(hash),
+      preText: "",
+      text: FlowdockText.htmlEscape(text),
+      postText: "",
+    };
+
+    for (var k in options) {
+      if (options.hasOwnProperty(k)) {
+        d[k] = options[k];
+      }
+    }
+
+    if (userTags.length !== 0 && !inArray(d.hash + d.text.toLowerCase(), userTags)){
+      return stringSupplant("#{before}#{hash}#{preText}#{text}#{postText}", d);
+    } else {
+      return stringSupplant("#{before}<a title=\"Search #{hash}#{text}\" class=\"#{hashtagClass}\" href=\"#{hashtagUrlBase}#{hash}#{text}\">#{hash}#{preText}#{text}#{postText}</a>", d);
+    }
+  }
+
+  function transformToken(options, urlLinkOptions, token) {
+    switch (token.type) {
+      case "text":
+        return token.value;
+      case "url":
+        return transformUrl(urlLinkOptions, token);
+      case "hash":
+        return transformHashTag(options, token);
+      case "user":
+        return transformUser(options, token);
+      case "email":
+        return transformEmail(options, token);
+    }
+  }
+
+  function autoLinkOptions(options) {
+    options = clone(options || {});
+
+    options.hashtagClass = options.hashtagClass || DEFAULT_HASHTAG_CLASS;
+    options.hashtagUrlBase = options.hashtagUrlBase || "#flowser/all/";
+
+    options.emailClass = options.emailClass || "email-link";
+
+    return options;
+  }
+
+  function autoLinkUrlLinkOptions(options) {
+    return clone(options || {});
+  }
+
+  FlowdockText.autoLink = function(text, options, urlLinkOptions) {
+    options = autoLinkOptions(options);
+    urlLinkOptions = autoLinkUrlLinkOptions(urlLinkOptions);
+
+    var tokens = tokenize(text);
+    var parts = tokens.map(transformToken.bind(null, options, urlLinkOptions));
+    return parts.join("");
+  };
+
+  function filterToken(type, token) {
+    if (token.type === type || token.type === "text") {
+      return token;
+    } else {
+      return {
+        type: "text",
+        value: token.match[0],
+      };
+    }
+  }
+
+  FlowdockText.autoLinkHashtags = function(text, options) {
+    options = autoLinkOptions(options);
+    var tokens = tokenize(text);
+    tokens = tokens.map(filterToken.bind(null, "hash"));
+    var parts = tokens.map(transformToken.bind(null, options, {}));
+    return parts.join("");
+  };
+
+  FlowdockText.autoLinkEmails = function(text, options) {
+    options = autoLinkOptions(options);
+    var tokens = tokenize(text);
+    tokens = tokens.map(filterToken.bind(null, "email"));
+    var parts = tokens.map(transformToken.bind(null, options, {}));
+    return parts.join("");
+  }
+
+  FlowdockText.autoLinkUrlsCustom = function(text, urlLinkOptions) {
+    urlLinkOptions = autoLinkUrlLinkOptions(urlLinkOptions);
+    var tokens = tokenize(text);
+    tokens = tokens.map(filterToken.bind(null, "url"));
+    var parts = tokens.map(transformToken.bind(null, {}, urlLinkOptions));
+    return parts.join("");
+  };
+
+  FlowdockText.autoLinkMentions = function(text, options) {
+    options = autoLinkOptions(options);
+    var tokens = tokenize(text);
+    tokens = tokens.map(filterToken.bind(null, "user"));
+    var parts = tokens.map(transformToken.bind(null, options, {}));
+    return parts.join("");
   };
 
   FlowdockText.extractMentions = function(text) {
@@ -732,8 +866,18 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     var tags = [];
     var users = users || [];
     var me = me || {};
+
+    var tokens = tokenize(message);
+
     var urls = FlowdockText.extractUrls(message);
-    var matchedTags = FlowdockText.extractHashtags(message);
+    var matchedTags = tokens
+      .filter(function (t) {
+        return t.type === "hash";
+      })
+      .map(function (t) {
+        return t.match[2];
+      });
+
     var matchedMentions = FlowdockText.extractMentions(message);
 
     if (matchedTags.length > 0) {
