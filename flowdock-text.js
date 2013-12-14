@@ -165,8 +165,9 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   // FlowdockText change: allow all-numeric hashtags
   FlowdockText.regexen.autoLinkHashtags = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}+)/gi);
 
-  FlowdockText.regexen.almostHashTag = regexSupplant(/(#{hashtagBoundary})(#|＃)(#{hashtagAlphaNumeric}+)/i);
-  FlowdockText.regexen.almostMention = regexSupplant(/(#{hashtagBoundary})(@)(#{usernameAlphaNumeric}*#{usernameAlphaNumericEnd}+)/i);
+  FlowdockText.regexen.startHashTagMatch = regexSupplant(/(?:^|[^&\/a-z0-9_#{latinAccentChars}#{nonLatinHashtagChars}])$/);
+  FlowdockText.regexen.singleHashTag = regexSupplant(/(#|＃)(#{hashtagAlphaNumeric}+)/i);
+  FlowdockText.regexen.singleMention = regexSupplant(/(@)(#{usernameAlphaNumeric}*#{usernameAlphaNumericEnd}+)/i);
 
   FlowdockText.regexen.autoLinkMentions = regexSupplant(/(#{hashtagBoundary})(@)(#{usernameAlphaNumeric}*#{usernameAlphaNumericEnd}+)/gi);
   // We want to only match words starting with the nickname and ignore case
@@ -229,7 +230,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     ')'
   , 'gi');
 
-  FlowdockText.regexen.almostUrl = regexSupplant(
+  FlowdockText.regexen.singleUrl = regexSupplant(
     '(#{validPrecedingChars})'                                   + // before
     '('                                                          + // $1 URL
       '(?:'                                                      +
@@ -346,7 +347,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     /(?:^|\s|,|"|')?(#{email})/
   , 'gi');
 
-  FlowdockText.regexen.almostEmail = regexSupplant(/(?:^|\s|,|"|')?(#{email})/, 'i');
+  FlowdockText.regexen.singleEmail = regexSupplant(/(?:^|\s|,|"|')?(#{email})/, 'i');
 
 
   // Default CSS class for auto-linked URLs
@@ -368,54 +369,96 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     return r;
   }
 
+  function checkHashtagMention(match, originalText, position) {
+    var start = position + match.index;
+    var before = originalText.slice(0, start);
+    var after = originalText.slice(start + match[0].length);
+    return FlowdockText.regexen.startHashTagMatch.test(before) && !FlowdockText.regexen.endHashtagMatch.test(after);
+  }
+
   var TOKEN_SPECS = [
-    ["url", FlowdockText.regexen.almostUrl],
-    ["hash", FlowdockText.regexen.almostHashTag],
-    ["user", FlowdockText.regexen.almostMention],
-    ["email", FlowdockText.regexen.almostEmail],
+    {
+      type: "url",
+      regex: FlowdockText.regexen.singleUrl,
+      check: function () { return true; },
+    },
+    {
+      type: "hash",
+      regex: FlowdockText.regexen.singleHashTag,
+      check: checkHashtagMention,
+    },
+    {
+      type: "mention",
+      regex: FlowdockText.regexen.singleMention,
+      check: checkHashtagMention,
+    },
+    {
+      type: "email",
+      regex: FlowdockText.regexen.singleEmail,
+      check: function () { return true; },
+    },
   ];
 
-  function tokenizeHelper(text, spec) {
-    var m = text.match(spec[1]);
+  function tokenizeHelper(text, originalText, position, spec) {
+    var m = text.match(spec.regex);
     // console.log("match", m);
     if (m) {
-      m.type = spec[0];
+      if (!spec.check(m, originalText, position)) {
+        return null;
+      }
+
+      return {
+        type: spec.type,
+        match: m,
+        start: position + m.index,
+        end: position + m.index + m[0].length,
+      }
     }
     return m;
   }
 
   function tokenize(text) {
     var tokens = [];
+    var position = 0;
 
     while (true) {
-      var matches = TOKEN_SPECS.map(tokenizeHelper.bind(null, text));
+      // javascript regexps doesn't have "match from" functionality,
+      // so we need to take a substr
+      var textpart = text.substr(position);
+
+      // try to match all token specs
+      var ts = TOKEN_SPECS.map(tokenizeHelper.bind(null, textpart, text, position));
+
+      // find match with smallest start offset
       var min = undefined;
-      for (var i = 0; i < matches.length; i++) {
-        var m = matches[i];
-        if (!min || (m && m.index < min.index)) {
+      for (var i = 0; i < ts.length; i++) {
+        var m = ts[i];
+        if (!min || (m && m.start < min.start)) {
           min = m;
         }
       }
 
       if (min) {
-        if (min.index > 0) {
+        // if there's a match,
+        // add text token, if there's something
+        if (min.start > position) {
           tokens.push({
             type: "text",
-            value: text.substr(0, min.index),
+            value: textpart.substr(0, min.start - position),
           });
         }
 
-        tokens.push({
-          type: min.type,
-          value: min[0],
-          match: min,
-        })
+        // and add matched token
+        tokens.push(min);
 
-        text = text.substr(min.index + min[0].length);
+        // update position for the next iteration
+        position = min.end;
       } else {
+
+        // if none of token specs matched, the rest of the input is plain text
         tokens.push({
           type: "text",
-          value: text,
+          value: textpart,
         });
 
         return tokens;
@@ -484,21 +527,14 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   function transformHashTag(options, hashtagToken) {
     var match = hashtagToken.match;
 
-    var before = match[1]
-    var hash = match[2];
-    var text = match[3];
-
-    var after = match.input.slice(match.index + match[0].length);
-    if (after.match(FlowdockText.regexen.endHashtagMatch)) {
-      return match[0];
-    }
+    var hash = match[1];
+    var text = match[2];
 
     var d = {
       hash: FlowdockText.htmlEscape(hash),
       preText: "",
       text: FlowdockText.htmlEscape(text),
       postText: "",
-      before: before,
     };
 
     for (var k in options) {
@@ -507,10 +543,10 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       }
     }
 
-    return stringSupplant("#{before}<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{hashtagClass}\">#{hash}#{preText}#{text}#{postText}</a>", d);
+    return stringSupplant("<a href=\"#{hashtagUrlBase}#{text}\" title=\"##{text}\" class=\"#{hashtagClass}\">#{hash}#{preText}#{text}#{postText}</a>", d);
   }
 
-  function transformUser(options, userToken) {
+  function transformMention(options, userToken) {
     var userTags = [];
     if(options && options.userTags){
       userTags = options.userTags.map(function(tag){ return tag.toLowerCase() });
@@ -518,16 +554,10 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
     var match = userToken.match;
 
-    var before = match[1];
-    var hash = match[2];
-    var text = match[3];
-
-    var after = match.input.slice(match.index + match[0].length);
-    if (after.match(FlowdockText.regexen.endHashtagMatch))
-      return match[0];
+    var hash = match[1];
+    var text = match[2];
 
     var d = {
-      before: before,
       hash: FlowdockText.htmlEscape(hash),
       preText: "",
       text: FlowdockText.htmlEscape(text),
@@ -541,9 +571,9 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     }
 
     if (userTags.length !== 0 && !inArray(d.hash + d.text.toLowerCase(), userTags)){
-      return stringSupplant("#{before}#{hash}#{preText}#{text}#{postText}", d);
+      return stringSupplant("#{hash}#{preText}#{text}#{postText}", d);
     } else {
-      return stringSupplant("#{before}<a title=\"Search #{hash}#{text}\" class=\"#{hashtagClass}\" href=\"#{hashtagUrlBase}#{hash}#{text}\">#{hash}#{preText}#{text}#{postText}</a>", d);
+      return stringSupplant("<a title=\"Search #{hash}#{text}\" class=\"#{hashtagClass}\" href=\"#{hashtagUrlBase}#{hash}#{text}\">#{hash}#{preText}#{text}#{postText}</a>", d);
     }
   }
 
@@ -555,8 +585,8 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
         return transformUrl(urlLinkOptions, token);
       case "hash":
         return transformHashTag(options, token);
-      case "user":
-        return transformUser(options, token);
+      case "mention":
+        return transformMention(options, token);
       case "email":
         return transformEmail(options, token);
     }
@@ -577,15 +607,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     return clone(options || {});
   }
 
-  FlowdockText.autoLink = function(text, options, urlLinkOptions) {
-    options = autoLinkOptions(options);
-    urlLinkOptions = autoLinkUrlLinkOptions(urlLinkOptions);
-
-    var tokens = tokenize(text);
-    var parts = tokens.map(transformToken.bind(null, options, urlLinkOptions));
-    return parts.join("");
-  };
-
   function filterToken(type, token) {
     if (token.type === type || token.type === "text") {
       return token;
@@ -597,36 +618,36 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     }
   }
 
-  FlowdockText.autoLinkHashtags = function(text, options) {
+  function autoLinkImpl(text, options, urlLinkOptions, filter) {
     options = autoLinkOptions(options);
-    var tokens = tokenize(text);
-    tokens = tokens.map(filterToken.bind(null, "hash"));
-    var parts = tokens.map(transformToken.bind(null, options, {}));
-    return parts.join("");
-  };
+    urlLinkOptions = autoLinkUrlLinkOptions(urlLinkOptions);
 
-  FlowdockText.autoLinkEmails = function(text, options) {
-    options = autoLinkOptions(options);
     var tokens = tokenize(text);
-    tokens = tokens.map(filterToken.bind(null, "email"));
-    var parts = tokens.map(transformToken.bind(null, options, {}));
+    if (filter) {
+      tokens = tokens.map(filterToken.bind(null, filter));
+    }
+    var parts = tokens.map(transformToken.bind(null, options, urlLinkOptions));
     return parts.join("");
   }
 
+  FlowdockText.autoLink = function(text, options, urlLinkOptions) {
+    return autoLinkImpl(text, options, urlLinkOptions);
+  };
+
+  FlowdockText.autoLinkHashtags = function(text, options) {
+    return autoLinkImpl(text, options, {}, "hash");
+  };
+
+  FlowdockText.autoLinkEmails = function(text, options) {
+    return autoLinkImpl(text, options, {}, "email");
+  }
+
   FlowdockText.autoLinkUrlsCustom = function(text, urlLinkOptions) {
-    urlLinkOptions = autoLinkUrlLinkOptions(urlLinkOptions);
-    var tokens = tokenize(text);
-    tokens = tokens.map(filterToken.bind(null, "url"));
-    var parts = tokens.map(transformToken.bind(null, {}, urlLinkOptions));
-    return parts.join("");
+    return autoLinkImpl(text, {}, urlLinkOptions, "url");
   };
 
   FlowdockText.autoLinkMentions = function(text, options) {
-    options = autoLinkOptions(options);
-    var tokens = tokenize(text);
-    tokens = tokens.map(filterToken.bind(null, "user"));
-    var parts = tokens.map(transformToken.bind(null, options, {}));
-    return parts.join("");
+    return autoLinkImpl(text, options, {}, "mention");
   };
 
   FlowdockText.extractMentions = function(text) {
@@ -690,14 +711,27 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     if (!text) {
       return [];
     }
-    emails = [];
-    while (match = FlowdockText.regexen.extractEmails.exec(text)) {
-      var email = match[1],
-          endPosition = FlowdockText.regexen.extractEmails.lastIndex,
-          startPosition = endPosition - email.length
 
-      emails.push({email: email, indices: [startPosition, endPosition]})
-    }
+    var tokens = tokenize(text);
+    tokens = tokens.filter(function (t) {
+      return t.type == "email";
+    });
+
+    var emails = [];
+
+    tokens.forEach(function (t) {
+      // TODO: refactor, copy paste
+      return t.match[0].replace(FlowdockText.regexen.email, function(subMatch) {
+        submatch = FlowdockText.htmlEscape(subMatch);
+        var endPosition = t.end + FlowdockText.regexen.extractEmails.lastIndex;
+        var startPosition = endPosition - submatch.length;
+        emails.push({
+          email: submatch,
+          indices: [startPosition, endPosition],
+        });
+      });
+    });
+
     return emails;
   }
 
@@ -706,16 +740,23 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       return [];
     }
 
+    var tokens = tokenize(text);
+    tokens = tokens.filter(function (t) {
+      return t.type == "url";
+    })
+    // tokens.length && console.error(tokens);
+
     var urls = [];
 
-    while (match = FlowdockText.regexen.extractUrl.exec(text)) {
-      var before = match[2],
-          url = match[3],
-          protocol = (match[4] || match[6]),
-          domain = (match[5] || match[7]),
-          path = match[9],
-          endPosition = FlowdockText.regexen.extractUrl.lastIndex,
-          startPosition = endPosition - url.length;
+    tokens.forEach(function (t) {
+      var match = t.match;
+      var before = match[1],
+          url = match[2],
+          protocol = (match[3] || match[5]),
+          domain = (match[4] || match[6]),
+          path = match[8],
+          startPosition = t.start + before.length, // TODO: fix
+          endPosition = t.end;
 
       // if protocol is missing and domain contains non-ASCII characters,
       // extract ASCII-only domains.
@@ -735,7 +776,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
         // no ASCII-only domain found. Skip the entire URL.
         if (lastUrl == null) {
-          continue;
+          return;
         }
 
         // lastUrl only contains domain. Need to add path and query if they exist.
@@ -757,7 +798,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
           indices: [startPosition, endPosition]
         });
       }
-    }
+    });
 
     return urls;
   };
@@ -778,18 +819,23 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       return [];
     }
 
-    var tags = [],
-        position = 0;
+    var tokens = tokenize(text);
+    tokens = tokens.filter(function (t) {
+      return t.type == "hash";
+    })
 
-    text.replace(FlowdockText.regexen.autoLinkHashtags, function(match, before, hash, hashText, offset, chunk) {
-      var after = chunk.slice(offset + match.length);
-      if (after.match(FlowdockText.regexen.endHashtagMatch))
-        return;
-      var startPosition = text.indexOf(hash + hashText, position);
-      position = startPosition + hashText.length + 1;
+    var tags = [];
+
+    tokens.forEach(function (t) {
+      var match = t.match;
+      var hash = match[1];
+      var text = match[2];
+      var startPosition = t.start;
+      var endPosition = t.end;
+
       tags.push({
-        tag: hashText,
-        indices: [startPosition, position]
+        tag: text,
+        indices: [startPosition, endPosition]
       });
     });
 
@@ -839,22 +885,27 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       return [];
     }
 
-    var tags = [],
-        position = 0;
+    var tokens = tokenize(text);
+    tokens = tokens.filter(function (t) {
+      return t.type == "mention";
+    })
 
-    text.replace(FlowdockText.regexen.autoLinkMentions, function(match, before, hash, hashText, offset, chunk) {
-      var after = chunk.slice(offset + match.length);
-      if (after.match(FlowdockText.regexen.endHashtagMatch))
-        return;
-      var startPosition = text.indexOf(hash + hashText, position);
-      position = startPosition + hashText.length + 1;
+    var tags = [];
+
+    tokens.forEach(function (t) {
+      var match = t.match;
+      var hash = match[1];
+      var text = match[2];
+      var startPosition = t.start;
+      var endPosition = t.end;
+
       tags.push({
-        tag: (hash + hashText),
-        indices: [startPosition, position]
+        tag: hash + text,
+        indices: [startPosition, endPosition]
       });
     });
 
-    if(userTags){
+    if (userTags) {
       userTags = downCase(userTags.map(getUserTag));
       return tags.filter(function(tag){ return inArray(tag.tag.toLowerCase(), userTags) });
     }
