@@ -120,6 +120,26 @@ To run the tests with node.js
 
     rake test_node
 
+### mocha, istanbul & karma
+
+You can run tests with [mocha](http://visionmedia.github.io/mocha/):
+
+    npm run test
+
+Optionally you can get coverage information with [istanbul](http://gotwarlost.github.io/istanbul/):
+
+    npm run istanbul
+
+And finally, you could run test suite in multiple browsers using [karma](http://karma-runner.github.io/0.10/index.html)
+
+    npm run karma
+
+For those to work you have to install related npm packages:
+
+    npm install
+
+For convenience, there are npm scripts
+
 ## Copyright and License
 
 Copyright 2011 Twitter, Inc.
