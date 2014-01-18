@@ -658,41 +658,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     return autoLinkImpl(text, options, {}, "mention");
   };
 
-  FlowdockText.extractMentions = function(text) {
-    var screenNamesOnly = [],
-        screenNamesWithIndices = FlowdockText.extractMentionsWithIndices(text);
-
-    for (var i = 0; i < screenNamesWithIndices.length; i++) {
-      var screenName = screenNamesWithIndices[i].screenName;
-      screenNamesOnly.push(screenName);
-    }
-
-    return screenNamesOnly;
-  };
-
-  FlowdockText.extractMentionsWithIndices = function(text) {
-    if (!text) {
-      return [];
-    }
-
-    var possibleScreenNames = [],
-        position = 0;
-
-    text.replace(FlowdockText.regexen.extractMentions, function(match, before, atSign, screenName, offset, chunk) {
-      var after = chunk.slice(offset + match.length);
-      if (!after.match(FlowdockText.regexen.endScreenNameMatch)) {
-        var startPosition = text.indexOf(atSign + screenName, position);
-        position = startPosition + screenName.length + 1;
-        possibleScreenNames.push({
-          username: screenName,
-          indices: [startPosition, position]
-        });
-      }
-    });
-
-    return possibleScreenNames;
-  };
-
   FlowdockText.extractUrls = function(text) {
     var urlsOnly = [],
         urlsWithIndices = FlowdockText.extractUrlsWithIndices(text);
@@ -716,11 +681,10 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
 
   FlowdockText.extractEmailsWithIndices = function(text){
-    if (!text) {
-      return [];
-    }
+    return FlowdockText.extractAllWithIndices(text).emails;
+  }
 
-    var tokens = tokenize(text);
+  function extractEmailsWithIndicesFromTokens(tokens) {
     tokens = tokens.filter(function (t) {
       return t.type == "email";
     });
@@ -744,14 +708,13 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   }
 
   FlowdockText.extractUrlsWithIndices = function(text) {
-    if (!text) {
-      return [];
-    }
+    return FlowdockText.extractAllWithIndices(text).urls;
+  }
 
-    var tokens = tokenize(text);
+  function extractUrlsWithIndicesFromTokens(tokens) {
     tokens = tokens.filter(function (t) {
       return t.type == "url";
-    })
+    });
     // tokens.length && console.error(tokens);
 
     var urls = [];
@@ -823,11 +786,10 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   };
 
   FlowdockText.extractHashtagsWithIndices = function(text) {
-    if (!text) {
-      return [];
-    }
+    return FlowdockText.extractAllWithIndices(text).hashtags;
+  }
 
-    var tokens = tokenize(text);
+  function extractHashtagsWithIndicesFromTokens(tokens) {
     tokens = tokens.filter(function (t) {
       return t.type == "hash";
     })
@@ -889,11 +851,10 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     return mentionsOnly;
   };
   FlowdockText.extractMentionsWithIndices = function(text, userTags) {
-    if (!text) {
-      return [];
-    }
+    return FlowdockText.extractAllWithIndices(text, userTags).mentions;
+  }
 
-    var tokens = tokenize(text);
+  function extractMentionsWithIndicesFromTokens(tokens, userTags) {
     tokens = tokens.filter(function (t) {
       return t.type == "mention";
     })
@@ -968,6 +929,26 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
     return tags.filter(function(tag){ return tag[0] !== "@"});
   };
+
+  FlowdockText.extractAllWithIndices = function(text, userTags) {
+    if (!text) {
+      return {
+        hashtags: [],
+        mentions: [],
+        emails: [],
+        urls: [],
+      };
+    }
+
+    var tokens = tokenize(text);
+    return {
+      hashtags: extractHashtagsWithIndicesFromTokens(tokens),
+      mentions: extractMentionsWithIndicesFromTokens(tokens, userTags),
+      emails: extractEmailsWithIndicesFromTokens(tokens),
+      urls: extractUrlsWithIndicesFromTokens(tokens),
+    }
+  }
+
   FlowdockText.mentionsAll = function(check){
     if(isArray(check)){
       return ["@everyone", "@everybody", "@all", "@anyone", "@anybody"].some(function(tag) {
