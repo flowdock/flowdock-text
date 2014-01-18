@@ -658,27 +658,14 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     return autoLinkImpl(text, options, {}, "mention");
   };
 
-  FlowdockText.extractUrls = function(text) {
-    var urlsOnly = [],
-        urlsWithIndices = FlowdockText.extractUrlsWithIndices(text);
-
-    for (var i = 0; i < urlsWithIndices.length; i++) {
-      urlsOnly.push(urlsWithIndices[i].url);
-    }
-
-    return urlsOnly;
-  };
-
-  FlowdockText.extractEmails = function(text) {
-    var emailsOnly = [],
-        emailsWithIndices = FlowdockText.extractEmailsWithIndices(text);
-
-    for (var i = 0; i < emailsWithIndices.length; i++){
-      emailsOnly.push(emailsWithIndices[i].email)
-    }
-    return emailsOnly;
+  function stripEmail(email) {
+    return email.email;
   }
 
+  FlowdockText.extractEmails = function(text) {
+    var emailsWithIndices = FlowdockText.extractEmailsWithIndices(text);
+    return emailsWithIndices.map(stripEmail);
+  }
 
   FlowdockText.extractEmailsWithIndices = function(text){
     return FlowdockText.extractAllWithIndices(text).emails;
@@ -706,6 +693,15 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
     return emails;
   }
+
+  function stripUrl(url) {
+    return url.url;
+  }
+
+  FlowdockText.extractUrls = function(text) {
+    var urlsWithIndices = FlowdockText.extractUrlsWithIndices(text);
+    return urlsWithIndices.map(stripUrl);
+  };
 
   FlowdockText.extractUrlsWithIndices = function(text) {
     return FlowdockText.extractAllWithIndices(text).urls;
@@ -774,15 +770,13 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     return urls;
   };
 
+  function stripHashtag(hashtag) {
+    return hashtag.tag;
+  }
+
   FlowdockText.extractHashtags = function(text) {
-    var hashtagsOnly = [],
-        hashtagsWithIndices = FlowdockText.extractHashtagsWithIndices(text);
-
-    for (var i = 0; i < hashtagsWithIndices.length; i++) {
-      hashtagsOnly.push(hashtagsWithIndices[i].tag);
-    }
-
-    return hashtagsOnly;
+    var hashtagsWithIndices = FlowdockText.extractHashtagsWithIndices(text);
+    return hashtagsWithIndices.map(stripHashtag);
   };
 
   FlowdockText.extractHashtagsWithIndices = function(text) {
@@ -836,19 +830,14 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       }
     }
   };
+
+  function stripMention(mention) {
+    return mention.tag;
+  }
+
   FlowdockText.extractMentions = function(text, userTags){
-    var mentionsOnly = [],
-        mentionsWithIndices = FlowdockText.extractMentionsWithIndices(text, userTags);
-
-    for (var i = 0; i < mentionsWithIndices.length; i++) {
-      mentionsOnly.push(mentionsWithIndices[i].tag);
-    }
-
-    if(userTags){
-      userTags = downCase(userTags.map(getUserTag));
-      return mentionsOnly.filter(function(tag){ return inArray(tag.toLowerCase(), userTags) });
-    }
-    return mentionsOnly;
+    var mentionsWithIndices = FlowdockText.extractMentionsWithIndices(text, userTags);
+    return mentionsWithIndices.map(stripMention);
   };
   FlowdockText.extractMentionsWithIndices = function(text, userTags) {
     return FlowdockText.extractAllWithIndices(text, userTags).mentions;
@@ -887,18 +876,11 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     var users = users || [];
     var me = me || {};
 
-    var tokens = tokenize(message);
+    var all = FlowdockText.extractAll(message);
 
-    var urls = FlowdockText.extractUrls(message);
-    var matchedTags = tokens
-      .filter(function (t) {
-        return t.type === "hash";
-      })
-      .map(function (t) {
-        return t.match[2];
-      });
-
-    var matchedMentions = FlowdockText.extractMentions(message);
+    var urls = all.urls;
+    var matchedTags = all.hashtags;
+    var matchedMentions = all.mentions;
 
     if (matchedTags.length > 0) {
       //Uniq the matchedTags
@@ -947,7 +929,17 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       emails: extractEmailsWithIndicesFromTokens(tokens),
       urls: extractUrlsWithIndicesFromTokens(tokens),
     }
-  }
+  };
+
+  FlowdockText.extractAll = function (text, userTags) {
+    var withIndices = FlowdockText.extractAllWithIndices(text, userTags);
+    return {
+      hashtags: withIndices.hashtags.map(stripHashtag),
+      mentions: withIndices.mentions.map(stripMention),
+      emails: withIndices.emails.map(stripEmail),
+      urls: withIndices.urls.map(stripUrl),
+    };
+  };
 
   FlowdockText.mentionsAll = function(check){
     if(isArray(check)){
