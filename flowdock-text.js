@@ -399,7 +399,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     },
   ];
 
-  function tokenizeHelper(text, originalText, position, spec) {
+  function tokenizeHelper(prev, text, originalText, position, spec) {
     var m = text.match(spec.regex);
     // console.log("match", m);
     if (m) {
@@ -421,13 +421,17 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     var tokens = [];
     var position = 0;
 
+    var ts = [undefined, undefined, undefined, undefined];
+
     while (true) {
       // javascript regexps doesn't have "match from" functionality,
       // so we need to take a substr
       var textpart = text.substr(position);
 
       // try to match all token specs
-      var ts = TOKEN_SPECS.map(tokenizeHelper.bind(null, textpart, text, position));
+      for (var j = 0; j < 4; j++) {
+        ts[j] = tokenizeHelper(ts[j], textpart, text, position, TOKEN_SPECS[j]);
+      }
 
       // find match with smallest start offset
       var min = undefined;
