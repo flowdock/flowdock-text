@@ -400,7 +400,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   ];
 
   function tokenizeHelper(prev, text, originalText, position, spec) {
-    if (prev && prev.start >= position) {
+    if (prev !== undefined && (prev === null || prev.start >= position)) {
       return prev;
     }
 
