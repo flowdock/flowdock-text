@@ -52,6 +52,21 @@ suite
   FlowdockText.extractMentions(samples[999]);
   FlowdockText.extractEmails(samples[999]);
 })
+.add("parseTags: all", function() {
+  var i;
+  for (var i = samples.length; i >= 0; i--) {
+    FlowdockText.parseTags(samples[i]);
+  }
+})
+.add("parseTags: 1000 evil chars", function() {
+  FlowdockText.parseTags(samples[0]);
+})
+.add("parseTags: 100 evil chars", function() {
+  FlowdockText.parseTags(samples[900]);
+})
+.add("parseTags: 0 evil chars", function() {
+  FlowdockText.parseTags(samples[999]);
+})
 .on("cycle", function(event) {
   console.log(String(event.target));
 })
