@@ -4,9 +4,14 @@
   "version": "0.1.7",
   "main": "./flowdock-text.js",
   "author": "Flowdock",
-  "scripts": {"test": "node ./test/runner.js"},
+  "scripts": {
+    "test": "node ./test/runner.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/flowdock/flowdock-text.git"
+  },
+  "devDependencies": {
+    "benchmark": "~1.0.0"
   }
 }
