@@ -902,9 +902,10 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
         tags.push(":highlight:" + user.id);
       }
       if (FlowdockText.mentionsUser(matchedMentions, user)) tags.push(":user:" + user.id);
+      // Add the unread tag if there is a highlight or user tag for a user that is in_flow and not me
       if([":highlight:" + user.id, ":user:" + user.id, ":user:everyone"].some(function(tag){
         return tags.indexOf(tag) !== -1;
-      }) && user.id !== me.id){
+      }) && user.id !== me.id && !(user.in_flow == false && tags.indexOf(":user:everyone") !== -1)){
         tags.push(":unread:" + user.id);
       }
     });
