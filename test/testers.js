@@ -79,11 +79,12 @@ var testers = {
         };
       }
       case "get_tags":
-        var me = {nick: "Me", id: 1, disabled: false};
-        var user_foo = {nick: "Foo", id: 2, disabled: false};
+        var me = {nick: "Me", id: 1, in_flow: true, disabled: false};
+        var user_foo = {nick: "Foo", in_flow: true, id: 2, disabled: false};
         var user_bar = {nick: "Foo-Bar",id: 3, disabled: false};
         var disabled_user = {nick: "Disabled-User",id: 4, disabled: true};//Disabled user!!
         var team_flowdock = {nick: "Flowdock",id: 0, disabled: true}; //Disabled user!!
+        var user_not_in_flow = {nick: "Idler", in_flow: false, id: 5, disabled: false}
         var users = [team_flowdock, me, user_foo, user_bar, disabled_user];
         switch (section){
         case "get_tags_from_message":
@@ -97,6 +98,10 @@ var testers = {
         case "get_tags_from_message_without_supplied_me":
           return function(test){
             return FlowdockText.parseTags(test.text, users);
+        };
+        case "get_unread_tags_for_everyone_tag_only_for_users_in_flow":
+          return function(test){
+            return FlowdockText.parseTags(test.text, users.concat(user_not_in_flow), me)
         };
       }
     }

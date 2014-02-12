@@ -77,3 +77,9 @@ tests:
     - description: "Get unread tags for each user"
       text: "Hello @everyone"
       expected: [":user:everyone", ":unread:1", ":unread:2", ":unread:3"]
+
+  get_unread_tags_for_everyone_tag_only_for_users_in_flow:
+    - description: "Don't explode @everyone into users with in_flow: false"
+      text: "Hello @everyone"
+      expected: [":user:everyone", ":unread:2", ":unread:3"]
+
