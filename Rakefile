@@ -26,7 +26,7 @@ namespace :test do
   end
   desc "Run test suite with node"
   task :run_node do
-    exec('node test/runner.js')
+    exec('node_modules/.bin/mocha run-tests.js')
   end
 end
 
