@@ -871,47 +871,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     return tags;
   };
 
-  FlowdockText.parseTags = function(message, users, me) {
-    var tags = [];
-    var users = users || [];
-    var me = me || {};
-
-    var all = FlowdockText.extractAll(message);
-
-    var urls = all.urls;
-    var matchedTags = all.hashtags;
-    var matchedMentions = all.mentions;
-
-    if (matchedTags.length > 0) {
-      //Uniq the matchedTags
-      matchedTags.forEach(function(tag) {
-        if(!inArray(tag.toLowerCase(), tags)) tags.push(tag);
-      });
-    }
-
-    //Add the :url metatag if any urls in the message
-    if (urls.length > 0) tags.push(":url");
-
-    // Find @everyone-tags from messages and tag with :user:everyone
-    if (FlowdockText.mentionsAll(matchedMentions)) tags.push(":user:everyone");
-
-    users.forEach(function(user) {
-      if (!user.nick || user.nick.length == 0 || user.id == 0 || user.disabled) return;
-      // Find nicknames from messages sent by other users and tag with :highlight
-      if (user.id != me.id && message.match(FlowdockText.regexen.highlightRegex(user.nick))) {
-        tags.push(":highlight:" + user.id);
-      }
-      if (FlowdockText.mentionsUser(matchedMentions, user)) tags.push(":user:" + user.id);
-      if([":highlight:" + user.id, ":user:" + user.id, ":user:everyone"].some(function(tag){
-        return tags.indexOf(tag) !== -1;
-      }) && user.id !== me.id){
-        tags.push(":unread:" + user.id);
-      }
-    });
-
-    return tags.filter(function(tag){ return tag[0] !== "@"});
-  };
-
   FlowdockText.extractAllWithIndices = function(text, userTags) {
     if (!text) {
       return {

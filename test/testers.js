@@ -78,27 +78,6 @@ var testers = {
           return FlowdockText.isValidUrl(test.text, true, false);
         };
       }
-      case "get_tags":
-        var me = {nick: "Me", id: 1, disabled: false};
-        var user_foo = {nick: "Foo", id: 2, disabled: false};
-        var user_bar = {nick: "Foo-Bar",id: 3, disabled: false};
-        var disabled_user = {nick: "Disabled-User",id: 4, disabled: true};//Disabled user!!
-        var team_flowdock = {nick: "Flowdock",id: 0, disabled: true}; //Disabled user!!
-        var users = [team_flowdock, me, user_foo, user_bar, disabled_user];
-        switch (section){
-        case "get_tags_from_message":
-          return function(test){
-            return FlowdockText.parseTags(test.text, users, me);
-        };
-        case "get_tags_from_message_without_extra_parameters":
-          return function(test){
-            return FlowdockText.parseTags(test.text);
-        };
-        case "get_tags_from_message_without_supplied_me":
-          return function(test){
-            return FlowdockText.parseTags(test.text, users);
-        };
-      }
     }
   }
 };
