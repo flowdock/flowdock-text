@@ -129,6 +129,37 @@ tests:
         - email: "ho@hi.com"
           indices: [10, 19]
 
+  highlight:
+    - description: "match nickname without @ in the middle of string"
+      text: "aa nick foo"
+      nick: "nick"
+      expected: true
+
+    - description: "match nickname in beginning of string"
+      text: "nick foo"
+      nick: "nick"
+      expected: true
+
+    - description: "match nickname in end of string"
+      text: "foo nick"
+      nick: "nick"
+      expected: true
+
+    - description: "match nickname after non word character"
+      text: "!nick"
+      nick: "nick"
+      expected: true
+
+    - description: "match nickname before non word"
+      text: "nick!"
+      nick: "nick"
+      expected: true
+
+    - description: "no nick is no nick"
+      text: "no no no"
+      nick: "nick"
+      expected: false
+
   mentions:
     - description: "Extract mention at the begining of a tweet"
       text: "@username reply"
@@ -873,4 +904,3 @@ tests:
           indices: [23, 27]
         - tag: "русский"
           indices: [33, 41]
-

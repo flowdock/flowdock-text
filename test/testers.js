@@ -26,6 +26,10 @@ var testers = {
       }
       case "extract":
         switch (section) {
+        case "highlight":
+          return function(test) {
+            return FlowdockText.regexen.highlightRegex(test.nick).test(test.text)
+          };
         case "emails":
           return function(test) {
             return FlowdockText.extractEmails(test.text);

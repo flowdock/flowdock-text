@@ -172,7 +172,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   FlowdockText.regexen.autoLinkMentions = regexSupplant(/(#{hashtagBoundary})(@)(#{usernameAlphaNumeric}*#{usernameAlphaNumericEnd}+)/gi);
   // We want to only match words starting with the nickname and ignore case
   FlowdockText.regexen.highlightRegex = function(nick) {
-    if (nick && nick.length > 0) { return new RegExp('([\\b\\s]|^)+' + regexEscape(nick) + '([\\b\\s\\!\\?\\,\\:\\;\\.]|$)+', 'i'); }
+    if (nick && nick.length > 0) { return new RegExp('(\\b)' + regexEscape(nick) + '(\\b)', 'i'); }
   };
 
   // URL related hash regex collection
