@@ -39,63 +39,6 @@ FlowdockText.autoLink("hello @Username #greets");
 'hello <a title="Search @Username" class="app-tag-link" href="#flowser/all/@Username">@Username</a> <a href="#flowser/all/greets" title="#greets" class="app-tag-link">#greets</a>'
 ```
 
-### Parsing all tags from new messages
-
-If you need to replicate the functionality that Flowdock uses to parse tags from new messages, you can use `parseTags`.
-
-
-```javascript
-FlowdockText.parseTags("@anyone seen this: http://www.example.com #cool");
-[ 'cool', ':url', ':user:everyone' ]
-```
-
-Parse and process tags from a message with optional array of user-objects
-
-```javascript
-var users = [
-  {nick: "Username", id: 1, disabled: false},
-  {nick: "Other", id: 2, disabled: false}
-];
-FlowdockText.parseTags("@anyone seen this: http://www.example.com #cool", users);
-[ 'cool', ':url', ':user:everyone', ':unread:1', ':unread:2' ]
-```
-
-Parse and process tags from a message with optional array of user-objects and me-object (which excludes :unread:my-id tag from the results)
-
-```javascript
-var users = [
-  {nick: "Username", id: 1, disabled: false},
-  {nick: "Other", id: 2, disabled: false}
-];
-var me = users[1];
-FlowdockText.parseTags("@anyone seen this: http://www.example.com #cool", users, me);
-[ 'cool', ':url', ':user:everyone', ':unread:1' ]
-```
-
-Tagging a single user
-
-```javascript
-var users = [
-  {nick: "Username", id: 1, disabled: false},
-  {nick: "Other", id: 2, disabled: false}
-];
-var me = users[1];
-FlowdockText.parseTags("@Username, what do you think?", users, me);
-[ ':user:1', ':unread:1' ]
-```
-
-Mentioning a single user
-
-```javascript
-var users = [
-  {nick: "Username", id: 1, disabled: false},
-  {nick: "Other", id: 2, disabled: false}
-];
-var me = users[1];
-FlowdockText.parseTags("Username, what do you think?", users, me);
-[ ':highlight:1', ':unread:1' ]
-```
-
 ## NPM
 
 Install with: `npm install flowdock-text`
