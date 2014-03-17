@@ -688,6 +688,10 @@ tests:
       text: "a #hashtag here"
       expected: ["hashtag"]
 
+    - description: "Extract cyrillic unicode hashtag"
+      text: "\u043D\u0430\u043C #\u0438\u043D\u0442\u0435\u0440\u0435\u0441\u043D\u044B \u043D\u0430\u0448\u0438 #\u0438\u0434\u0435\u0438"
+      expected: ["\u0438\u043D\u0442\u0435\u0440\u0435\u0441\u043D\u044B", "\u0438\u0434\u0435\u0438"]
+
     - description: "Extract a letter-then-number hashtag"
       text: "this is #hashtag1"
       expected: ["hashtag1"]
