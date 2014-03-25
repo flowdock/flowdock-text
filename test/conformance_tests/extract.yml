@@ -740,6 +740,10 @@ tests:
       text: "What is #ашок anyway?"
       expected: ["ашок"]
 
+    - description: "Extract a hashtag in Greek"
+      text: "#ελληνικά is a hashtag"
+      expected: ["ελληνικά"]
+
     - description: "Extract a starting katakana hashtag"
       text: "#カタカナ is a hashtag"
       expected: ["カタカナ"]
