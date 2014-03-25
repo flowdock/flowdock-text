@@ -310,6 +310,10 @@ tests:
       text: "http://build.lan/yello"
       expected: ["http://build.lan/yello"]
 
+    - description: "Extract url with .technology domain"
+      text: "http://build.technology"
+      expected: ["http://build.technology"]
+
     - description: "Extract valid URL: http://xo.com/~matthew+%ff-x"
       text: "text http://xo.com/~matthew+%ff-x"
       expected: ["http://xo.com/~matthew+%ff-x"]
@@ -391,7 +395,7 @@ tests:
       expected: ["foo.com", "foo.net", "foo.org", "foo.edu", "foo.gov"]
 
     - description: "Extract URLs without protocol not on (com|org|edu|gov|net) domains"
-      text: "foo.bar foo.co.jp www.foo.bar www.foo.co.uk wwwww.foo foo.comm foo.somecom foo.govedu foo.jp foo.something.fi"
+      text: "foo.bax foo.co.jp www.foo.bax www.foo.co.uk wwwww.foo foo.comm foo.somecom foo.govedu foo.jp foo.something.fi"
       expected: ["foo.co.jp", "www.foo.co.uk", "foo.jp", "foo.something.fi"]
 
     - description: "Extract URLs without the protocol with a dash in the subdomain"

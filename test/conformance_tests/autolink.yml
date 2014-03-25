@@ -515,6 +515,10 @@ tests:
       text: "http://build.lan"
       expected: "<a href=\"http://build.lan\">http://build.lan</a>"
 
+    - description: "Autolink url containing .technology ptld"
+      text: "http://build.technology"
+      expected: "<a href=\"http://build.technology\">http://build.technology</a>"
+
     - description: "Autolink url without protocol (with www)"
       text: "www.example.biz"
       expected: "<a href=\"http://www.example.biz\">www.example.biz</a>"
