@@ -22,11 +22,11 @@ namespace :test do
 
   desc "Run test suite"
   task :run do
-    exec('open test/conformance.html')
+    exec('open test/mocha.html')
   end
   desc "Run test suite with node"
   task :run_node do
-    exec('node test/runner.js')
+    exec('node_modules/.bin/mocha run-tests.js')
   end
 end
 

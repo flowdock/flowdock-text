@@ -5,13 +5,24 @@
   "main": "./flowdock-text.js",
   "author": "Flowdock",
   "scripts": {
-    "test": "node ./test/runner.js"
+    "test": "node_modules/.bin/mocha run-tests.js",
+    "istanbul": "node_modules/.bin/istanbul cover node_modules/.bin/_mocha run-tests.js",
+    "karma": "node_modules/.bin/karma start"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/flowdock/flowdock-text.git"
   },
   "devDependencies": {
-    "benchmark": "~1.0.0"
+    "benchmark": "~1.0.0",
+    "underscore": "~1.5.2",
+    "mocha": "~1.16.2",
+    "istanbul": "~0.2.2",
+    "karma": "~0.11.12",
+    "karma-mocha": "~0.1.1",
+    "karma-chrome-launcher": "~0.1.2",
+    "karma-firefox-launcher": "~0.1.2",
+    "chai": "~1.9.0",
+    "karma-cli": "0.0.4"
   }
 }

@@ -681,11 +681,11 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     tokens.forEach(function (t) {
       // TODO: refactor, copy paste
       return t.match[0].replace(FlowdockText.regexen.email, function(subMatch) {
-        submatch = FlowdockText.htmlEscape(subMatch);
+        subMatch = FlowdockText.htmlEscape(subMatch);
         var endPosition = t.end + FlowdockText.regexen.extractEmails.lastIndex;
-        var startPosition = endPosition - submatch.length;
+        var startPosition = endPosition - subMatch.length;
         emails.push({
-          email: submatch,
+          email: subMatch,
           indices: [startPosition, endPosition],
         });
       });
