@@ -724,6 +724,10 @@ tests:
       text: "Getting my Oktoberfest on #münchen"
       expected: ["münchen"]
 
+    - description: "Extract a hashtag containing ğ"
+      text: "in Turkish #dağ is a mountain"
+      expected: ["dağ"]
+
     - description: "DO NOT Extract a hashtag containing Japanese"
       text: "this is not valid: # 会議中 ハッシュ"
       expected: []
