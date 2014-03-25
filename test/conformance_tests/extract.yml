@@ -724,6 +724,10 @@ tests:
       text: "Getting my Oktoberfest on #münchen"
       expected: ["münchen"]
 
+    - description: "Extract a hashtag containing ğ"
+      text: "in Turkish #dağ is a mountain"
+      expected: ["dağ"]
+
     - description: "DO NOT Extract a hashtag containing Japanese"
       text: "this is not valid: # 会議中 ハッシュ"
       expected: []
@@ -739,6 +743,10 @@ tests:
     - description: "Extract a hashtag in Russian"
       text: "What is #ашок anyway?"
       expected: ["ашок"]
+
+    - description: "Extract a hashtag in Greek"
+      text: "#ελληνικά is a hashtag"
+      expected: ["ελληνικά"]
 
     - description: "Extract a starting katakana hashtag"
       text: "#カタカナ is a hashtag"

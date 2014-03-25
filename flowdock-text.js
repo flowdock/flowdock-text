@@ -120,6 +120,10 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   addCharsToCharClass(nonLatinHashtagChars, 0x0500, 0x0527); // Cyrillic Supplement
   addCharsToCharClass(nonLatinHashtagChars, 0x2de0, 0x2dff); // Cyrillic Extended A
   addCharsToCharClass(nonLatinHashtagChars, 0xa640, 0xa69f); // Cyrillic Extended B
+  // Greek
+  addCharsToCharClass(nonLatinHashtagChars, 0x0370, 0x03ff); // Greek
+  // -- Disabled as it breaks the Regex
+  //addCharsToCharClass(nonLatinHashtagChars, 0x1f00, 0x01ff); // Greek Extended
   // Hangul (Korean)
   addCharsToCharClass(nonLatinHashtagChars, 0x1100, 0x11ff); // Hangul Jamo
   addCharsToCharClass(nonLatinHashtagChars, 0x3130, 0x3185); // Hangul Compatibility Jamo
@@ -149,8 +153,13 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   addCharsToCharClass(nonLatinHashtagChars, 0x303B, 0x303B); // Han iteration mark
 
   FlowdockText.regexen.nonLatinHashtagChars = regexSupplant(nonLatinHashtagChars.join(""));
+
+  var latinAccentChars = [];
+  addCharsToCharClass(latinAccentChars, 0x00C0, 0x00FF); // Latin-1 Supplement
+  addCharsToCharClass(latinAccentChars, 0x0100, 0x017F); // Latin Extended A
+  addCharsToCharClass(latinAccentChars, 0x1E00, 0x1EFF); // Latin Extended Additional
   // Latin accented characters (subtracted 0xD7 from the range, it's a confusable multiplication sign. Looks like "x")
-  FlowdockText.regexen.latinAccentChars = regexSupplant("ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏİÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïıðñòóôõöøùúûüýþş\\303\\277");
+  FlowdockText.regexen.latinAccentChars = regexSupplant(latinAccentChars.join(""));
 
   FlowdockText.regexen.endScreenNameMatch = regexSupplant(/^(?:#{atSigns}|[#{latinAccentChars}]|:\/\/)/);
 
