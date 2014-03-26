@@ -441,7 +441,8 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     // console.log("match", m);
     if (m) {
       if (!spec.check(m, originalText, position)) {
-        return null;
+        var progress = position + m.index + 1
+        return tokenizeHelper(prev, originalText.slice(progress), originalText, progress, spec)
       }
 
       return {

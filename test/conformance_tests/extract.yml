@@ -161,6 +161,10 @@ tests:
       expected: false
 
   mentions:
+    - description: "mention after invalid mention"
+      text: "oo@some @other"
+      expected: ["@other"]
+
     - description: "Extract mention at the begining of a tweet"
       text: "@username reply"
       expected: ["@username"]
@@ -688,6 +692,14 @@ tests:
           indices: [12, 23]
 
   hashtags:
+    - description: "hashtag after anchor"
+      text: "http://f.com/a#anchor #hashtag"
+      expected: ["hashtag"]
+
+    - description: "hashtag after #"
+      text: "aoeu#aoeu #tag"
+      expected: ["tag"]
+
     - description: "Extract an all-alpha hashtag"
       text: "a #hashtag here"
       expected: ["hashtag"]
