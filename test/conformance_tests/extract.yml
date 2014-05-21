@@ -330,6 +330,10 @@ tests:
       text: "text http://xo.com/,.;x"
       expected: ["http://xo.com/,.;x"]
 
+    - description: "Extract url with custom TLD"
+      text: "http://foo.customtld/path"
+      expected: ["http://foo.customtld/path"]
+
     - description: "Extract valid URL: http://en.wikipedia.org/wiki/Primer_(film)"
       text: "text http://en.wikipedia.org/wiki/Primer_(film)"
       expected: ["http://en.wikipedia.org/wiki/Primer_(film)"]

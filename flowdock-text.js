@@ -253,7 +253,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
             '(#{validDomain}|#{pseudoValidIP})'                    + // $5 Domain(s)
           ')|(?:'                                                  + // OR
             '(https?:\\/\\/)'                                      + // $6 Protocol
-            '((?:#{validDomainChars}|-)+)(?=:|\/|#{spaces}|\$)'    + // $7 Domain with a following port, path, whitespace or an end of string
+            '(#{validDomainName}*(?:#{validDomainChars}|-){2,})(?=:|\/|#{spaces}|\$)'    + // $7 Domain with a following port, path, whitespace or an end of string
           ')'                                                      +
         ')'                                                        +
         '(?::(#{validPortNumber}))?'                               + // $8 Port number (optional)
@@ -272,7 +272,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
           '(#{validDomain}|#{pseudoValidIP})'                    + // $3 Domain(s)
         ')|(?:'                                                  + // OR
           '(https?:\\/\\/)'                                      + // $4 Protocol
-          '((?:#{validDomainChars}|-)+)(?=:|\/|#{spaces}|\$)'    + // $5 Domain with a following port, path, whitespace or an end of string
+          '(#{validDomainName}*(?:#{validDomainChars}|-){2,})(?=:|\/|#{spaces}|\$)'    + // $5 Domain with a following port, path, whitespace or an end of string
         ')'                                                      +
       ')'                                                        +
       '(?::(#{validPortNumber}))?'                               + // $6 Port number (optional)
