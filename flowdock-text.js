@@ -203,7 +203,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     'pub|qpon|recipes|red|rentals|repair|report|reviews|rich|ruhr|sexy|shiksha|shoes|singles|social|solar|' +
     'solutions|supplies|supply|support|systems|tattoo|technology|tel|tienda|tips|today|tokyo|tools|training|' +
     'travel|uno|vacations|ventures|viajes|villas|vision|vote|voting|voto|voyage|wang|watch|wed|wien|wiki|works|' +
-    'local|dmz|lan|corp|' + // Flowdock specific
+    'local|' + // officially reserved for link-local hostnames
     'xxx|xyz|zone|дети|онлайн|орг|сайт|بازار|شبكة|みんな|中信|中文网|公司|公益|在线|我爱你|政务|游戏|移动|网络|集团|삼성)' +
     '(?=[^0-9a-zA-Z@]|$))'));
   FlowdockText.regexen.validCCTLD = regexSupplant(RegExp(
@@ -253,7 +253,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
             '(#{validDomain}|#{pseudoValidIP})'                    + // $5 Domain(s)
           ')|(?:'                                                  + // OR
             '(https?:\\/\\/)'                                      + // $6 Protocol
-            '((?:#{validDomainChars}|-)+)(?=:|\/|#{spaces}|\$)'    + // $7 Domain with a following port, path, whitespace or an end of string
+            '(#{validDomainName}*(?:#{validDomainChars}|-){2,})(?=:|\/|#{spaces}|\$)'    + // $7 Domain with a following port, path, whitespace or an end of string
           ')'                                                      +
         ')'                                                        +
         '(?::(#{validPortNumber}))?'                               + // $8 Port number (optional)
@@ -272,7 +272,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
           '(#{validDomain}|#{pseudoValidIP})'                    + // $3 Domain(s)
         ')|(?:'                                                  + // OR
           '(https?:\\/\\/)'                                      + // $4 Protocol
-          '((?:#{validDomainChars}|-)+)(?=:|\/|#{spaces}|\$)'    + // $5 Domain with a following port, path, whitespace or an end of string
+          '(#{validDomainName}*(?:#{validDomainChars}|-){2,})(?=:|\/|#{spaces}|\$)'    + // $5 Domain with a following port, path, whitespace or an end of string
         ')'                                                      +
       ')'                                                        +
       '(?::(#{validPortNumber}))?'                               + // $6 Port number (optional)
