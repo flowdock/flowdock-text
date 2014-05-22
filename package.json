@@ -1,7 +1,7 @@
 {
   "name": "flowdock-text",
   "description": "Flowdock tag extraction and linkification",
-  "version": "0.1.7",
+  "version": "1.0.0",
   "main": "./flowdock-text.js",
   "author": "Flowdock",
   "scripts": {
