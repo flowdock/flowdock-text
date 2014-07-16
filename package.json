@@ -15,14 +15,14 @@
   },
   "devDependencies": {
     "benchmark": "~1.0.0",
-    "underscore": "~1.5.2",
-    "mocha": "~1.16.2",
-    "istanbul": "~0.2.2",
-    "karma": "~0.11.12",
-    "karma-mocha": "~0.1.1",
-    "karma-chrome-launcher": "~0.1.2",
-    "karma-firefox-launcher": "~0.1.2",
     "chai": "~1.9.0",
-    "karma-cli": "0.0.4"
+    "istanbul": "~0.2.2",
+    "karma": "^0.12.8",
+    "karma-chrome-launcher": "~0.1.2",
+    "karma-cli": "0.0.4",
+    "karma-firefox-launcher": "~0.1.2",
+    "karma-mocha": "~0.1.1",
+    "mocha": "~1.16.2",
+    "underscore": "~1.5.2"
   }
 }
