@@ -8,6 +8,10 @@ tests:
       text: "This is a sentence. And this is another testing+wife@example.org"
       expected: ["testing+wife@example.org"]
 
+    - description: "does not extract emails from quote"
+      text: "    testing+wife@example.org"
+      expected: []
+
     - description: "Extract emails from mid-sentence"
       text: "Please mr postman pat@royalmail.com look and see"
       expected: ["pat@royalmail.com"]
@@ -164,6 +168,10 @@ tests:
     - description: "mention after invalid mention"
       text: "oo@some @other"
       expected: ["@other"]
+
+    - description: "no mentions from quotes"
+      text: "@some\n    but not this @other"
+      expected: ["@some"]
 
     - description: "Extract mention at the begining of a tweet"
       text: "@username reply"
@@ -583,6 +591,10 @@ tests:
       text: "#test.com @test.com #http://test.com @http://test.com #t.co/abcde @t.co/abcde"
       expected: []
 
+    - description: "DO NOT extract URLs in quotes"
+      text: "test.com\n    other.com"
+      expected: ["test.com"]
+
     - description: "Extract a t.co URL with a trailing apostrophe"
       text: "I really like http://t.co/pbY2NfTZ's website"
       expected: ["http://t.co/pbY2NfTZ"]
@@ -699,6 +711,10 @@ tests:
     - description: "hashtag after anchor"
       text: "http://f.com/a#anchor #hashtag"
       expected: ["hashtag"]
+
+    - description: "do not extract hashtag in quotes"
+      text: "#got\n    #inquotes"
+      expected: ["got"]
 
     - description: "hashtag after #"
       text: "aoeu#aoeu #tag"

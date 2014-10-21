@@ -905,6 +905,16 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     return tags;
   };
 
+  function dequote(text) {
+     return text.split(/\n/)
+          .map(function(line) {
+              return line.replace(/^(\s{4})(.*)/, function(m, p1, p2) {
+                  return p1 + new Array(p2.length + 1).join(' ')
+              })
+          })
+          .join('\n')
+  }
+
   FlowdockText.extractAllWithIndices = function(text, userTags) {
     if (!text) {
       return {
@@ -915,7 +925,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       };
     }
 
-    var tokens = tokenize(text);
+    var tokens = tokenize(dequote(text))
     return {
       hashtags: extractHashtagsWithIndicesFromTokens(tokens),
       mentions: extractMentionsWithIndicesFromTokens(tokens, userTags),
