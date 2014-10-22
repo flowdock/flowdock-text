@@ -1,5 +1,9 @@
 tests:
   emails:
+    - description: "does not autolink within a quote"
+      text: "got@example.com\n    quoted@example.com"
+      expected: "<a href='mailto:got@example.com' class='email-link'>got@example.com</a>\n    quoted@example.com"
+
     - description: "Autolink regular email"
       text: "test@example.com"
       expected: "<a href='mailto:test@example.com' class='email-link'>test@example.com</a>"
@@ -40,6 +44,18 @@ tests:
     - description: "Autolink trailing username"
       text: "text @username"
       expected: "text <a title=\"Search @username\" class=\"app-tag-link\" href=\"#flowser/all/@username\">@username</a>"
+
+    - description: "Does not autolink when text starts with a quote"
+      text: "    @username"
+      expected: "    @username"
+
+    - description: "autolinks after quote"
+      text: "    @quoted\n@username"
+      expected: "    @quoted\n<a title=\"Search @username\" class=\"app-tag-link\" href=\"#flowser/all/@username\">@username</a>"
+
+    - description: "Does not autolink within quotes"
+      text: "text\n    @username"
+      expected: "text\n    @username"
 
     - description: "Autolink username at the beginning"
       text: "@username text"
@@ -86,6 +102,10 @@ tests:
       expected: "<a title=\"Search @foo\" class=\"app-tag-link\" href=\"#flowser/all/@foo\">@foo</a> îs in the house"
 
   hashtags:
+    - description: "does not autolink in quotes"
+      text: "    #hashtag"
+      expected: "    #hashtag"
+
     - description: "Autolink trailing hashtag"
       text: "text #hashtag"
       expected: "text <a href=\"#flowser/all/hashtag\" title=\"#hashtag\" class=\"app-tag-link\">#hashtag</a>"

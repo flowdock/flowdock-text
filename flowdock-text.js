@@ -263,6 +263,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     ')'
   , 'gi');
 
+  FlowdockText.regexen.quoted = regexSupplant('((^|\\n)\\s{4}.*)', 'm')
   FlowdockText.regexen.singleUrl = regexSupplant(
     '(#{validPrecedingChars})'                                   + // before
     '('                                                          + // $1 URL
@@ -411,6 +412,11 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
   var TOKEN_SPECS = [
     {
+      type: "quote",
+      regex: FlowdockText.regexen.quoted,
+      check: function () { return true }
+    },
+    {
       type: "url",
       regex: FlowdockText.regexen.singleUrl,
       check: function () { return true; },
@@ -459,7 +465,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     var tokens = [];
     var position = 0;
 
-    var ts = [undefined, undefined, undefined, undefined];
+    var ts = new Array(TOKEN_SPECS.length)
 
     while (true) {
       // javascript regexps doesn't have "match from" functionality,
@@ -467,7 +473,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       var textpart = text.substr(position);
 
       // try to match all token specs
-      for (var j = 0; j < 4; j++) {
+      for (var j = 0; j < ts.length; j++) {
         ts[j] = tokenizeHelper(ts[j], textpart, text, position, TOKEN_SPECS[j]);
       }
 
@@ -905,16 +911,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     return tags;
   };
 
-  function dequote(text) {
-     return text.split(/\n/)
-          .map(function(line) {
-              return line.replace(/^(\s{4})(.*)/, function(m, p1, p2) {
-                  return p1 + new Array(p2.length + 1).join(' ')
-              })
-          })
-          .join('\n')
-  }
-
   FlowdockText.extractAllWithIndices = function(text, userTags) {
     if (!text) {
       return {
@@ -925,7 +921,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       };
     }
 
-    var tokens = tokenize(dequote(text))
+    var tokens = tokenize(text)
     return {
       hashtags: extractHashtagsWithIndicesFromTokens(tokens),
       mentions: extractMentionsWithIndicesFromTokens(tokens, userTags),
