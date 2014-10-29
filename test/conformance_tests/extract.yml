@@ -246,6 +246,10 @@ tests:
         - tag: "@username"
           indices: [0, 9]
   urls:
+    - description: "Extracts url in quote block"
+      text: "    http://quoted.example.com"
+      expected: ["http://quoted.example.com"]
+
     - description: "Extract a lone URL"
       text: "http://example.com"
       expected: ["http://example.com"]
@@ -591,9 +595,9 @@ tests:
       text: "#test.com @test.com #http://test.com @http://test.com #t.co/abcde @t.co/abcde"
       expected: []
 
-    - description: "DO NOT extract URLs in quotes"
+    - description: "extracts URLs in quote block"
       text: "test.com\n    other.com"
-      expected: ["test.com"]
+      expected: ["test.com", "other.com"]
 
     - description: "Extract a t.co URL with a trailing apostrophe"
       text: "I really like http://t.co/pbY2NfTZ's website"
@@ -634,6 +638,14 @@ tests:
       expected:
         - url: "http://google.com"
           indices: [5, 22]
+
+    - description: "Extract a URL inside a quote block"
+      text: "    http://google.com    http://example.com"
+      expected:
+        - url: "http://google.com"
+          indices: [4, 21]
+        - url: "http://example.com"
+          indices: [25, 43]
 
     - description: "Extract a URL from a Japanese tweet"
       text: "皆さん見てください！ http://google.com"
