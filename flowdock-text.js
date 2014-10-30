@@ -462,8 +462,8 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   }
 
   function tokenizeQuote(quoteToken) {
-    block = quoteToken.match[0]
-    urls = tokenize(block, {url: true}).filter(function(token) { return token.type == 'url'})
+    var block = quoteToken.match[0]
+    var urls = tokenize(block, {url: true}).filter(function(token) { return token.type == 'url'})
     if(urls.length > 0)
       return urls.map(function(token) {
         token.start += quoteToken.start
