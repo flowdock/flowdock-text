@@ -461,12 +461,25 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     return m;
   }
 
-  function tokenize(text) {
+  function tokenizeQuote(quoteToken) {
+    var block = quoteToken.match[0]
+    var urls = tokenize(block, {url: true}).filter(function(token) { return token.type == 'url'})
+    if(urls.length > 0)
+      return urls.map(function(token) {
+        token.start += quoteToken.start
+        return token
+      })
+    else
+      return [quoteToken]
+  }
+
+  function tokenize(text, tokenTypes) {
     var tokens = [];
     var position = 0;
-
-    var ts = new Array(TOKEN_SPECS.length)
-
+    var tokenSpecs = TOKEN_SPECS.filter(function(spec) {
+      return !tokenTypes || tokenTypes[spec.type ]
+    })
+    var ts = new Array(tokenSpecs.length)
     while (true) {
       // javascript regexps doesn't have "match from" functionality,
       // so we need to take a substr
@@ -474,7 +487,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
       // try to match all token specs
       for (var j = 0; j < ts.length; j++) {
-        ts[j] = tokenizeHelper(ts[j], textpart, text, position, TOKEN_SPECS[j]);
+        ts[j] = tokenizeHelper(ts[j], textpart, text, position, tokenSpecs[j]);
       }
 
       // find match with smallest start offset
@@ -496,9 +509,11 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
           });
         }
 
-        // and add matched token
-        tokens.push(min);
-
+        if(min.type == 'quote') {
+          tokens.push.apply(tokens, tokenizeQuote(min))
+        } else {
+          tokens.push(min);
+        }
         // update position for the next iteration
         position = min.end;
       } else {
