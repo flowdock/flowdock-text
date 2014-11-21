@@ -547,7 +547,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     var after = "";
     var surroundingParens = false;
 
-    if (url[0] == '(' || url[0] == '[' && url[0] == url[url.length - 1]) {
+    if ((url[0] == '(' && url[url.length - 1] == ')') || (url[0] == '[' && url[url.length - 1] == ']')) {
       url = url.substr(1, url.length - 2);
       surroundingParens = true;
     }
