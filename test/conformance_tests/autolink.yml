@@ -651,6 +651,10 @@ tests:
       text: "$https://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
       expected: "$https://twitter.com $twitter.com $http://t.co/abcde $t.co/abcde $t.co $TVI.CA $RBS.CA"
 
+    - description: "DO NOT remove trailing paren if no leading paren present"
+      text: "http://en.wikipedia.org/wiki/PC_Tools_(Central_Point_Software)"
+      expected: "<a href=\"http://en.wikipedia.org/wiki/PC_Tools_(Central_Point_Software)\">http://en.wikipedia.org/wiki/PC_Tools_(Central_Point_Software)</a>"
+
   all:
     - description: "Autolink all does not break on URL with @"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406 if you know what's good for you."

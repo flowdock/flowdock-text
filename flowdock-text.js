@@ -242,7 +242,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     ')', 'i');
 
   FlowdockText.regexen.validUrlQueryChars = /[a-z0-9!?\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i;
-  FlowdockText.regexen.validUrlQueryEndingChars = /[a-z0-9_&=#\/]/i;
+  FlowdockText.regexen.validUrlQueryEndingChars = /[a-z0-9_&=#\/\)\]]/i;
   FlowdockText.regexen.extractUrl = regexSupplant(
     '('                                                            + // $1 total match
       '(#{validPrecedingChars})'                                   + // $2 Preceeding chracter
@@ -265,6 +265,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
   FlowdockText.regexen.quoted = regexSupplant('((^|\\n)\\s{4}.*)', 'm')
   FlowdockText.regexen.singleUrl = regexSupplant(
+    '[\[\(]?'                                                    + // Allow optional starting paren
     '(#{validPrecedingChars})'                                   + // before
     '('                                                          + // $1 URL
       '(?:'                                                      +
@@ -544,6 +545,12 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
     var before = urlToken.match[1];
     var after = "";
+    var surroundingParens = false;
+
+    if (url[0] == '(' || url[0] == '[' && url[0] == url[url.length - 1]) {
+      url = url.substr(1, url.length - 2);
+      surroundingParens = true;
+    }
 
     for (var k in options) {
       htmlAttrs += stringSupplant(" #{k}=\"#{v}\" ", {k: k, v: options[k].toString().replace(/"/, "&quot;").replace(/</, "&lt;").replace(/>/, "&gt;")});
@@ -559,6 +566,8 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       url: FlowdockText.htmlEscape(url),
       after: after,
       before: before,
+      parenBefore: surroundingParens ? url[0] : '',
+      parenAfter: surroundingParens ? url[url.length - 1] : ''
     };
 
     if (urlEntities && urlEntities[url] && urlEntities[url].display_url) {
@@ -570,7 +579,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     if (!protocol) {
       d.url = 'http://' + d.url;
     }
-    return stringSupplant("#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>#{after}", d);
+    return stringSupplant("#{parenBefore}#{before}<a href=\"#{url}\"#{htmlAttrs}>#{displayUrl}</a>#{after}#{parenAfter}", d);
   }
 
   function transformEmail(options, emailToken) {
