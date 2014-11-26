@@ -893,7 +893,7 @@ tests:
       expected: ["hashtag", "hashtag2", "hashtag3"]
 
     - description: "DO NOT extract hashtag when # is followed by URL"
-      text: "#http://twitter.com #https://twitter.com"
+      text: "#http://twitter.com #https://twitter.com https://twitter.com/#login"
       expected: []
 
   hashtags_with_indices:
