@@ -185,7 +185,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
   };
 
   // URL related hash regex collection
-  FlowdockText.regexen.validPrecedingChars = regexSupplant(/(?:[^-\/"'!=A-Za-z0-9_@＠$#＃\.#{invalid_chars_group}]|^)/);
+  FlowdockText.regexen.validPrecedingChars = regexSupplant(/(?:[^-\/"'!=A-Za-z0-9_@＠$#＃\.#{invalid_chars_group}]|^)[\(\[]?/);
 
   FlowdockText.regexen.invalidDomainChars = stringSupplant("#{punct}#{spaces_group}#{invalid_chars_group}", FlowdockText.regexen);
   FlowdockText.regexen.validDomainChars = regexSupplant(/[^#{invalidDomainChars}]/);
@@ -265,7 +265,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
 
   FlowdockText.regexen.quoted = regexSupplant('((^|\\n)\\s{4}.*)', 'm')
   FlowdockText.regexen.singleUrl = regexSupplant(
-    '[\[\(]?'                                                    + // Allow optional starting paren
     '(#{validPrecedingChars})'                                   + // before
     '('                                                          + // $1 URL
       '(?:'                                                      +

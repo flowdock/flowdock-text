@@ -659,6 +659,10 @@ tests:
       text: "http://www.example.com/search?query=PC_Tools_(Central_Point_Software)"
       expected: "<a href=\"http://www.example.com/search?query=PC_Tools_(Central_Point_Software)\">http://www.example.com/search?query=PC_Tools_(Central_Point_Software)</a>"
 
+    - description: "DO NOT mess with spaces and parens"
+      text: "( https://github.com/Anyfetch/api.anyfetch.com/compare/production...staging )"
+      expected: "( <a href=\"https://github.com/Anyfetch/api.anyfetch.com/compare/production...staging\">https://github.com/Anyfetch/api.anyfetch.com/compare/production...staging</a> )"
+
   all:
     - description: "Autolink all does not break on URL with @"
       text: "http://www.flickr.com/photos/29674651@N00/4382024406 if you know what's good for you."
