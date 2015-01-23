@@ -375,6 +375,14 @@ tests:
       text: "いまなにしてるhttp://example.comいまなにしてる"
       expected: "いまなにしてる<a href=\"http://example.com\">http://example.com</a>いまなにしてる"
 
+    - description: "does not include trailing comma to link with @"
+      text: "https://medium.com/@s, "
+      expected: "<a href=\"https://medium.com/@s\">https://medium.com/@s</a>, "
+
+    - description: "allows , inside the query"
+      text: "https://medium.com/@s?aa,bb"
+      expected: "<a href=\"https://medium.com/@s?aa,bb\">https://medium.com/@s?aa,bb</a>"
+
     - description: "Autolink url surrounded by parentheses does not capture them"
       text: "text (http://example.com)"
       expected: "text (<a href=\"http://example.com\">http://example.com</a>)"

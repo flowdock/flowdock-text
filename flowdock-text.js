@@ -238,7 +238,7 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       '#{validGeneralUrlPathChars}*' +
         '(?:#{validUrlBalancedParens}#{validGeneralUrlPathChars}*)*' +
         '#{validUrlPathEndingChars}'+
-      ')|(?:(@|@@)#{validGeneralUrlPathChars}+\/?)'+
+      ')|(?:(@|@@)#{validGeneralUrlPathChars}*\/?#{validUrlPathEndingChars}+)'+
     ')', 'i');
 
   FlowdockText.regexen.validUrlQueryChars = /[a-z0-9!?\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|]/i;
