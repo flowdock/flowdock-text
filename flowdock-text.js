@@ -972,6 +972,15 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
       return FlowdockText.mentionsAll(FlowdockText.extractMentions(check));
     }
   };
+
+  FlowdockText.mentionsTeam = function(check){
+    if(isArray(check)){
+      return downCase(check).indexOf("@team") !== -1;
+    } else {
+      return FlowdockText.mentionsTeam(FlowdockText.extractMentions(check));
+    }
+  }
+
   FlowdockText.mentionsUser = function(check, user){
     if(isArray(check)){
       return downCase(check).indexOf(getUserTag(user).toLowerCase()) !== -1;
