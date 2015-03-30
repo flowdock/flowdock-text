@@ -963,9 +963,11 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     };
   };
 
+  FlowdockText.mentionsAllTags = ["@everyone", "@everybody", "@all", "@anyone", "@anybody"];
+
   FlowdockText.mentionsAll = function(check){
     if(isArray(check)){
-      return ["@everyone", "@everybody", "@all", "@anyone", "@anybody"].some(function(tag) {
+      return FlowdockText.mentionsAllTags.some(function(tag) {
         return downCase(check).indexOf(tag) !== -1;
       });
     } else {
