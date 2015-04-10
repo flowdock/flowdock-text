@@ -977,16 +977,6 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     }
   };
 
-  // DEPRECATED. Will be removed. Use FlowdockText.mentionsTags instead.
-  FlowdockText.mentionsAll = function(check){
-    return FlowdockText.mentionsTags(check, ["@everyone", "@everybody", "@all", "@anyone", "@anybody"]);
-  };
-
-  // DEPRECATED. Will be removed. Use FlowdockText.mentionsTags instead.
-  FlowdockText.mentionsTeam = function(check){
-    return FlowdockText.mentionsTags(check, ["@team"]);
-  };
-
   FlowdockText.mentionsUser = function(check, user){
     if(isArray(check)){
       return downCase(check).indexOf(getUserTag(user).toLowerCase()) !== -1;
