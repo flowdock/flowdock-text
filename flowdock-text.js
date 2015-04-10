@@ -963,25 +963,29 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     };
   };
 
-  FlowdockText.mentionsAllTags = ["@everyone", "@everybody", "@all", "@anyone", "@anybody"];
-
-  FlowdockText.mentionsAll = function(check){
+  FlowdockText.mentionsTags = function(check, tags){
     if(isArray(check)){
-      return FlowdockText.mentionsAllTags.some(function(tag) {
-        return downCase(check).indexOf(tag) !== -1;
-      });
+      if (isArray(tags)){
+        return tags.some(function(tag) {
+          return downCase(check).indexOf(tag) !== -1;
+        });
+      } else {
+        return downCase(check).indexOf(tags) !== -1;
+      }
     } else {
-      return FlowdockText.mentionsAll(FlowdockText.extractMentions(check));
+      return FlowdockText.mentionsTags(FlowdockText.extractMentions(check), tags);
     }
   };
 
+  // DEPRECATED. Will be removed. Use FlowdockText.mentionsTags instead.
+  FlowdockText.mentionsAll = function(check){
+    return FlowdockText.mentionsTags(check, ["@everyone", "@everybody", "@all", "@anyone", "@anybody"]);
+  };
+
+  // DEPRECATED. Will be removed. Use FlowdockText.mentionsTags instead.
   FlowdockText.mentionsTeam = function(check){
-    if(isArray(check)){
-      return downCase(check).indexOf("@team") !== -1;
-    } else {
-      return FlowdockText.mentionsTeam(FlowdockText.extractMentions(check));
-    }
-  }
+    return FlowdockText.mentionsTags(check, ["@team"]);
+  };
 
   FlowdockText.mentionsUser = function(check, user){
     if(isArray(check)){
