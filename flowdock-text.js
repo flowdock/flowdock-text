@@ -963,25 +963,19 @@ if (typeof FlowdockText === "undefined" || FlowdockText === null) {
     };
   };
 
-  FlowdockText.mentionsAllTags = ["@everyone", "@everybody", "@all", "@anyone", "@anybody"];
-
-  FlowdockText.mentionsAll = function(check){
+  FlowdockText.mentionsTags = function(check, tags){
     if(isArray(check)){
-      return FlowdockText.mentionsAllTags.some(function(tag) {
-        return downCase(check).indexOf(tag) !== -1;
-      });
+      if (isArray(tags)){
+        return tags.some(function(tag) {
+          return downCase(check).indexOf(tag) !== -1;
+        });
+      } else {
+        return downCase(check).indexOf(tags) !== -1;
+      }
     } else {
-      return FlowdockText.mentionsAll(FlowdockText.extractMentions(check));
+      return FlowdockText.mentionsTags(FlowdockText.extractMentions(check), tags);
     }
   };
-
-  FlowdockText.mentionsTeam = function(check){
-    if(isArray(check)){
-      return downCase(check).indexOf("@team") !== -1;
-    } else {
-      return FlowdockText.mentionsTeam(FlowdockText.extractMentions(check));
-    }
-  }
 
   FlowdockText.mentionsUser = function(check, user){
     if(isArray(check)){
