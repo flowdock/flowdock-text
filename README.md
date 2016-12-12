@@ -65,7 +65,7 @@ To run the tests with node.js
 
 ### mocha, istanbul & karma
 
-You can run tests with [mocha](http://visionmedia.github.io/mocha/):
+You can run tests with [mocha](http://mochajs.org/):
 
     npm run test
 
